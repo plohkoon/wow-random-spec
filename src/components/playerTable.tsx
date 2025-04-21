@@ -11,9 +11,12 @@ import {
   TableRow,
 } from "./ui/table";
 import { Button } from "./ui/button";
+import { usePinwheelState } from "@/lib/pinwheelState";
+import { classes } from "@/lib/classes";
 
 function PlayerRow({ player }: { player: PlayerType }) {
   const { updatePlayer, deletePlayer } = usePlayers();
+  const { roll } = usePinwheelState();
   const [editing, setEditing] = useState<boolean>();
 
   const {
@@ -27,6 +30,8 @@ function PlayerRow({ player }: { player: PlayerType }) {
   } = player;
 
   const formId = `form-${id}`;
+
+  const list = classes;
 
   return (
     <TableRow>
@@ -103,7 +108,18 @@ function PlayerRow({ player }: { player: PlayerType }) {
       <TableCell>{rolledSpec}</TableCell>
       <TableCell>{team}</TableCell>
       <TableCell className="flex flex-row space-x-1">
-        <Button variant="default">Roll Spec</Button>
+        <Button
+          variant="default"
+          onClick={() =>
+            roll(player, list, (value) =>
+              updatePlayer(id, {
+                rolledSpec: value,
+              })
+            )
+          }
+        >
+          Roll Spec
+        </Button>
         <Button form={formId} variant="secondary">
           {editing ? "Done" : "Change"}
         </Button>

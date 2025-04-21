@@ -1,16 +1,14 @@
-import { classes } from "@/lib/classes";
 import { usePinwheelState } from "@/lib/pinwheelState";
 import { motion, useAnimation } from "motion/react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 
 export function PinwheelModal() {
-  const state = usePinwheelState();
+  const { open, respond, items } = usePinwheelState();
 
-  const items = classes;
   const segmentAngle = 360 / items.length;
 
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number>(-1);
   const controls = useAnimation();
 
   const spin = async () => {
@@ -32,9 +30,14 @@ export function PinwheelModal() {
       });
   };
 
+  const handleClose = () => {
+    respond?.(items[selected]);
+    setSelected(-1);
+  };
+
   return (
     <div
-      data-open={state.open}
+      data-open={open}
       className="absolute w-screen h-screen place-content-center data-[open=true]:grid hidden bg-blend-darken bg-black/50 z-50"
     >
       <div className="bg-[#F7ECDF] rounded-lg w-[80vw] h-[80vh] p-4 grid grid-rows-[10%_80%_10%] place-content-center">
@@ -76,9 +79,13 @@ export function PinwheelModal() {
           <div className="absolute top-1/2 -right-4 w-0 h-0 border-l-8 border-r-8 border-b-16 border-transparent border-b-black transform -translate-y-1/2 -rotate-90" />
         </div>
         <div className="flex flex-col items-center justify-center gap-8">
-          <Button onClick={spin}>Spin the Wheel</Button>
-          {selected !== null && (
-            <p className="text-lg">Result: {items[selected]}</p>
+          {selected < 0 ? (
+            <Button onClick={spin}>Spin the Wheel</Button>
+          ) : (
+            <p className="text-lg">
+              Result: {items[selected]} <Button onClick={spin}>Respin</Button>
+              <Button onClick={handleClose}>Done</Button>
+            </p>
           )}
         </div>
       </div>

@@ -1,13 +1,13 @@
-import { useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
+import { PlayerType } from "./usePlayers";
 
 class PinwheelState {
-  open: boolean = true;
+  open: boolean = false;
   subscribers: (() => void)[] = [];
 
-  constructor() {
-    this.open = true;
-    this.subscribers = [];
-  }
+  currentPlayerData: PlayerType | null = null;
+  currentRollList: string[] | null = null;
+  currentCallback: ((r: string) => void) | null = null;
 
   subscribe(cb: () => void) {
     this.subscribers.push(cb);
@@ -20,22 +20,71 @@ class PinwheelState {
   notify() {
     this.subscribers.forEach((s) => s());
   }
+
+  roll(
+    playerData: PlayerType,
+    rollList: string[],
+    callback: (r: string) => void
+  ) {
+    this.currentPlayerData = playerData;
+    this.currentRollList = rollList;
+    this.currentCallback = callback;
+
+    this.open = true;
+
+    this.notify();
+  }
+
+  respond(value: string) {
+    this.currentCallback?.(value);
+
+    this.currentPlayerData = null;
+    this.currentRollList = null;
+    this.currentCallback = null;
+
+    this.open = false;
+
+    this.notify();
+  }
 }
 
 const pinwheelState = new PinwheelState();
 
 export function usePinwheelState() {
-  const { open } = useSyncExternalStore(
+  const open = useSyncExternalStore(
     (cb) => {
       pinwheelState.subscribe(cb);
-
       return () => pinwheelState.unsubscribe(cb);
     },
-    () => pinwheelState,
-    () => pinwheelState
+    () => pinwheelState.open
+  );
+
+  const items = useSyncExternalStore(
+    (cb) => {
+      pinwheelState.subscribe(cb);
+      return () => pinwheelState.unsubscribe(cb);
+    },
+    () => pinwheelState.currentRollList
+  );
+
+  const roll = useCallback(
+    (
+      playerData: PlayerType,
+      rollList: string[],
+      callback: (r: string) => void
+    ) => pinwheelState.roll(playerData, rollList, callback),
+    []
+  );
+
+  const respond = useCallback(
+    (value: string) => pinwheelState.respond(value),
+    []
   );
 
   return {
     open,
-  };
+    roll,
+    respond,
+    items: items || [],
+  } as const;
 }
