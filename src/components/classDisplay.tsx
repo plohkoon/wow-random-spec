@@ -1,3 +1,5 @@
+import { keyToNameMapping } from "@/lib/classes";
+
 type Props<C extends React.ElementType> = {
   as?: C;
   playerClass: string;
@@ -66,6 +68,13 @@ export function ClassDisplay<C extends React.ElementType = "span">({
     className = `${rest.className} ${className}`;
   }
 
+  const classText: string =
+    playerClass in keyToNameMapping
+      ? // @ts-expect-error: This is fine, TS just isn't following
+        keyToNameMapping[playerClass]
+      : playerClass;
+  const specText = spec ? `${spec}` : "";
+
   return (
     <Component
       {...rest}
@@ -73,6 +82,9 @@ export function ClassDisplay<C extends React.ElementType = "span">({
       data-playerClass={playerClass}
       data-spec={spec}
       data-fillIn={fillIn}
-    />
+    >
+      {classText}
+      {spec && <span className="text-xs font-normal">{` (${specText})`}</span>}
+    </Component>
   );
 }

@@ -70,3 +70,19 @@ export const classes = Object.keys(classSpecs) as Array<
   keyof typeof classSpecs
 >;
 export const roles = ["tank", "healer", "dps"] as const;
+
+export const keyToNameMapping = {
+  druid: "Druid",
+  hunter: "Hunter",
+  mage: "Mage",
+  monk: "Monk",
+  paladin: "Paladin",
+  priest: "Priest",
+  rogue: "Rogue",
+  shaman: "Shaman",
+  warlock: "Warlock",
+  warrior: "Warrior",
+  deathKnight: "Death Knight",
+  demonHunter: "Demon Hunter",
+  evoker: "Evoker",
+};
