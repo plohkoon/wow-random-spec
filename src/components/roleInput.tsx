@@ -1,4 +1,4 @@
-import { classes } from "../lib/classes";
+import { roles } from "../lib/classes";
 import {
   Select,
   SelectContent,
@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "./ui/select";
 
-export function ClassInput({
+export function RoleInput({
   onChange,
   defaultValue,
   form,
@@ -23,17 +23,17 @@ export function ClassInput({
       form={form}
       defaultValue={defaultValue}
       onValueChange={onChange}
-      name="class"
+      name="role"
     >
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Class" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Classes</SelectLabel>
-          {classes.map((c) => (
-            <SelectItem value={c} key={c}>
-              {c}
+          <SelectLabel>Roles</SelectLabel>
+          {roles.map((r) => (
+            <SelectItem value={r} key={r}>
+              {r}
             </SelectItem>
           ))}
         </SelectGroup>

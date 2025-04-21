@@ -1,6 +1,7 @@
 import { ClassInput } from "./components/classInput";
 import { PlayerTable } from "./components/playerTable";
-import { RoleInput } from "./components/rolInput";
+import { RoleInput } from "./components/roleInput";
+import { PinwheelModal } from "./components/pinwheelModal";
 import { usePlayers } from "./lib/usePlayers";
 
 function App() {
@@ -8,20 +9,21 @@ function App() {
 
   return (
     <main>
-      <h1>Dylan's Random WoW Extravaganza</h1>
+      <PinwheelModal />
+      <h1 className="text-4xl font-bold">Dylan's Random WoW Extravaganza</h1>
 
       <section>
-        <h2>Players</h2>
+        <h2 className="text-2xl font-semibold">Players</h2>
 
         <PlayerTable />
       </section>
 
-      <section>
+      {/* <section>
         <h2>Roles</h2>
-      </section>
+      </section> */}
 
       <section>
-        <h2>Add a Player</h2>
+        <h2 className="text-2xl font-semibold">Add a Player</h2>
 
         <form
           onSubmit={(e) => {
