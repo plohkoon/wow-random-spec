@@ -63,9 +63,6 @@ export function PinwheelModal() {
           >
             {items.map((item, index) => {
               const angle = index * segmentAngle;
-              const isEven = index % 2 === 0;
-              const background = isEven ? "#f9c74f" : "#90be6d"; // Alternate colors
-
               const ratio = Math.PI / items.length;
 
               return (
@@ -77,7 +74,6 @@ export function PinwheelModal() {
                   style={{
                     transform: `rotate(${angle}deg)`,
                     clipPath: "polygon(50% 50%, 100% 0, 100% 100%)",
-                    // background,
                     height: "calc(100% * var(--ratio))",
                     // @ts-expect-error: CSS Variables are untyped
                     "--ratio": ratio,
