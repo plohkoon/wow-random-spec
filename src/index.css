@@ -3,6 +3,22 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --color-druid: #ff7c0a;
+  --color-hunter: #aad372;
+  --color-mage: #3fc7eb;
+  --color-monk: #00ff98;
+  --color-paladin: #f48cba;
+  --color-priest: #ffffff;
+  --color-rogue: #fff468;
+  --color-shaman: #0070dd;
+  --color-warlock: #8788ee;
+  --color-warrior: #c69b6d;
+  --color-deathknight: #c41e3a;
+  --color-demonhunter: #a330c9;
+  --color-evoker: #33937f;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

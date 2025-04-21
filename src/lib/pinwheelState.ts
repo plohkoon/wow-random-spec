@@ -46,6 +46,15 @@ class PinwheelState {
 
     this.notify();
   }
+
+  close() {
+    this.open = false;
+    this.currentPlayerData = null;
+    this.currentRollList = null;
+    this.currentCallback = null;
+
+    this.notify();
+  }
 }
 
 const pinwheelState = new PinwheelState();
@@ -81,10 +90,13 @@ export function usePinwheelState() {
     []
   );
 
+  const close = useCallback(() => pinwheelState.close(), []);
+
   return {
     open,
     roll,
     respond,
     items: items || [],
+    close,
   } as const;
 }

@@ -2,9 +2,10 @@ import { usePinwheelState } from "@/lib/pinwheelState";
 import { motion, useAnimation } from "motion/react";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { ClassDisplay } from "./classDisplay";
 
 export function PinwheelModal() {
-  const { open, respond, items } = usePinwheelState();
+  const { open, respond, items, close } = usePinwheelState();
 
   const segmentAngle = 360 / items.length;
 
@@ -31,7 +32,12 @@ export function PinwheelModal() {
   };
 
   const handleClose = () => {
-    respond?.(items[selected]);
+    if (selected < 0) {
+      close();
+    } else {
+      respond?.(items[selected]);
+    }
+
     setSelected(-1);
   };
 
@@ -39,8 +45,12 @@ export function PinwheelModal() {
     <div
       data-open={open}
       className="absolute w-screen h-screen place-content-center data-[open=true]:grid hidden bg-blend-darken bg-black/50 z-50"
+      onClick={handleClose}
     >
-      <div className="bg-[#F7ECDF] rounded-lg w-[80vw] h-[80vh] p-4 grid grid-rows-[10%_80%_10%] place-content-center">
+      <div
+        className="bg-[#F7ECDF] rounded-lg w-[80vw] h-[80vh] p-4 grid grid-rows-[10%_80%_10%] place-content-center"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h1 className="text-center text-2xl font-bold">
           Pick a class for NAME
         </h1>
@@ -59,20 +69,22 @@ export function PinwheelModal() {
               const ratio = Math.PI / items.length;
 
               return (
-                <div
+                <ClassDisplay
+                  fillIn
+                  playerClass={item}
                   key={item}
                   className="w-full h-full origin-center flex flex-row justify-end items-center pr-0.5 col-start-1 row-start-1"
                   style={{
                     transform: `rotate(${angle}deg)`,
                     clipPath: "polygon(50% 50%, 100% 0, 100% 100%)",
-                    background,
+                    // background,
                     height: "calc(100% * var(--ratio))",
                     // @ts-expect-error: CSS Variables are untyped
                     "--ratio": ratio,
                   }}
                 >
                   {item}
-                </div>
+                </ClassDisplay>
               );
             })}
           </motion.div>
@@ -80,7 +92,10 @@ export function PinwheelModal() {
         </div>
         <div className="flex flex-col items-center justify-center gap-8">
           {selected < 0 ? (
-            <Button onClick={spin}>Spin the Wheel</Button>
+            <p>
+              <Button onClick={spin}>Spin the Wheel</Button>
+              <Button onClick={handleClose}>Cancel</Button>
+            </p>
           ) : (
             <p className="text-lg">
               Result: {items[selected]} <Button onClick={spin}>Respin</Button>
