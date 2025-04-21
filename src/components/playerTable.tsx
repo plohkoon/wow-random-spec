@@ -4,7 +4,7 @@ import { ClassInput } from "./classInput";
 import { RoleInput } from "./rolInput";
 
 function PlayerRow({ player }: { player: PlayerType }) {
-  const { updatePlayer } = usePlayers();
+  const { updatePlayer, deletePlayer } = usePlayers();
   const [editing, setEditing] = useState<boolean>();
 
   const {
@@ -96,6 +96,14 @@ function PlayerRow({ player }: { player: PlayerType }) {
       <td>{team}</td>
       <td>
         <button form={formId}>{editing ? "Done" : "Change"}</button>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            deletePlayer(id);
+          }}
+        >
+          Remove
+        </button>
       </td>
     </tr>
   );

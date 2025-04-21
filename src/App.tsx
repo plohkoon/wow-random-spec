@@ -1,9 +1,10 @@
+import { ClassInput } from "./components/classInput";
 import { PlayerTable } from "./components/playerTable";
+import { RoleInput } from "./components/rolInput";
 import { usePlayers } from "./lib/usePlayers";
 
 function App() {
-  const { players, setPlayers, updatePlayer, deletePlayer, addPlayer } =
-    usePlayers();
+  const { addPlayer } = usePlayers();
 
   return (
     <main>
@@ -12,7 +13,7 @@ function App() {
       <section>
         <h2>Players</h2>
 
-        <PlayerTable players={players} />
+        <PlayerTable />
       </section>
 
       <section>
@@ -28,7 +29,7 @@ function App() {
             const formData = new FormData(e.currentTarget);
             const name = formData.get("name") as string;
             const score = parseInt(formData.get("score") as string);
-            const main = formData.get("main") as string;
+            const main = formData.get("class") as string;
             const role = formData.get("role") as string;
 
             addPlayer({
@@ -41,8 +42,8 @@ function App() {
         >
           <input type="text" placeholder="Name" name="name" />
           <input type="text" placeholder="Score" name="score" />
-          <input type="text" placeholder="Main" name="main" />
-          <input type="text" placeholder="Role" name="role" />
+          <ClassInput />
+          <RoleInput />
           <button type="submit">Add Player</button>
         </form>
       </section>

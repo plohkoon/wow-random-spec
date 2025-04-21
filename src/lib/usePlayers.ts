@@ -52,6 +52,7 @@ class PlayerState {
   }
 
   deletePlayer(id: number) {
+    console.log(this.players, id);
     this.players = this.players.filter((p) => p.id !== id);
     this.setPlayers(this.players);
   }
@@ -98,7 +99,7 @@ export function usePlayers() {
     []
   );
   const addPlayer = useCallback(
-    (newPlayer: PlayerType) => playerState.addPlayer(newPlayer),
+    (newPlayer: Omit<PlayerType, "id">) => playerState.addPlayer(newPlayer),
     []
   );
 

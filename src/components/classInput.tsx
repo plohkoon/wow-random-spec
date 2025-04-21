@@ -5,9 +5,9 @@ export function ClassInput({
   defaultValue,
   form,
 }: {
-  onChange: React.ChangeEventHandler<HTMLSelectElement>;
-  form: string;
-  defaultValue: string;
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  form?: string;
+  defaultValue?: string;
 }) {
   return (
     <select

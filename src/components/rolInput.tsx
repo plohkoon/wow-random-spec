@@ -5,13 +5,13 @@ export function RoleInput({
   defaultValue,
   form,
 }: {
-  onChange: React.ChangeEventHandler<HTMLSelectElement>;
-  form: string;
-  defaultValue: string;
+  onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+  form?: string;
+  defaultValue?: string;
 }) {
   return (
     <select
-      name="class"
+      name="role"
       onChange={onChange}
       defaultValue={defaultValue}
       form={form}
