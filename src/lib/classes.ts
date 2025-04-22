@@ -1,3 +1,5 @@
+import { PlayerType } from "./usePlayers";
+
 export const classSpecs = {
   druid: {
     balance: "dps",
@@ -86,3 +88,31 @@ export const keyToNameMapping = {
   demonHunter: "Demon Hunter",
   evoker: "Evoker",
 };
+
+export function availableSpecsForPlayer(player: PlayerType) {
+  return Object.keys(classSpecs)
+    .filter((c) => c !== player.main)
+    .flatMap((c) => {
+      const specs = classSpecs[c as keyof typeof classSpecs];
+
+      return Object.entries(specs)
+        .filter(([s, r]) => r !== player.role && s !== player.rolledSpec)
+        .map(([s]) => makeClassSpec(c, s));
+    });
+}
+
+export function getClassAndSpec(
+  classSpec: string
+): [string, string | undefined] {
+  const [c, s] = classSpec.split("-");
+
+  return [c, s];
+}
+
+export function makeClassSpec(playerClass: string, spec?: string): string {
+  if (!spec) {
+    return playerClass;
+  } else {
+    return `${playerClass}-${spec}`;
+  }
+}

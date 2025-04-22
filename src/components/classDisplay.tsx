@@ -1,9 +1,8 @@
-import { keyToNameMapping } from "@/lib/classes";
+import { getClassAndSpec, keyToNameMapping } from "@/lib/classes";
 
 type Props<C extends React.ElementType> = {
   as?: C;
-  playerClass: string;
-  spec?: string;
+  classSpec: string;
   fillIn?: boolean;
 } & Omit<React.ComponentPropsWithoutRef<C>, "children">;
 
@@ -55,12 +54,13 @@ const CLASSNAMES = [
 
 export function ClassDisplay<C extends React.ElementType = "span">({
   as,
-  playerClass,
-  spec,
+  classSpec,
   fillIn = false,
   ...rest
 }: Props<C>) {
   const Component = as || "span";
+
+  const [playerClass, spec] = getClassAndSpec(classSpec);
 
   let className = CLASSNAMES;
 

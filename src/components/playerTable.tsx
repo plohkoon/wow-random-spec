@@ -1,7 +1,12 @@
+import { availableSpecsForPlayer } from "@/lib/classes";
+import { usePinwheelState } from "@/lib/pinwheelState";
 import { useState } from "react";
 import { type PlayerType, usePlayers } from "../lib/usePlayers";
+import { ClassDisplay } from "./classDisplay";
 import { ClassInput } from "./classInput";
+import { RoleDisplay } from "./roleDisplay";
 import { RoleInput } from "./roleInput";
+import { Button } from "./ui/button";
 import {
   Table,
   TableBody,
@@ -10,11 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { Button } from "./ui/button";
-import { usePinwheelState } from "@/lib/pinwheelState";
-import { classes } from "@/lib/classes";
-import { ClassDisplay } from "./classDisplay";
-import { RoleDisplay } from "./roleDisplay";
 
 function PlayerRow({ player }: { player: PlayerType }) {
   const { updatePlayer, deletePlayer } = usePlayers();
@@ -33,7 +33,7 @@ function PlayerRow({ player }: { player: PlayerType }) {
 
   const formId = `form-${id}`;
 
-  const list = classes;
+  const availableSpecs = availableSpecsForPlayer(player);
 
   return (
     <TableRow>
@@ -89,7 +89,7 @@ function PlayerRow({ player }: { player: PlayerType }) {
             }
           />
         ) : (
-          <ClassDisplay playerClass={main} />
+          <ClassDisplay classSpec={main} />
         )}
       </TableCell>
       <TableCell>
@@ -107,7 +107,9 @@ function PlayerRow({ player }: { player: PlayerType }) {
           <RoleDisplay role={role} />
         )}
       </TableCell>
-      <TableCell>{rolledSpec}</TableCell>
+      <TableCell>
+        <ClassDisplay classSpec={rolledSpec} />
+      </TableCell>
       <TableCell>{team}</TableCell>
       <TableCell className="flex flex-row space-x-1">
         {editing ? (
@@ -119,7 +121,7 @@ function PlayerRow({ player }: { player: PlayerType }) {
             <Button
               variant="default"
               onClick={() =>
-                roll(player, list, (value) =>
+                roll(player, availableSpecs, (value) =>
                   updatePlayer(id, {
                     rolledSpec: value,
                   })

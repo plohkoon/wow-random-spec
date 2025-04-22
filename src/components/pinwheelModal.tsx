@@ -51,9 +51,7 @@ export function PinwheelModal() {
         className="bg-[#F7ECDF] rounded-lg w-[80vw] h-[80vh] p-4 grid grid-rows-[10%_80%_10%] place-content-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <h1 className="text-center text-2xl font-bold">
-          Pick a class for NAME
-        </h1>
+        <h1 className="text-center text-2xl font-bold">Roll a New Class</h1>
         <div className="relative max-w-full h-full aspect-square">
           <motion.div
             className="w-full h-full max-h-full max-w-full rounded-full grid grid-cols-1 grid-rows-1 justify-items-center place-items-center aspect-square"
@@ -68,7 +66,7 @@ export function PinwheelModal() {
               return (
                 <ClassDisplay
                   fillIn
-                  playerClass={item}
+                  classSpec={item}
                   key={item}
                   className="w-full h-full origin-center flex flex-row justify-end items-center pr-0.5 col-start-1 row-start-1"
                   style={{
@@ -94,7 +92,13 @@ export function PinwheelModal() {
             </p>
           ) : (
             <p className="text-lg">
-              Result: {items[selected]} <Button onClick={spin}>Respin</Button>
+              You got{" "}
+              <ClassDisplay
+                classSpec={items[selected]}
+                fillIn
+                className="p-2 underline rounded-md"
+              />{" "}
+              <Button onClick={spin}>Respin</Button>
               <Button onClick={handleClose}>Done</Button>
             </p>
           )}
