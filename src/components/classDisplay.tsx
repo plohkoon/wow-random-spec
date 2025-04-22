@@ -8,33 +8,33 @@ type Props<C extends React.ElementType> = {
 } & Omit<React.ComponentPropsWithoutRef<C>, "children">;
 
 const BASE_CLASSNAMES =
-  "font-bold bg-neutral-200 text-neutral-700 data-[fillIn=true]:text-neutral-200 data-[fillIn=true]:bg-neutral-700";
+  "font-bold text-neutral-700 data-[fillin=true]:text-neutral-200 data-[fillin=true]:bg-neutral-700";
 const DRUID_CLASSNAMES =
-  "data-[playerClass=druid]:data-[fillIn=false]:text-druid data-[playerClass=druid]:data-[fillIn=true]:bg-druid";
+  "data-[playerclass=druid]:data-[fillin=false]:text-druid data-[playerclass=druid]:data-[fillin=true]:bg-druid";
 const HUNTER_CLASSNAMES =
-  "data-[playerClass=hunter]:data-[fillIn=false]:text-hunter data-[playerClass=hunter]:data-[fillIn=true]:bg-hunter  data-[playerClass=hunter]:data-[fillIn=true]:text-neutral-500";
+  "data-[playerclass=hunter]:data-[fillin=false]:text-hunter data-[playerclass=hunter]:data-[fillin=true]:bg-hunter  data-[playerclass=hunter]:data-[fillin=true]:text-neutral-500";
 const MAGE_CLASSNAMES =
-  "data-[playerClass=mage]:data-[fillIn=false]:text-mage data-[playerClass=mage]:data-[fillIn=true]:bg-mage data-[playerClass=mage]:data-[fillIn=true]:text-neutral-500";
+  "data-[playerclass=mage]:data-[fillin=false]:text-mage data-[playerclass=mage]:data-[fillin=true]:bg-mage data-[playerclass=mage]:data-[fillin=true]:text-neutral-500";
 const MONK_CLASSNAMES =
-  "data-[playerClass=monk]:data-[fillIn=false]:text-monk data-[playerClass=monk]:data-[fillIn=true]:bg-monk data-[playerClass=monk]:data-[fillIn=true]:text-neutral-500";
+  "data-[playerclass=monk]:data-[fillin=false]:text-monk data-[playerclass=monk]:data-[fillin=true]:bg-monk data-[playerclass=monk]:data-[fillin=true]:text-neutral-500";
 const PALADIN_CLASSNAMES =
-  "data-[playerClass=paladin]:data-[fillIn=false]:text-paladin data-[playerClass=paladin]:data-[fillIn=true]:bg-paladin data-[playerClass=paladin]:data-[fillIn=true]:text-neutral-500";
+  "data-[playerclass=paladin]:data-[fillin=false]:text-paladin data-[playerclass=paladin]:data-[fillin=true]:bg-paladin data-[playerclass=paladin]:data-[fillin=true]:text-neutral-500";
 const PRIEST_CLASSNAMES =
-  "data-[playerClass=priest]:data-[fillIn=false]:text-priest data-[playerClass=priest]:data-[fillIn=true]:bg-priest data-[playerClass=priest]:data-[fillIn=true]:text-neutral-500";
+  "data-[playerclass=priest]:data-[fillin=false]:text-priest data-[playerclass=priest]:data-[fillin=true]:bg-priest data-[playerclass=priest]:data-[fillin=true]:text-neutral-500";
 const ROGUE_CLASSNAMES =
-  "data-[playerClass=rogue]:data-[fillIn=false]:text-rogue data-[playerClass=rogue]:data-[fillIn=true]:bg-rogue data-[playerClass=rogue]:data-[fillIn=true]:text-neutral-500";
+  "data-[playerclass=rogue]:data-[fillin=false]:text-rogue data-[playerclass=rogue]:data-[fillin=true]:bg-rogue data-[playerclass=rogue]:data-[fillin=true]:text-neutral-500";
 const SHAMAN_CLASSNAMES =
-  "data-[playerClass=shaman]:data-[fillIn=false]:text-shaman data-[playerClass=shaman]:data-[fillIn=true]:bg-shaman";
+  "data-[playerclass=shaman]:data-[fillin=false]:text-shaman data-[playerclass=shaman]:data-[fillin=true]:bg-shaman";
 const WARLOCK_CLASSNAMES =
-  "data-[playerClass=warlock]:data-[fillIn=false]:text-warlock data-[playerClass=warlock]:data-[fillIn=true]:bg-warlock";
+  "data-[playerclass=warlock]:data-[fillin=false]:text-warlock data-[playerclass=warlock]:data-[fillin=true]:bg-warlock";
 const WARRIOR_CLASSNAMES =
-  "data-[playerClass=warrior]:data-[fillIn=false]:text-warrior data-[playerClass=warrior]:data-[fillIn=true]:bg-warrior";
+  "data-[playerclass=warrior]:data-[fillin=false]:text-warrior data-[playerclass=warrior]:data-[fillin=true]:bg-warrior";
 const DEATHKNIGHT_CLASSNAMES =
-  "data-[playerClass=deathKnight]:data-[fillIn=false]:text-deathknight data-[playerClass=deathKnight]:data-[fillIn=true]:bg-deathknight";
+  "data-[playerclass=deathKnight]:data-[fillin=false]:text-deathknight data-[playerclass=deathKnight]:data-[fillin=true]:bg-deathknight";
 const DEMONHUNTER_CLASSNAMES =
-  "data-[playerClass=demonHunter]:data-[fillIn=false]:text-demonHunter data-[playerClass=demonHunter]:data-[fillIn=true]:bg-demonHunter";
+  "data-[playerclass=demonHunter]:data-[fillin=false]:text-demonHunter data-[playerclass=demonHunter]:data-[fillin=true]:bg-demonHunter";
 const EVOKER_CLASSNAMES =
-  "data-[playerClass=evoker]:data-[fillIn=false]:text-evoker data-[playerClass=evoker]:data-[fillIn=true]:bg-evoker";
+  "data-[playerclass=evoker]:data-[fillin=false]:text-evoker data-[playerclass=evoker]:data-[fillin=true]:bg-evoker";
 
 const CLASSNAMES = [
   BASE_CLASSNAMES,
@@ -79,9 +79,9 @@ export function ClassDisplay<C extends React.ElementType = "span">({
     <Component
       {...rest}
       className={className}
-      data-playerClass={playerClass}
+      data-playerclass={playerClass}
       data-spec={spec}
-      data-fillIn={fillIn}
+      data-fillin={fillIn}
     >
       {classText}
       {spec && <span className="text-xs font-normal">{` (${specText})`}</span>}

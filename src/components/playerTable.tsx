@@ -13,6 +13,8 @@ import {
 import { Button } from "./ui/button";
 import { usePinwheelState } from "@/lib/pinwheelState";
 import { classes } from "@/lib/classes";
+import { ClassDisplay } from "./classDisplay";
+import { RoleDisplay } from "./roleDisplay";
 
 function PlayerRow({ player }: { player: PlayerType }) {
   const { updatePlayer, deletePlayer } = usePlayers();
@@ -35,7 +37,7 @@ function PlayerRow({ player }: { player: PlayerType }) {
 
   return (
     <TableRow>
-      <TableCell>
+      <TableCell className="font-bold">
         <form
           id={formId}
           onSubmit={(e) => {
@@ -87,7 +89,7 @@ function PlayerRow({ player }: { player: PlayerType }) {
             }
           />
         ) : (
-          main
+          <ClassDisplay playerClass={main} />
         )}
       </TableCell>
       <TableCell>
@@ -102,36 +104,44 @@ function PlayerRow({ player }: { player: PlayerType }) {
             }
           />
         ) : (
-          role
+          <RoleDisplay role={role} />
         )}
       </TableCell>
       <TableCell>{rolledSpec}</TableCell>
       <TableCell>{team}</TableCell>
       <TableCell className="flex flex-row space-x-1">
-        <Button
-          variant="default"
-          onClick={() =>
-            roll(player, list, (value) =>
-              updatePlayer(id, {
-                rolledSpec: value,
-              })
-            )
-          }
-        >
-          Roll Spec
-        </Button>
-        <Button form={formId} variant="secondary">
-          {editing ? "Done" : "Change"}
-        </Button>
-        <Button
-          variant="destructive"
-          onClick={(e) => {
-            e.preventDefault();
-            deletePlayer(id);
-          }}
-        >
-          Remove
-        </Button>
+        {editing ? (
+          <Button form={formId} variant="default">
+            Done
+          </Button>
+        ) : (
+          <>
+            <Button
+              variant="default"
+              onClick={() =>
+                roll(player, list, (value) =>
+                  updatePlayer(id, {
+                    rolledSpec: value,
+                  })
+                )
+              }
+            >
+              Roll Spec
+            </Button>
+            <Button form={formId} variant="secondary">
+              Change
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={(e) => {
+                e.preventDefault();
+                deletePlayer(id);
+              }}
+            >
+              Remove
+            </Button>
+          </>
+        )}
       </TableCell>
     </TableRow>
   );

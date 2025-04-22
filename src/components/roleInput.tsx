@@ -1,4 +1,5 @@
 import { roles } from "../lib/classes";
+import { RoleDisplay } from "./roleDisplay";
 import {
   Select,
   SelectContent,
@@ -32,9 +33,7 @@ export function RoleInput({
         <SelectGroup>
           <SelectLabel>Roles</SelectLabel>
           {roles.map((r) => (
-            <SelectItem value={r} key={r}>
-              {r}
-            </SelectItem>
+            <RoleDisplay as={SelectItem} value={r} key={r} role={r} />
           ))}
         </SelectGroup>
       </SelectContent>
