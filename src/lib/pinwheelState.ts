@@ -76,6 +76,14 @@ export function usePinwheelState() {
     () => pinwheelState.currentRollList
   );
 
+  const playerData = useSyncExternalStore(
+    (cb) => {
+      pinwheelState.subscribe(cb);
+      return () => pinwheelState.unsubscribe(cb);
+    },
+    () => pinwheelState.currentPlayerData
+  );
+
   const roll = useCallback(
     (
       playerData: PlayerType,
@@ -98,5 +106,6 @@ export function usePinwheelState() {
     respond,
     items: items || [],
     close,
+    playerData,
   } as const;
 }

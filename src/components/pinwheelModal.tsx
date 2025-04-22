@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { ClassDisplay } from "./classDisplay";
 
 export function PinwheelModal() {
-  const { open, respond, items, close } = usePinwheelState();
+  const { open, respond, items, close, playerData } = usePinwheelState();
 
   const segmentAngle = 360 / items.length;
 
@@ -51,7 +51,9 @@ export function PinwheelModal() {
         className="bg-[#F7ECDF] rounded-lg w-[80vw] h-[80vh] p-4 grid grid-rows-[10%_80%_10%] place-content-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <h1 className="text-center text-2xl font-bold">Roll a New Class</h1>
+        <h1 className="text-center text-2xl font-bold">
+          Roll a New Class for {playerData?.name ?? "Someone"}
+        </h1>
         <div className="relative max-w-full h-full aspect-square">
           <motion.div
             className="w-full h-full max-h-full max-w-full rounded-full grid grid-cols-1 grid-rows-1 justify-items-center place-items-center aspect-square"

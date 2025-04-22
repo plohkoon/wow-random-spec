@@ -89,21 +89,27 @@ export const keyToNameMapping = {
   evoker: "Evoker",
 };
 
-export function availableSpecsForPlayer(player: PlayerType) {
+export function availableSpecsForPlayer(player: PlayerType, onlyRole?: string) {
   return Object.keys(classSpecs)
     .filter((c) => c !== player.main)
     .flatMap((c) => {
       const specs = classSpecs[c as keyof typeof classSpecs];
 
       return Object.entries(specs)
-        .filter(([s, r]) => r !== player.role && s !== player.rolledSpec)
+        .filter(
+          ([s, r]) =>
+            (onlyRole === undefined ? r !== player.role : r === onlyRole) &&
+            s !== player.rolledSpec
+        )
         .map(([s]) => makeClassSpec(c, s));
     });
 }
 
 export function getClassAndSpec(
-  classSpec: string
+  classSpec?: string | undefined
 ): [string, string | undefined] {
+  if (!classSpec) return ["", undefined];
+
   const [c, s] = classSpec.split("-");
 
   return [c, s];
