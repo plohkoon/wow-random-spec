@@ -149,7 +149,7 @@ export function PlayerTable() {
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>Normal Main</TableHead>
-          <TableHead>Normal Role</TableHead>
+          <TableHead>Assigned Role</TableHead>
           <TableHead>Spec</TableHead>
           <TableHead>Team</TableHead>
           <TableHead>Actions</TableHead>
