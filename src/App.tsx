@@ -5,6 +5,7 @@ import { PinwheelModal } from "./components/pinwheelModal";
 import { usePlayers } from "./lib/usePlayers";
 import { RolesTables } from "./components/rolesTables";
 import { Button } from "./components/ui/button";
+import { TeamTable } from "./components/teamTable";
 
 function App() {
   const { addPlayer } = usePlayers();
@@ -53,10 +54,16 @@ function App() {
           <PlayerTable />
         </section>
 
-        <section className="min-h-screen">
+        <section className="min-h-[95vh]">
           <h2 className="text-2xl font-semibold">Roles</h2>
 
           <RolesTables />
+        </section>
+
+        <section className="min-h-[95vh]">
+          <h2 className="text-2xl font-semibold">Teams</h2>
+
+          <TeamTable />
         </section>
       </div>
     </main>

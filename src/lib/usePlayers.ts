@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 
 export type PlayerType = {
   id: number;
@@ -85,6 +85,24 @@ export function usePlayers() {
     () => playerState.players
   );
 
+  const teams = useMemo(() => {
+    return players.reduce((acc, player) => {
+      if (player.team) {
+        if (!acc[player.team]) {
+          acc[player.team] = [];
+        }
+        acc[player.team].push(player);
+      } else {
+        if (!acc["rest"]) {
+          acc["rest"] = [];
+        }
+        acc["rest"].push(player);
+      }
+
+      return acc;
+    }, {} as Record<string, PlayerType[]>);
+  }, [players]);
+
   const setPlayers = useCallback(
     (newPlayers: PlayerType[]) => playerState.setPlayers(newPlayers),
     []
@@ -109,5 +127,6 @@ export function usePlayers() {
     updatePlayer,
     deletePlayer,
     addPlayer,
+    teams,
   } as const;
 }
