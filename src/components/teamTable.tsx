@@ -54,9 +54,9 @@ export function TeamTable() {
   return (
     <div className="grid grid-cols-3 gap-4">
       {Object.entries(teams).map(([teamName, teamPlayers]) => (
-        <div className="w-full col-span-1">
+        <div className="w-full col-span-1" key={teamName}>
           <h2 className="text-xl font-semi-bold">{teamName}</h2>
-          <Table key={teamName}>
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="text-center text-lg font-bold">

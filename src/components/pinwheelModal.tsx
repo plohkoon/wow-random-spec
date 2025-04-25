@@ -13,7 +13,25 @@ export function PinwheelModal() {
   const controls = useAnimation();
 
   const spin = async () => {
-    const randomIndex = Math.floor(Math.random() * items.length);
+    let randomIndex = Math.floor(Math.random() * items.length);
+    // People don't like augmentation evoker so we hamfistedly reduce it's chance.
+    if (items.indexOf("evoker-augmentation") !== -1) {
+      const itemsWithoutAug = items.filter(
+        (item) => item !== "evoker-augmentation"
+      );
+      const tempArray = [
+        ...itemsWithoutAug,
+        ...itemsWithoutAug,
+        ...itemsWithoutAug,
+        ...itemsWithoutAug,
+        ...itemsWithoutAug,
+        "evoker-augmentation",
+      ];
+
+      const randomElement =
+        tempArray[Math.floor(Math.random() * tempArray.length)];
+      randomIndex = items.indexOf(randomElement);
+    }
 
     const spins = 5;
     const baseAngle = (items.length - randomIndex) * segmentAngle;
