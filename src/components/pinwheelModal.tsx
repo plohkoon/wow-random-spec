@@ -44,7 +44,7 @@ export function PinwheelModal() {
   return (
     <div
       data-open={open}
-      className="absolute w-screen h-screen place-content-center data-[open=true]:grid hidden bg-blend-darken bg-black/50 z-50"
+      className="fixed w-screen min-h-screen h-full place-content-center data-[open=true]:grid hidden bg-blend-darken bg-black/50 z-50"
       onClick={handleClose}
     >
       <div
@@ -70,7 +70,7 @@ export function PinwheelModal() {
                   fillIn
                   classSpec={item}
                   key={item}
-                  className="w-full h-full origin-center flex flex-row justify-end items-center pr-0.5 col-start-1 row-start-1"
+                  className="w-full h-full origin-center flex flex-row justify-end items-center pr-0.5 col-start-1 row-start-1 text-2xl"
                   style={{
                     transform: `rotate(${angle}deg)`,
                     clipPath: "polygon(50% 50%, 100% 0, 100% 100%)",

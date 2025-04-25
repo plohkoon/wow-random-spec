@@ -18,7 +18,7 @@ export function RoleDisplay<C extends React.ElementType = "span">({
     }[role] ?? role;
 
   let className =
-    "font-bold text-neutral-700 data-[role=dps]:text-red-900 data-[role=tank]:text-blue-900 data-[role=healer]:text-green-900 data-[role=dps]:before:bg-[url('/dps.png')] data-[role=healer]:before:bg-[url('/healer.png')] data-[role=tank]:before:bg-[url('/tank.png')] before:w-5 before:h-5 before:bg-cover before:bg-center before:inline-block before:align-middle flex items-center gap-2";
+    "font-bold text-neutral-700 data-[role=dps]:text-red-900 data-[role=rdps]:text-red-900 data-[role=mdps]:text-red-900 data-[role=tank]:text-blue-900 data-[role=healer]:text-green-900 data-[role=dps]:before:bg-[url('/dps.png')] data-[role=rdps]:before:bg-[url('/dps.png')] data-[role=mdps]:before:bg-[url('/dps.png')] data-[role=healer]:before:bg-[url('/healer.png')] data-[role=tank]:before:bg-[url('/tank.png')] before:w-5 before:h-5 before:bg-cover before:bg-center before:inline-block before:align-middle flex items-center gap-2";
 
   if ("className" in rest) {
     className += ` ${rest.className}`;

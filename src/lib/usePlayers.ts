@@ -3,9 +3,9 @@ import { useCallback, useMemo, useSyncExternalStore } from "react";
 export type PlayerType = {
   id: number;
   name: string;
-  score: number;
   main: string;
   role: string;
+  score?: number;
   rolledSpec?: string;
   team?: string;
 };

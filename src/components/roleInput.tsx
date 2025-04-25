@@ -27,7 +27,7 @@ export function RoleInput({
       name="role"
     >
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Class" />
+        <SelectValue placeholder="Role" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

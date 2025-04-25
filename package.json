@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "shadd": "npx shadcn@latest add button"
+    "shadd": "npx shadcn@latest add"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

@@ -15,21 +15,14 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import { Input } from "./ui/input";
 
 function PlayerRow({ player }: { player: PlayerType }) {
   const { updatePlayer, deletePlayer } = usePlayers();
   const { roll } = usePinwheelState();
   const [editing, setEditing] = useState<boolean>();
 
-  const {
-    id,
-    name,
-    score,
-    main,
-    role,
-    rolledSpec = "n/a",
-    team = "n/a",
-  } = player;
+  const { id, name, main, role, rolledSpec = "n/a", team = "n/a" } = player;
 
   const formId = `form-${id}`;
 
@@ -46,7 +39,7 @@ function PlayerRow({ player }: { player: PlayerType }) {
           }}
         />
         {editing ? (
-          <input
+          <Input
             defaultValue={name}
             onChange={(e) => {
               e.preventDefault();
@@ -58,23 +51,6 @@ function PlayerRow({ player }: { player: PlayerType }) {
           />
         ) : (
           name
-        )}
-      </TableCell>
-      <TableCell>
-        {editing ? (
-          <input
-            type="number"
-            defaultValue={score}
-            form={formId}
-            onChange={(e) => {
-              e.preventDefault();
-              updatePlayer(id, {
-                score: parseInt(e.currentTarget.value),
-              });
-            }}
-          />
-        ) : (
-          <span>{score}</span>
         )}
       </TableCell>
       <TableCell>
@@ -110,7 +86,22 @@ function PlayerRow({ player }: { player: PlayerType }) {
       <TableCell>
         <ClassDisplay classSpec={rolledSpec} />
       </TableCell>
-      <TableCell>{team}</TableCell>
+      <TableCell>
+        {editing ? (
+          <Input
+            defaultValue={team}
+            onChange={(e) => {
+              e.preventDefault();
+              updatePlayer(id, {
+                team: e.currentTarget.value,
+              });
+            }}
+            form={formId}
+          />
+        ) : (
+          team
+        )}
+      </TableCell>
       <TableCell className="flex flex-row space-x-1">
         {editing ? (
           <Button form={formId} variant="default">
@@ -157,7 +148,6 @@ export function PlayerTable() {
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
-          <TableHead>Score</TableHead>
           <TableHead>Normal Main</TableHead>
           <TableHead>Normal Role</TableHead>
           <TableHead>Spec</TableHead>

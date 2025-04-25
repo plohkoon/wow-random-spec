@@ -1,11 +1,12 @@
 import { ClassInput } from "./components/classInput";
+import { PinwheelModal } from "./components/pinwheelModal";
 import { PlayerTable } from "./components/playerTable";
 import { RoleInput } from "./components/roleInput";
-import { PinwheelModal } from "./components/pinwheelModal";
-import { usePlayers } from "./lib/usePlayers";
-import { RolesTables } from "./components/rolesTables";
-import { Button } from "./components/ui/button";
 import { TeamTable } from "./components/teamTable";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
+import { usePlayers } from "./lib/usePlayers";
 
 function App() {
   const { addPlayer } = usePlayers();
@@ -13,13 +14,11 @@ function App() {
   return (
     <main>
       <PinwheelModal />
-      <div className="w-full p-4">
+      <div className="w-full p-4 space-y-12">
         <h1 className="text-4xl font-bold">
           <img src="/logo.png" alt="Logo" className="h-16 w-16 inline-block" />
-          Dylan's Random WoW Extravaganza
+          First Seasonal Tito and Dom's M+ Adventure
         </h1>
-
-        <section></section>
 
         <section>
           <h2 className="text-2xl font-semibold">Add a Player</h2>
@@ -29,36 +28,50 @@ function App() {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
               const name = formData.get("name") as string;
-              const score = parseInt(formData.get("score") as string);
               const main = formData.get("class") as string;
               const role = formData.get("role") as string;
+              const team = formData.get("team") as string;
 
               addPlayer({
                 name,
-                score,
                 main,
                 role,
+                team,
               });
             }}
             className="flex flex-row space-x-4 p-4"
           >
-            <input type="text" placeholder="Name" name="name" />
-            <input type="text" placeholder="Score" name="score" />
-            <ClassInput />
-            <RoleInput />
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input type="text" placeholder="Name" name="name" id="name" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="class">Normal Class</Label>
+              <ClassInput />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">Assigned Role</Label>
+              <RoleInput />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="team">Team</Label>
+              <Input placeholder="Team" name="team" id="team" />
+            </div>
             <Button type="submit">Add Player</Button>
           </form>
+        </section>
 
+        <section>
           <h2 className="text-2xl font-semibold">Players</h2>
 
           <PlayerTable />
         </section>
 
-        <section className="min-h-[95vh]">
+        {/* <section className="min-h-[95vh]">
           <h2 className="text-2xl font-semibold">Roles</h2>
 
           <RolesTables />
-        </section>
+        </section> */}
 
         <section className="min-h-[95vh]">
           <h2 className="text-2xl font-semibold">Teams</h2>

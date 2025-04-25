@@ -2,76 +2,76 @@ import { PlayerType } from "./usePlayers";
 
 export const classSpecs = {
   druid: {
-    balance: "dps",
-    feral: "dps",
+    balance: "rdps",
+    feral: "mdps",
     guardian: "tank",
     restoration: "healer",
   },
   hunter: {
-    beastMastery: "dps",
-    marksmanship: "dps",
-    survival: "dps",
+    beastMastery: "rdps",
+    marksmanship: "rdps",
+    survival: "mdps",
   },
   mage: {
-    arcane: "dps",
-    fire: "dps",
-    frost: "dps",
+    arcane: "rdps",
+    fire: "rdps",
+    frost: "rdps",
   },
   monk: {
     brewMaster: "tank",
     mistweaver: "healer",
-    windwalker: "dps",
+    windwalker: "mdps",
   },
   paladin: {
     holy: "healer",
     protection: "tank",
-    retribution: "dps",
+    retribution: "mdps",
   },
   priest: {
     discipline: "healer",
     holy: "healer",
-    shadow: "dps",
+    shadow: "rdps",
   },
   rogue: {
-    assassination: "dps",
-    outlaw: "dps",
-    subtlety: "dps",
+    assassination: "mdps",
+    outlaw: "mdps",
+    subtlety: "mdps",
   },
   shaman: {
-    elemental: "dps",
-    enhancement: "dps",
+    elemental: "rdps",
+    enhancement: "mdps",
     restoration: "healer",
   },
   warlock: {
-    affliction: "dps",
-    demonology: "dps",
-    destruction: "dps",
+    affliction: "rdps",
+    demonology: "rdps",
+    destruction: "rdps",
   },
   warrior: {
-    arms: "dps",
-    fury: "dps",
+    arms: "mdps",
+    fury: "mdps",
     protection: "tank",
   },
   deathKnight: {
     blood: "tank",
-    frost: "dps",
-    unholy: "dps",
+    frost: "mdps",
+    unholy: "mdps",
   },
   demonHunter: {
-    havoc: "dps",
+    havoc: "mdps",
     vengeance: "tank",
   },
   evoker: {
     preservation: "healer",
-    devastation: "dps",
-    augmentation: "dps",
+    devastation: "rdps",
+    augmentation: "rdps",
   },
 };
 
 export const classes = Object.keys(classSpecs) as Array<
   keyof typeof classSpecs
 >;
-export const roles = ["tank", "healer", "dps"] as const;
+export const roles = ["tank", "healer", "rdps", "mdps"] as const;
 
 export const keyToNameMapping = {
   druid: "Druid",
@@ -89,7 +89,7 @@ export const keyToNameMapping = {
   evoker: "Evoker",
 };
 
-export function availableSpecsForPlayer(player: PlayerType, onlyRole?: string) {
+export function availableSpecsForPlayer(player: PlayerType) {
   return Object.keys(classSpecs)
     .filter((c) => c !== player.main)
     .flatMap((c) => {
@@ -97,9 +97,8 @@ export function availableSpecsForPlayer(player: PlayerType, onlyRole?: string) {
 
       return Object.entries(specs)
         .filter(
-          ([s, r]) =>
-            (onlyRole === undefined ? r !== player.role : r === onlyRole) &&
-            s !== player.rolledSpec
+          ([, r]) =>
+            r === player.role && c !== player.main && c !== player.rolledSpec
         )
         .map(([s]) => makeClassSpec(c, s));
     });
