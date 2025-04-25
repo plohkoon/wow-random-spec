@@ -1,4 +1,5 @@
 import { classes } from "../lib/classes";
+import { ClassDisplay } from "./classDisplay";
 // import { ClassDisplay } from "./classDisplay";
 import {
   Select,
@@ -33,10 +34,8 @@ export function ClassInput({
         <SelectGroup>
           <SelectLabel>Classes</SelectLabel>
           {classes.map((c) => (
-            // !GH - There's a white on white but with priests here.
-            // <ClassDisplay as={SelectItem} value={c} key={c} playerClass={c} />
             <SelectItem value={c} key={c}>
-              {c}
+              <ClassDisplay classSpec={c} />
             </SelectItem>
           ))}
         </SelectGroup>
