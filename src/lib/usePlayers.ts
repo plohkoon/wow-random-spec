@@ -60,7 +60,7 @@ class PlayerState {
   addPlayer(newPlayer: Omit<PlayerType, "id">) {
     console.log("Adding player", newPlayer);
 
-    const newId = Math.max(...this.players.map((p) => p.id + 1));
+    const newId = Math.max(...this.players.map((p) => p.id + 1), 0);
 
     const newPlayers = [
       ...this.players,
