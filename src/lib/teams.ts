@@ -3,7 +3,6 @@ import { PlayerType } from "./usePlayers";
 
 type Player = {
   id: number;
-  score: number;
   rolledSpec?: string;
 };
 
@@ -53,7 +52,8 @@ function canonicalize(partition: Partition): string {
 
 // Compute the total score of a group
 function groupScore(group: Group): number {
-  return group.reduce((sum, player) => sum + player.score, 0) / group.length;
+  // This was originally summing by score but we're not including that anymore
+  return group.reduce((sum) => sum + 1, 0) / group.length;
 }
 
 // Compute variance of an array of numbers

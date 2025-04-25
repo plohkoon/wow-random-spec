@@ -89,7 +89,10 @@ export const keyToNameMapping = {
   evoker: "Evoker",
 };
 
-export function availableSpecsForPlayer(player: PlayerType) {
+export function availableSpecsForPlayer(
+  player: PlayerType,
+  forceRole?: string
+) {
   return Object.keys(classSpecs)
     .filter((c) => c !== player.main)
     .flatMap((c) => {
@@ -98,7 +101,9 @@ export function availableSpecsForPlayer(player: PlayerType) {
       return Object.entries(specs)
         .filter(
           ([, r]) =>
-            r === player.role && c !== player.main && c !== player.rolledSpec
+            (forceRole === undefined ? r === player.role : r === forceRole) &&
+            c !== player.main &&
+            c !== player.rolledSpec
         )
         .map(([s]) => makeClassSpec(c, s));
     });
