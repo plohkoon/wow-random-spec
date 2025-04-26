@@ -1,8 +1,8 @@
 import { usePinwheelState } from "@/lib/pinwheelState";
 import { motion, useAnimation } from "motion/react";
 import { useState } from "react";
-import { Button } from "./ui/button";
 import { ClassDisplay } from "./classDisplay";
+import { Button } from "./ui/button";
 
 export function PinwheelModal() {
   const { open, respond, items, close, playerData } = usePinwheelState();
@@ -37,10 +37,17 @@ export function PinwheelModal() {
     const baseAngle = (items.length - randomIndex) * segmentAngle;
     const finalAngle = spins * 360 + baseAngle;
 
+    const duration = 4 + 2 * Math.random();
+
+    const ease = [
+      [0.16, 1, 0.3, 1],
+      [0.33, 1, 0.68, 1],
+    ][Math.floor(Math.random() * 2)];
+
     await controls
       .start({
         rotate: finalAngle,
-        transition: { duration: 3, ease: "easeOut" },
+        transition: { duration, ease },
       })
       .then(() => {
         setSelected(randomIndex);
@@ -66,7 +73,7 @@ export function PinwheelModal() {
       onClick={handleClose}
     >
       <div
-        className="bg-[#F7ECDF] rounded-lg w-[80vw] h-[80vh] p-4 grid grid-rows-[10%_80%_10%] place-content-center"
+        className="bg-[#F7ECDF] dark:bg-neutral-800 rounded-lg w-[80vw] h-[80vh] p-4 grid grid-rows-[10%_80%_10%] place-content-center"
         onClick={(e) => e.stopPropagation()}
       >
         <h1 className="text-center text-2xl font-bold">
