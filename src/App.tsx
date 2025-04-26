@@ -14,8 +14,6 @@ function App() {
   const { addPlayer } = usePlayers();
   const { isDarkMode, setDarkMode } = useDarkMode();
 
-  console.log(isDarkMode);
-
   return (
     <main>
       <PinwheelModal />
