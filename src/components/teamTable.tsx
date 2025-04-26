@@ -77,8 +77,13 @@ export function TeamTable() {
                   <TableCell className="text-center">
                     <RoleDisplay role={player.role} />
                   </TableCell>
-                  <TableCell className="text-center">
-                    <ClassDisplay classSpec={player.rolledSpec} />
+                  <TableCell className="text-center p-2">
+                    <ClassDisplay
+                      as="p"
+                      classSpec={player.rolledSpec}
+                      fillIn
+                      className="w-full rounded-md p-2"
+                    />
                   </TableCell>
                 </TableRow>
               ))}

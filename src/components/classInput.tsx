@@ -31,12 +31,18 @@ export function ClassInput({
         <SelectValue placeholder="Class" />
       </SelectTrigger>
       <SelectContent>
-        <SelectGroup>
+        <SelectGroup className="space-y-1">
           <SelectLabel>Classes</SelectLabel>
           {classes.map((c) => (
-            <SelectItem value={c} key={c}>
-              <ClassDisplay classSpec={c} />
-            </SelectItem>
+            <ClassDisplay
+              as={SelectItem}
+              value={c}
+              key={c}
+              classSpec={c}
+              fillIn
+            />
+            // <SelectItem value={c} key={c}>
+            // </SelectItem>
           ))}
         </SelectGroup>
       </SelectContent>

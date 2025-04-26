@@ -6,19 +6,35 @@ import { TeamTable } from "./components/teamTable";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
+import { Switch } from "./components/ui/switch";
+import { useDarkMode } from "./lib/useDarkmode";
 import { usePlayers } from "./lib/usePlayers";
 
 function App() {
   const { addPlayer } = usePlayers();
+  const { isDarkMode, setDarkMode } = useDarkMode();
+
+  console.log(isDarkMode);
 
   return (
     <main>
       <PinwheelModal />
       <div className="w-full p-4 space-y-12">
-        <h1 className="text-4xl font-bold">
+        <div className="flex flex-row items-center space-x-4">
           <img src="/logo.png" alt="Logo" className="h-16 w-16 inline-block" />
-          First Seasonal Tito and Dom's M+ Adventure
-        </h1>
+          <h1 className="text-4xl font-bold grow">
+            First Seasonal Tito and Dom's M+ Adventure
+          </h1>
+          <div className="flex flex-row items-center space-x-2">
+            <Label>Dark Mode</Label>
+            <Switch
+              name="darkmode"
+              id="darkmode"
+              onCheckedChange={(v) => setDarkMode(v)}
+              checked={isDarkMode}
+            />
+          </div>
+        </div>
 
         <section>
           <h2 className="text-2xl font-semibold">Add a Player</h2>

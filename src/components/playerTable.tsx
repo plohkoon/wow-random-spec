@@ -65,7 +65,12 @@ function PlayerRow({ player }: { player: PlayerType }) {
             }
           />
         ) : (
-          <ClassDisplay classSpec={main} />
+          <ClassDisplay
+            as="p"
+            classSpec={main}
+            fillIn
+            className="w-full rounded-md p-2"
+          />
         )}
       </TableCell>
       <TableCell>
