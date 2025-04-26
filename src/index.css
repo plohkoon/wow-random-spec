@@ -17,6 +17,10 @@
   --color-deathknight: #c41e3a;
   --color-demonhunter: #a330c9;
   --color-evoker: #33937f;
+
+  --color-dps: var(--color-red-900);
+  --color-tank: var(--color-blue-900);
+  --color-healer: var(--color-green-900);
 }
 
 @theme inline {
@@ -124,6 +128,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  --color-dps: var(--color-red-500);
+  --color-tank: var(--color-blue-500);
+  --color-healer: var(--color-green-500);
 }
 
 @layer base {
