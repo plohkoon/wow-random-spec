@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+prisma/prisma/sqlite.db
+generated/prisma/libquery*
