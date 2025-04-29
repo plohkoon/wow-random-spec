@@ -1,7 +1,6 @@
 import { FieldMetadata, useInputControl } from "@conform-to/react";
 import { classes } from "../../lib/classes";
 import { ClassDisplay } from "../display/classDisplay";
-// import { ClassDisplay } from "./classDisplay";
 import {
   Select,
   SelectContent,
