@@ -8,6 +8,7 @@
     "prebuild": "npx prisma generate",
     "build": "react-router build",
     "lint": "eslint .",
+    "prestart": "npx prisma db push --skip-generate",
     "start": "react-router-serve ./build/server/index.js",
     "shadd": "npx shadcn@latest add",
     "prisma:migrate": "npx prisma migrate dev"
@@ -23,6 +24,7 @@
     "@radix-ui/react-slot": "^1.2.0",
     "@radix-ui/react-switch": "^1.2.2",
     "@react-router/node": "^7.5.2",
+    "@react-router/serve": "^7.5.3",
     "@tailwindcss/vite": "^4.1.4",
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",

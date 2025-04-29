@@ -1,0 +1,10 @@
+.env
+dist
+build
+node_modules
+README.md
+components.json
+.eslintrc.cjs
+.vscode
+.dockerignore
+.gitignore
