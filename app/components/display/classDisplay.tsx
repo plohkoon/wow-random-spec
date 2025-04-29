@@ -31,7 +31,7 @@ const WARRIOR_CLASSNAMES =
 const DEATHKNIGHT_CLASSNAMES =
   "data-[playerclass=deathKnight]:data-[fillin=false]:text-deathknight data-[playerclass=deathKnight]:data-[fillin=true]:bg-deathknight";
 const DEMONHUNTER_CLASSNAMES =
-  "data-[playerclass=demonHunter]:data-[fillin=false]:text-demonHunter data-[playerclass=demonHunter]:data-[fillin=true]:bg-demonhunter";
+  "data-[playerclass=demonHunter]:data-[fillin=false]:text-demonhunter data-[playerclass=demonHunter]:data-[fillin=true]:bg-demonhunter";
 const EVOKER_CLASSNAMES =
   "data-[playerclass=evoker]:data-[fillin=false]:text-evoker data-[playerclass=evoker]:data-[fillin=true]:bg-evoker";
 

@@ -90,8 +90,8 @@ export default function Event({
                 <TableCell>
                   <ClassDisplay classSpec={p.spec} />
                 </TableCell>
-                <TableCell>{p.team?.name ?? "unassigned"}</TableCell>
                 <TableCell>{p.playerName}</TableCell>
+                <TableCell>{p.team?.name ?? "unassigned"}</TableCell>
               </TableRow>
             ))}
           </TableBody>
