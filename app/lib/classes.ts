@@ -87,6 +87,12 @@ export const keyToNameMapping = {
   evoker: "Evoker",
 };
 
+export const allClassSpecs = Object.entries(classSpecs).flatMap(([c, specs]) =>
+  Object.entries(specs).map(([s, r]) => {
+    return makeClassSpec(c, s);
+  })
+);
+
 // export function availableSpecsForPlayer(
 //   player: PlayerType,
 //   forceRole?: string

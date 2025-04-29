@@ -1789,6 +1789,11 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
+bcryptjs@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-3.0.2.tgz#caadcca1afefe372ed6e20f86db8e8546361c1ca"
+  integrity sha512-k38b3XOZKv60C4E2hVsXTolJWfkGRMbILBIe2IBITXciy5bOsTKot5kDrf3ZfufQtQOUN5mXceUEpU1rTl9Uog==
+
 beautify@^0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/beautify/-/beautify-0.0.8.tgz#e4ff755c2cd56727de0ccc1e6cc5d3ca0c52088d"
@@ -3377,6 +3382,16 @@ regenerator-runtime@^0.14.0:
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.14.1.tgz#356ade10263f685dda125100cd862c1db895327f"
   integrity sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==
+
+remix-auth-form@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/remix-auth-form/-/remix-auth-form-3.0.0.tgz#f4a84cc27f10c929cf8f2b78b85b8ba2b0b451c9"
+  integrity sha512-2c8d9BUJhnOrXg2w/iELLMj7RYT9EDI5eip9DSfN8caCTw0V33tNXvUNW44cYJQ8CjwAPi94vVaaezCHEdTSbQ==
+
+remix-auth@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/remix-auth/-/remix-auth-4.2.0.tgz#4a8476c6fc7bb7f4bfb827f320a7e0592291678f"
+  integrity sha512-3LSfWEvSgG2CgbG/p4ge5hbV8tTXWNnnYIGbTr9oSSiHz9dD7wh6S0MEyo3pwh7MlKezB2WIlevGeyqUZykk7g==
 
 resolve-from@^4.0.0:
   version "4.0.0"

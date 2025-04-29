@@ -9,6 +9,7 @@ import { Button } from "~/components/ui/button";
 import { db } from "~/lib/db.server";
 import { CTextInput } from "~/components/inputs/textInput";
 import { CForm } from "~/components/inputs/form";
+import { AppSession } from "~/lib/session.server";
 
 const schema = z.object({
   slug: z
@@ -18,7 +19,17 @@ const schema = z.object({
   name: z.string().min(1, "Name is required"),
 });
 
+export async function loader({ request }: Route.LoaderArgs) {
+  const session = await AppSession.fromRequest(request);
+  await session.requireAdmin(`/`);
+
+  return null;
+}
+
 export async function action({ request }: Route.ActionArgs) {
+  const session = await AppSession.fromRequest(request);
+  await session.requireAdmin(`/`);
+
   const fData = await request.formData();
 
   const res = await parseWithZod(fData, {

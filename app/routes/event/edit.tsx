@@ -19,9 +19,12 @@ import { ClassDisplay } from "~/components/display/classDisplay";
 import { Role } from "~/lib/prisma";
 import { useEffect, useState } from "react";
 import { CHiddenInput } from "~/components/inputs/hiddenInput";
-import { data, Link, useFetcher } from "react-router";
+import { data, Link, redirect, useFetcher } from "react-router";
 import { ClassInput } from "~/components/inputs/classInput";
 import { RoleDisplay } from "~/components/display/roleDisplay";
+import { AppSession } from "~/lib/session.server";
+import { RoleInput } from "~/components/inputs/roleInput";
+import { SpecInput } from "~/components/inputs/specInput";
 
 const addPlayerSchema = z.object({
   nickname: z.string().min(1, "Nickname is required"),
@@ -46,7 +49,10 @@ const updatePlayerSchema = z.object({
 
 const schema = z.union([addPlayerSchema, updatePlayerSchema]);
 
-export async function loader({ params: { slug } }: Route.LoaderArgs) {
+export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
+  const session = await AppSession.fromRequest(request);
+  await session.requireAdmin(`/event/${slug}`);
+
   const event = await db.event.findUnique({
     where: { slug },
     include: {
@@ -70,6 +76,9 @@ export async function loader({ params: { slug } }: Route.LoaderArgs) {
 }
 
 export async function action({ request, params: { slug } }: Route.ActionArgs) {
+  const session = await AppSession.fromRequest(request);
+  await session.requireAdmin(`/event/${slug}`);
+
   const fData = await request.formData();
 
   const res = await parseWithZod(fData, {
@@ -179,6 +188,15 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
         playerName: value.playerName,
       },
     });
+
+    // Cleanup leftover teams if all players are removed.
+    if (
+      existingPlayer?.teamId &&
+      (await db.player.count({ where: { teamId: existingPlayer.teamId } })) ===
+        0
+    ) {
+      await db.team.delete({ where: { id: existingPlayer.teamId } });
+    }
   }
 
   return res.reply();
@@ -233,10 +251,18 @@ function PlayerRow({
         )}
       </TableCell>
       <TableCell>
-        <RoleDisplay playerRole={assignedRole} />
+        {editing ? (
+          <RoleInput config={fields.assignedRole} form={form.id} />
+        ) : (
+          <RoleDisplay playerRole={assignedRole} />
+        )}
       </TableCell>
       <TableCell>
-        <ClassDisplay classSpec={spec} />
+        {editing ? (
+          <SpecInput config={fields.spec} form={form.id} />
+        ) : (
+          <ClassDisplay classSpec={spec} />
+        )}
       </TableCell>
       <TableCell>
         {editing ? (
@@ -245,7 +271,13 @@ function PlayerRow({
           playerName
         )}
       </TableCell>
-      <TableCell>{team?.name ?? "unassigned"}</TableCell>
+      <TableCell>
+        {editing ? (
+          <CTextInput config={fields.team} label="" form={form.id} />
+        ) : (
+          team?.name ?? "unassigned"
+        )}
+      </TableCell>
       <TableCell>
         <Button asChild variant="default">
           <Link to={`/event/${player.eventId}/roll/${player.id}`}>Roll</Link>
@@ -271,6 +303,7 @@ function PlayerRow({
 
 export default function EventEdit({
   loaderData: { event },
+  params: { slug },
 }: Route.ComponentProps) {
   const [addPlayerForm, addPlayerFields] = useForm({
     id: "add-player",
@@ -281,7 +314,12 @@ export default function EventEdit({
 
   return (
     <main className="space-y-4">
-      <H2>{event.name}</H2>
+      <H2>
+        {event.name}{" "}
+        <Button asChild>
+          <Link to={`/event/${slug}`}>Done Editing</Link>
+        </Button>
+      </H2>
 
       <section>
         <H3>Players</H3>
@@ -310,12 +348,9 @@ export default function EventEdit({
 
         <CForm method="post" config={addPlayerForm}>
           <CTextInput config={addPlayerFields.nickname} label="Nickname" />
-          <CTextInput config={addPlayerFields.main} label="Normal Main" />
-          <CTextInput
-            config={addPlayerFields.assignedRole}
-            label="Assigned Role"
-          />
-          <CTextInput config={addPlayerFields.spec} label="Spec" />
+          <ClassInput config={addPlayerFields.main} />
+          <RoleInput config={addPlayerFields.assignedRole} />
+          <SpecInput config={addPlayerFields.spec} />
           <CTextInput config={addPlayerFields.team} label="Team" />
 
           <Button type="submit" name="action" value="add">

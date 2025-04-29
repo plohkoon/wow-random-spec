@@ -9,22 +9,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { FieldMetadata, useInputControl } from "@conform-to/react";
 
 export function RoleInput({
-  onChange,
-  defaultValue,
+  config,
   form,
 }: {
-  onChange?: (value: string) => void;
+  config: FieldMetadata<string>;
   form?: string;
-  defaultValue?: string;
 }) {
+  const control = useInputControl(config);
+
   return (
     <Select
       form={form}
-      defaultValue={defaultValue}
-      onValueChange={onChange}
-      name="role"
+      name={config.name}
+      value={config.value}
+      onValueChange={control.change}
     >
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Role" />

@@ -7,6 +7,11 @@ import {
 
 export default [
   route("/", "./routes/home.tsx"),
+  ...prefix("/auth", [
+    route("signup", "./routes/auth/signup.tsx"),
+    route("signin", "./routes/auth/signin.tsx"),
+    route("signout", "./routes/auth/signout.tsx"),
+  ]),
   route("/event/", "./routes/event/_layout.tsx", [
     route("new", "./routes/event/new.tsx"),
     ...prefix(":slug", [

@@ -41,3 +41,15 @@ export interface Team {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  username: string;
+  password: string;
+  twoFactorSecret: string | null;
+  isTwoFactorEnabled: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}

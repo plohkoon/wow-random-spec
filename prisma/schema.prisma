@@ -61,3 +61,15 @@ model Team {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model User {
+  id                 String   @id @default(uuid())
+  email              String   @unique
+  name               String
+  username           String   @unique
+  password           String // Stores the hashed password (includes salt)
+  twoFactorSecret    String? // Optional: Secret for 2FA
+  isTwoFactorEnabled Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
