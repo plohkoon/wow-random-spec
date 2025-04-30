@@ -87,6 +87,44 @@ export const keyToNameMapping = {
   evoker: "Evoker",
 };
 
+export const specKeyToNameMapping = {
+  balance: "Balance",
+  feral: "Feral",
+  guardian: "Guardian",
+  restoration: "Restoration",
+  beastMastery: "Beat Mastery",
+  marksmanship: "Marksmanship",
+  survival: "Survival",
+  arcane: "Arcane",
+  fire: "Fire",
+  frost: "Frost",
+  brewMaster: "Brew Master",
+  mistweaver: "Mist Weaver",
+  windwalker: "Wind Walker",
+  holy: "Holy",
+  protection: "Protection",
+  retribution: "Retribution",
+  discipline: "Discipline",
+  shadow: "Shadow",
+  assassination: "Assassination",
+  outlaw: "Outlaw",
+  subtlety: "Subtlety",
+  elemental: "Elemental",
+  enhancement: "Enhancement",
+  affliction: "Affliction",
+  demonology: "Demonology",
+  destruction: "Destruction",
+  arms: "Arms",
+  fury: "Fury",
+  blood: "Blood",
+  unholy: "Unholy",
+  havoc: "Havoc",
+  vengeance: "Vengeance",
+  preservation: "Preservation",
+  devastation: "Devastation",
+  augmentation: "Augmentation",
+};
+
 export const allClassSpecs = Object.entries(classSpecs).flatMap(([c, specs]) =>
   Object.entries(specs).map(([s, r]) => {
     return makeClassSpec(c, s);

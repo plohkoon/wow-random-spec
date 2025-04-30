@@ -42,6 +42,7 @@ model Player {
   nickname     String
   main         String?
   playerName   String?
+  playerServer String?
   assignedRole Role?
   spec         String?
   eventId      String

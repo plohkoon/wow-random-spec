@@ -91,17 +91,16 @@ const config: runtime.GetPrismaClientConfig = {
     "db"
   ],
   "activeProvider": "sqlite",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "file:./prisma/sqlite.db"
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ngenerator types {\n  provider = \"prisma-generator-typescript-interfaces\"\n  output   = \"../generated/prisma.types.ts\"\n  enumType = \"enum\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Event {\n  id        String   @id @default(cuid())\n  slug      String   @unique\n  name      String\n  players   Player[]\n  teams     Team[]\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nenum Role {\n  rdps\n  mdps\n  tank\n  healer\n}\n\nmodel Player {\n  id           String   @id @default(cuid())\n  nickname     String\n  main         String?\n  playerName   String?\n  assignedRole Role?\n  spec         String?\n  eventId      String\n  event        Event    @relation(fields: [eventId], references: [id])\n  teamId       String?\n  team         Team?    @relation(fields: [teamId], references: [id])\n  createdAt    DateTime @default(now())\n  updatedAt    DateTime @updatedAt\n}\n\nmodel Team {\n  id        String   @id @default(cuid())\n  name      String\n  players   Player[]\n  eventId   String\n  event     Event    @relation(fields: [eventId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel User {\n  id                 String   @id @default(uuid())\n  email              String   @unique\n  name               String\n  username           String   @unique\n  password           String // Stores the hashed password (includes salt)\n  twoFactorSecret    String? // Optional: Secret for 2FA\n  isTwoFactorEnabled Boolean  @default(false)\n  createdAt          DateTime @default(now())\n  updatedAt          DateTime @updatedAt\n}\n",
-  "inlineSchemaHash": "cd46783b2053061acc599156624e198719b1047272ebf1a4f894e966d28d57bf",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ngenerator types {\n  provider = \"prisma-generator-typescript-interfaces\"\n  output   = \"../generated/prisma.types.ts\"\n  enumType = \"enum\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Event {\n  id        String   @id @default(cuid())\n  slug      String   @unique\n  name      String\n  players   Player[]\n  teams     Team[]\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nenum Role {\n  rdps\n  mdps\n  tank\n  healer\n}\n\nmodel Player {\n  id           String   @id @default(cuid())\n  nickname     String\n  main         String?\n  playerName   String?\n  playerServer String?\n  assignedRole Role?\n  spec         String?\n  eventId      String\n  event        Event    @relation(fields: [eventId], references: [id])\n  teamId       String?\n  team         Team?    @relation(fields: [teamId], references: [id])\n  createdAt    DateTime @default(now())\n  updatedAt    DateTime @updatedAt\n}\n\nmodel Team {\n  id        String   @id @default(cuid())\n  name      String\n  players   Player[]\n  eventId   String\n  event     Event    @relation(fields: [eventId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel User {\n  id                 String   @id @default(uuid())\n  email              String   @unique\n  name               String\n  username           String   @unique\n  password           String // Stores the hashed password (includes salt)\n  twoFactorSecret    String? // Optional: Secret for 2FA\n  isTwoFactorEnabled Boolean  @default(false)\n  createdAt          DateTime @default(now())\n  updatedAt          DateTime @updatedAt\n}\n",
+  "inlineSchemaHash": "3f4e0f9f8ebd7b526f3a759d05b3bf6f903d2be918e8da44d36b2b3e1fcf0705",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},
@@ -112,7 +111,7 @@ const config: runtime.GetPrismaClientConfig = {
 }
 config.dirname = __dirname
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Event\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"slug\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"players\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Player\",\"nativeType\":null,\"relationName\":\"EventToPlayer\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"teams\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Team\",\"nativeType\":null,\"relationName\":\"EventToTeam\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Player\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"nickname\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"main\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"playerName\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"assignedRole\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Role\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"spec\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"eventId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"event\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Event\",\"nativeType\":null,\"relationName\":\"EventToPlayer\",\"relationFromFields\":[\"eventId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"teamId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"team\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Team\",\"nativeType\":null,\"relationName\":\"PlayerToTeam\",\"relationFromFields\":[\"teamId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Team\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"players\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Player\",\"nativeType\":null,\"relationName\":\"PlayerToTeam\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"eventId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"event\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Event\",\"nativeType\":null,\"relationName\":\"EventToTeam\",\"relationFromFields\":[\"eventId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"User\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"uuid\",\"args\":[4]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"email\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"username\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"password\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"twoFactorSecret\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"isTwoFactorEnabled\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Boolean\",\"nativeType\":null,\"default\":false,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}},\"enums\":{\"Role\":{\"values\":[{\"name\":\"rdps\",\"dbName\":null},{\"name\":\"mdps\",\"dbName\":null},{\"name\":\"tank\",\"dbName\":null},{\"name\":\"healer\",\"dbName\":null}],\"dbName\":null}},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Event\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"slug\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"players\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Player\",\"nativeType\":null,\"relationName\":\"EventToPlayer\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"teams\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Team\",\"nativeType\":null,\"relationName\":\"EventToTeam\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Player\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"nickname\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"main\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"playerName\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"playerServer\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"assignedRole\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Role\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"spec\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"eventId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"event\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Event\",\"nativeType\":null,\"relationName\":\"EventToPlayer\",\"relationFromFields\":[\"eventId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"teamId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"team\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Team\",\"nativeType\":null,\"relationName\":\"PlayerToTeam\",\"relationFromFields\":[\"teamId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Team\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"players\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Player\",\"nativeType\":null,\"relationName\":\"PlayerToTeam\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"eventId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"event\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Event\",\"nativeType\":null,\"relationName\":\"EventToTeam\",\"relationFromFields\":[\"eventId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"User\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"uuid\",\"args\":[4]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"email\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"username\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"password\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"twoFactorSecret\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"isTwoFactorEnabled\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Boolean\",\"nativeType\":null,\"default\":false,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}},\"enums\":{\"Role\":{\"values\":[{\"name\":\"rdps\",\"dbName\":null},{\"name\":\"mdps\",\"dbName\":null},{\"name\":\"tank\",\"dbName\":null},{\"name\":\"healer\",\"dbName\":null}],\"dbName\":null}},\"types\":{}}")
 config.engineWasm = undefined
 config.compilerWasm = undefined
 
@@ -2356,6 +2355,7 @@ export namespace Prisma {
     nickname: string | null
     main: string | null
     playerName: string | null
+    playerServer: string | null
     assignedRole: $Enums.Role | null
     spec: string | null
     eventId: string | null
@@ -2369,6 +2369,7 @@ export namespace Prisma {
     nickname: string | null
     main: string | null
     playerName: string | null
+    playerServer: string | null
     assignedRole: $Enums.Role | null
     spec: string | null
     eventId: string | null
@@ -2382,6 +2383,7 @@ export namespace Prisma {
     nickname: number
     main: number
     playerName: number
+    playerServer: number
     assignedRole: number
     spec: number
     eventId: number
@@ -2397,6 +2399,7 @@ export namespace Prisma {
     nickname?: true
     main?: true
     playerName?: true
+    playerServer?: true
     assignedRole?: true
     spec?: true
     eventId?: true
@@ -2410,6 +2413,7 @@ export namespace Prisma {
     nickname?: true
     main?: true
     playerName?: true
+    playerServer?: true
     assignedRole?: true
     spec?: true
     eventId?: true
@@ -2423,6 +2427,7 @@ export namespace Prisma {
     nickname?: true
     main?: true
     playerName?: true
+    playerServer?: true
     assignedRole?: true
     spec?: true
     eventId?: true
@@ -2509,6 +2514,7 @@ export namespace Prisma {
     nickname: string
     main: string | null
     playerName: string | null
+    playerServer: string | null
     assignedRole: $Enums.Role | null
     spec: string | null
     eventId: string
@@ -2539,6 +2545,7 @@ export namespace Prisma {
     nickname?: boolean
     main?: boolean
     playerName?: boolean
+    playerServer?: boolean
     assignedRole?: boolean
     spec?: boolean
     eventId?: boolean
@@ -2554,6 +2561,7 @@ export namespace Prisma {
     nickname?: boolean
     main?: boolean
     playerName?: boolean
+    playerServer?: boolean
     assignedRole?: boolean
     spec?: boolean
     eventId?: boolean
@@ -2569,6 +2577,7 @@ export namespace Prisma {
     nickname?: boolean
     main?: boolean
     playerName?: boolean
+    playerServer?: boolean
     assignedRole?: boolean
     spec?: boolean
     eventId?: boolean
@@ -2584,6 +2593,7 @@ export namespace Prisma {
     nickname?: boolean
     main?: boolean
     playerName?: boolean
+    playerServer?: boolean
     assignedRole?: boolean
     spec?: boolean
     eventId?: boolean
@@ -2592,7 +2602,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nickname" | "main" | "playerName" | "assignedRole" | "spec" | "eventId" | "teamId" | "createdAt" | "updatedAt", ExtArgs["result"]["player"]>
+  export type PlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nickname" | "main" | "playerName" | "playerServer" | "assignedRole" | "spec" | "eventId" | "teamId" | "createdAt" | "updatedAt", ExtArgs["result"]["player"]>
   export type PlayerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     event?: boolean | EventDefaultArgs<ExtArgs>
     team?: boolean | Player$teamArgs<ExtArgs>
@@ -2617,6 +2627,7 @@ export namespace Prisma {
       nickname: string
       main: string | null
       playerName: string | null
+      playerServer: string | null
       assignedRole: $Enums.Role | null
       spec: string | null
       eventId: string
@@ -3052,6 +3063,7 @@ export namespace Prisma {
     readonly nickname: FieldRef<"Player", 'String'>
     readonly main: FieldRef<"Player", 'String'>
     readonly playerName: FieldRef<"Player", 'String'>
+    readonly playerServer: FieldRef<"Player", 'String'>
     readonly assignedRole: FieldRef<"Player", 'Role'>
     readonly spec: FieldRef<"Player", 'String'>
     readonly eventId: FieldRef<"Player", 'String'>
@@ -5647,6 +5659,7 @@ export namespace Prisma {
     nickname: 'nickname',
     main: 'main',
     playerName: 'playerName',
+    playerServer: 'playerServer',
     assignedRole: 'assignedRole',
     spec: 'spec',
     eventId: 'eventId',
@@ -5809,6 +5822,7 @@ export namespace Prisma {
     nickname?: StringFilter<"Player"> | string
     main?: StringNullableFilter<"Player"> | string | null
     playerName?: StringNullableFilter<"Player"> | string | null
+    playerServer?: StringNullableFilter<"Player"> | string | null
     assignedRole?: EnumRoleNullableFilter<"Player"> | $Enums.Role | null
     spec?: StringNullableFilter<"Player"> | string | null
     eventId?: StringFilter<"Player"> | string
@@ -5824,6 +5838,7 @@ export namespace Prisma {
     nickname?: SortOrder
     main?: SortOrderInput | SortOrder
     playerName?: SortOrderInput | SortOrder
+    playerServer?: SortOrderInput | SortOrder
     assignedRole?: SortOrderInput | SortOrder
     spec?: SortOrderInput | SortOrder
     eventId?: SortOrder
@@ -5842,6 +5857,7 @@ export namespace Prisma {
     nickname?: StringFilter<"Player"> | string
     main?: StringNullableFilter<"Player"> | string | null
     playerName?: StringNullableFilter<"Player"> | string | null
+    playerServer?: StringNullableFilter<"Player"> | string | null
     assignedRole?: EnumRoleNullableFilter<"Player"> | $Enums.Role | null
     spec?: StringNullableFilter<"Player"> | string | null
     eventId?: StringFilter<"Player"> | string
@@ -5857,6 +5873,7 @@ export namespace Prisma {
     nickname?: SortOrder
     main?: SortOrderInput | SortOrder
     playerName?: SortOrderInput | SortOrder
+    playerServer?: SortOrderInput | SortOrder
     assignedRole?: SortOrderInput | SortOrder
     spec?: SortOrderInput | SortOrder
     eventId?: SortOrder
@@ -5876,6 +5893,7 @@ export namespace Prisma {
     nickname?: StringWithAggregatesFilter<"Player"> | string
     main?: StringNullableWithAggregatesFilter<"Player"> | string | null
     playerName?: StringNullableWithAggregatesFilter<"Player"> | string | null
+    playerServer?: StringNullableWithAggregatesFilter<"Player"> | string | null
     assignedRole?: EnumRoleNullableWithAggregatesFilter<"Player"> | $Enums.Role | null
     spec?: StringNullableWithAggregatesFilter<"Player"> | string | null
     eventId?: StringWithAggregatesFilter<"Player"> | string
@@ -6083,6 +6101,7 @@ export namespace Prisma {
     nickname: string
     main?: string | null
     playerName?: string | null
+    playerServer?: string | null
     assignedRole?: $Enums.Role | null
     spec?: string | null
     createdAt?: Date | string
@@ -6096,6 +6115,7 @@ export namespace Prisma {
     nickname: string
     main?: string | null
     playerName?: string | null
+    playerServer?: string | null
     assignedRole?: $Enums.Role | null
     spec?: string | null
     eventId: string
@@ -6109,6 +6129,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6122,6 +6143,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     eventId?: StringFieldUpdateOperationsInput | string
@@ -6135,6 +6157,7 @@ export namespace Prisma {
     nickname: string
     main?: string | null
     playerName?: string | null
+    playerServer?: string | null
     assignedRole?: $Enums.Role | null
     spec?: string | null
     eventId: string
@@ -6148,6 +6171,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6159,6 +6183,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     eventId?: StringFieldUpdateOperationsInput | string
@@ -6451,6 +6476,7 @@ export namespace Prisma {
     nickname?: SortOrder
     main?: SortOrder
     playerName?: SortOrder
+    playerServer?: SortOrder
     assignedRole?: SortOrder
     spec?: SortOrder
     eventId?: SortOrder
@@ -6464,6 +6490,7 @@ export namespace Prisma {
     nickname?: SortOrder
     main?: SortOrder
     playerName?: SortOrder
+    playerServer?: SortOrder
     assignedRole?: SortOrder
     spec?: SortOrder
     eventId?: SortOrder
@@ -6477,6 +6504,7 @@ export namespace Prisma {
     nickname?: SortOrder
     main?: SortOrder
     playerName?: SortOrder
+    playerServer?: SortOrder
     assignedRole?: SortOrder
     spec?: SortOrder
     eventId?: SortOrder
@@ -6919,6 +6947,7 @@ export namespace Prisma {
     nickname: string
     main?: string | null
     playerName?: string | null
+    playerServer?: string | null
     assignedRole?: $Enums.Role | null
     spec?: string | null
     createdAt?: Date | string
@@ -6931,6 +6960,7 @@ export namespace Prisma {
     nickname: string
     main?: string | null
     playerName?: string | null
+    playerServer?: string | null
     assignedRole?: $Enums.Role | null
     spec?: string | null
     teamId?: string | null
@@ -6996,6 +7026,7 @@ export namespace Prisma {
     nickname?: StringFilter<"Player"> | string
     main?: StringNullableFilter<"Player"> | string | null
     playerName?: StringNullableFilter<"Player"> | string | null
+    playerServer?: StringNullableFilter<"Player"> | string | null
     assignedRole?: EnumRoleNullableFilter<"Player"> | $Enums.Role | null
     spec?: StringNullableFilter<"Player"> | string | null
     eventId?: StringFilter<"Player"> | string
@@ -7136,6 +7167,7 @@ export namespace Prisma {
     nickname: string
     main?: string | null
     playerName?: string | null
+    playerServer?: string | null
     assignedRole?: $Enums.Role | null
     spec?: string | null
     createdAt?: Date | string
@@ -7148,6 +7180,7 @@ export namespace Prisma {
     nickname: string
     main?: string | null
     playerName?: string | null
+    playerServer?: string | null
     assignedRole?: $Enums.Role | null
     spec?: string | null
     eventId: string
@@ -7237,6 +7270,7 @@ export namespace Prisma {
     nickname: string
     main?: string | null
     playerName?: string | null
+    playerServer?: string | null
     assignedRole?: $Enums.Role | null
     spec?: string | null
     teamId?: string | null
@@ -7256,6 +7290,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7268,6 +7303,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -7280,6 +7316,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     teamId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -7315,6 +7352,7 @@ export namespace Prisma {
     nickname: string
     main?: string | null
     playerName?: string | null
+    playerServer?: string | null
     assignedRole?: $Enums.Role | null
     spec?: string | null
     eventId: string
@@ -7327,6 +7365,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7339,6 +7378,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     eventId?: StringFieldUpdateOperationsInput | string
@@ -7351,6 +7391,7 @@ export namespace Prisma {
     nickname?: StringFieldUpdateOperationsInput | string
     main?: NullableStringFieldUpdateOperationsInput | string | null
     playerName?: NullableStringFieldUpdateOperationsInput | string | null
+    playerServer?: NullableStringFieldUpdateOperationsInput | string | null
     assignedRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
     spec?: NullableStringFieldUpdateOperationsInput | string | null
     eventId?: StringFieldUpdateOperationsInput | string

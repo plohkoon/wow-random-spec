@@ -90,7 +90,10 @@ export default function Event({
                 <TableCell>
                   <ClassDisplay classSpec={p.spec} />
                 </TableCell>
-                <TableCell>{p.playerName}</TableCell>
+                <TableCell>
+                  {p.playerName}
+                  {p.playerServer ? ` - ${p.playerServer}` : null}
+                </TableCell>
                 <TableCell>{p.team?.name ?? "unassigned"}</TableCell>
               </TableRow>
             ))}

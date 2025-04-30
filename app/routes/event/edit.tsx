@@ -39,6 +39,7 @@ const addPlayerSchema = z.object({
   spec: z.string().optional(),
   team: z.string().optional(),
   playerName: z.string().optional(),
+  playerServer: z.string().optional(),
   action: z.literal("add"),
 });
 
@@ -50,6 +51,7 @@ const updatePlayerSchema = z.object({
   spec: z.string().optional(),
   team: z.string().optional(),
   playerName: z.string().optional(),
+  playerServer: z.string().optional(),
   action: z.literal("update"),
 });
 
@@ -217,6 +219,7 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
         spec: value.spec,
         teamId,
         playerName: value.playerName,
+        playerServer: value.playerServer,
       },
     });
 
@@ -253,7 +256,16 @@ function EditPlayerRow({
   player: Route.ComponentProps["loaderData"]["event"]["players"][number];
   fetcher: FetcherWithComponents<any>;
 }) {
-  const { id, nickname, main, assignedRole, spec, team, playerName } = player;
+  const {
+    id,
+    nickname,
+    main,
+    assignedRole,
+    spec,
+    team,
+    playerName,
+    playerServer,
+  } = player;
 
   const [form, fields] = useForm({
     id: `update-player-${player.id}`,
@@ -263,6 +275,8 @@ function EditPlayerRow({
       main: main,
       assignedRole: assignedRole,
       spec: spec,
+      playerName,
+      playerServer,
       team: team?.name ?? "",
     },
     onValidate({ formData }) {
@@ -286,6 +300,9 @@ function EditPlayerRow({
       </TableCell>
       <TableCell>
         <CTextInput config={fields.playerName} label="" form={form.id} />
+      </TableCell>
+      <TableCell>
+        <CTextInput config={fields.playerServer} label="" form={form.id} />
       </TableCell>
       <TableCell>
         <CTextInput config={fields.team} label="" form={form.id} />
@@ -320,7 +337,16 @@ function PlayerRow({
     return <EditPlayerRow player={player} fetcher={fetcher} />;
   }
 
-  const { id, nickname, main, assignedRole, spec, team, playerName } = player;
+  const {
+    id,
+    nickname,
+    main,
+    assignedRole,
+    spec,
+    team,
+    playerName,
+    playerServer,
+  } = player;
 
   return (
     <TableRow>
@@ -335,6 +361,7 @@ function PlayerRow({
         <ClassDisplay classSpec={spec} />
       </TableCell>
       <TableCell>{playerName}</TableCell>
+      <TableCell>{playerServer}</TableCell>
       <TableCell>{team?.name ?? "unassigned"}</TableCell>
       <TableCell>
         <Button asChild variant="default">
@@ -394,6 +421,7 @@ export default function EventEdit({
               <TableHead>Assigned Role</TableHead>
               <TableHead>Spec</TableHead>
               <TableHead>Character Name</TableHead>
+              <TableHead>Character Server</TableHead>
               <TableHead>Team</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>

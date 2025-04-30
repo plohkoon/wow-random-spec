@@ -1,4 +1,8 @@
-import { getClassAndSpec, keyToNameMapping } from "~/lib/classes";
+import {
+  getClassAndSpec,
+  keyToNameMapping,
+  specKeyToNameMapping,
+} from "~/lib/classes";
 
 type Props<C extends React.ElementType> = {
   as?: C;
@@ -73,7 +77,11 @@ export function ClassDisplay<C extends React.ElementType = "span">({
       ? // @ts-expect-error: This is fine, TS just isn't following
         keyToNameMapping[playerClass]
       : playerClass;
-  const specText = spec ? `${spec}` : "";
+  const specText: string =
+    spec && spec in specKeyToNameMapping
+      ? // @ts-expect-error: This is fine, TS just isn't following.
+        specKeyToNameMapping[spec]
+      : spec;
 
   return (
     <Component

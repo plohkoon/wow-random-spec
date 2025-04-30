@@ -28,7 +28,7 @@ export function SpecInput({
       onValueChange={control.change}
     >
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Class" />
+        <SelectValue placeholder="Class and Spec" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup className="space-y-1">

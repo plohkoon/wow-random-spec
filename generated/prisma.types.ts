@@ -22,6 +22,7 @@ export interface Player {
   nickname: string;
   main: string | null;
   playerName: string | null;
+  playerServer: string | null;
   assignedRole: Role | null;
   spec: string | null;
   eventId: string;
