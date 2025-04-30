@@ -290,13 +290,13 @@ function EditPlayerRow({
         <CTextInput config={fields.nickname} label="" form={form.id} />
       </TableCell>
       <TableCell>
-        <ClassInput config={fields.main} form={form.id} />
+        <ClassInput config={fields.main} form={form.id} label="" />
       </TableCell>
       <TableCell>
-        <RoleInput config={fields.assignedRole} form={form.id} />
+        <RoleInput config={fields.assignedRole} form={form.id} label="" />
       </TableCell>
       <TableCell>
-        <SpecInput config={fields.spec} form={form.id} />
+        <SpecInput config={fields.spec} form={form.id} label="" />
       </TableCell>
       <TableCell>
         <CTextInput config={fields.playerName} label="" form={form.id} />
@@ -437,12 +437,34 @@ export default function EventEdit({
       <section>
         <H3>Add a Player</H3>
 
-        <CForm method="post" config={addPlayerForm}>
-          <CTextInput config={addPlayerFields.nickname} label="Nickname" />
-          <ClassInput config={addPlayerFields.main} />
-          <RoleInput config={addPlayerFields.assignedRole} />
-          <SpecInput config={addPlayerFields.spec} />
-          <CTextInput config={addPlayerFields.team} label="Team" />
+        <CForm
+          method="post"
+          config={addPlayerForm}
+          className="grid gap-4 grid-cols-1 sm:grid-cols-2"
+        >
+          <fieldset className="space-y-2">
+            <CTextInput config={addPlayerFields.nickname} label="Nickname" />
+            <ClassInput config={addPlayerFields.main} label="Main Class" />
+            <RoleInput
+              config={addPlayerFields.assignedRole}
+              label="Assigned Role"
+            />
+          </fieldset>
+          <fieldset className="space-y-2">
+            <CTextInput
+              config={addPlayerFields.playerName}
+              label="Player Name (if known)"
+            />
+            <CTextInput
+              config={addPlayerFields.playerServer}
+              label="Player Server (if known)"
+            />
+            <SpecInput
+              config={addPlayerFields.spec}
+              label="Spec (if Setting Manually)"
+            />
+            <CTextInput config={addPlayerFields.team} label="Team (if Known)" />
+          </fieldset>
 
           <Button type="submit" name="action" value="add">
             Add Player
