@@ -19,7 +19,13 @@ import { ClassDisplay } from "~/components/display/classDisplay";
 import { Role } from "~/lib/prisma";
 import { useEffect, useState } from "react";
 import { CHiddenInput } from "~/components/inputs/hiddenInput";
-import { data, Link, redirect, useFetcher } from "react-router";
+import {
+  data,
+  FetcherWithComponents,
+  Link,
+  redirect,
+  useFetcher,
+} from "react-router";
 import { ClassInput } from "~/components/inputs/classInput";
 import { RoleDisplay } from "~/components/display/roleDisplay";
 import { AppSession } from "~/lib/session.server";
@@ -47,7 +53,16 @@ const updatePlayerSchema = z.object({
   action: z.literal("update"),
 });
 
-const schema = z.union([addPlayerSchema, updatePlayerSchema]);
+const deletePlayerSchema = z.object({
+  id: z.string(),
+  action: z.literal("delete"),
+});
+
+const schema = z.union([
+  addPlayerSchema,
+  updatePlayerSchema,
+  deletePlayerSchema,
+]);
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   const session = await AppSession.fromRequest(request);
@@ -96,24 +111,6 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
     return new Response("Event not found", { status: 404 });
   }
 
-  let teamId;
-
-  if (res.value.team) {
-    let team = await db.team.findFirst({
-      where: { name: res.value.team, eventId: event.id },
-    });
-    if (!team) {
-      team = await db.team.create({
-        data: {
-          name: res.value.team,
-          eventId: event.id,
-        },
-      });
-    }
-
-    teamId = team.id;
-  }
-
   const { value } = res;
 
   if (value.action === "add") {
@@ -131,6 +128,23 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
         }),
         { status: 400 }
       );
+    }
+
+    let teamId;
+    if (value.team) {
+      let team = await db.team.findFirst({
+        where: { name: value.team, eventId: event.id },
+      });
+      if (!team) {
+        team = await db.team.create({
+          data: {
+            name: value.team,
+            eventId: event.id,
+          },
+        });
+      }
+
+      teamId = team.id;
     }
 
     await db.player.create({
@@ -177,6 +191,23 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
       }
     }
 
+    let teamId;
+    if (value.team) {
+      let team = await db.team.findFirst({
+        where: { name: value.team, eventId: event.id },
+      });
+      if (!team) {
+        team = await db.team.create({
+          data: {
+            name: value.team,
+            eventId: event.id,
+          },
+        });
+      }
+
+      teamId = team.id;
+    }
+
     await db.player.update({
       where: { id: existingPlayer.id },
       data: {
@@ -197,20 +228,31 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
     ) {
       await db.team.delete({ where: { id: existingPlayer.teamId } });
     }
+  } else if (value.action === "delete") {
+    const player = await db.player.delete({
+      where: {
+        id: value.id,
+      },
+    });
+
+    if (
+      player?.teamId &&
+      (await db.player.count({ where: { teamId: player.teamId } })) === 0
+    ) {
+      await db.team.delete({ where: { id: player.teamId } });
+    }
   }
 
   return res.reply();
 }
 
-function PlayerRow({
+function EditPlayerRow({
   player,
+  fetcher,
 }: {
   player: Route.ComponentProps["loaderData"]["event"]["players"][number];
+  fetcher: FetcherWithComponents<any>;
 }) {
-  const fetcher = useFetcher();
-
-  const [editing, setEditing] = useState(false);
-
   const { id, nickname, main, assignedRole, spec, team, playerName } = player;
 
   const [form, fields] = useForm({
@@ -228,74 +270,95 @@ function PlayerRow({
     },
   });
 
+  return (
+    <TableRow>
+      <TableCell>
+        <CTextInput config={fields.nickname} label="" form={form.id} />
+      </TableCell>
+      <TableCell>
+        <ClassInput config={fields.main} form={form.id} />
+      </TableCell>
+      <TableCell>
+        <RoleInput config={fields.assignedRole} form={form.id} />
+      </TableCell>
+      <TableCell>
+        <SpecInput config={fields.spec} form={form.id} />
+      </TableCell>
+      <TableCell>
+        <CTextInput config={fields.playerName} label="" form={form.id} />
+      </TableCell>
+      <TableCell>
+        <CTextInput config={fields.team} label="" form={form.id} />
+      </TableCell>
+      <TableCell>
+        <CForm method="post" config={form} fetcher={fetcher}>
+          <CHiddenInput config={fields.id} />
+          <Button type="submit" name="action" value="update">
+            Save
+          </Button>
+        </CForm>
+      </TableCell>
+    </TableRow>
+  );
+}
+
+function PlayerRow({
+  player,
+}: {
+  player: Route.ComponentProps["loaderData"]["event"]["players"][number];
+}) {
+  const fetcher = useFetcher();
+  const [editing, setEditing] = useState(false);
+
   useEffect(() => {
     if (fetcher.state === "idle") {
       setEditing(false);
     }
   }, [fetcher.state]);
 
+  if (editing) {
+    return <EditPlayerRow player={player} fetcher={fetcher} />;
+  }
+
+  const { id, nickname, main, assignedRole, spec, team, playerName } = player;
+
   return (
     <TableRow>
+      <TableCell>{nickname}</TableCell>
       <TableCell>
-        {editing ? (
-          <CTextInput config={fields.nickname} label="" form={form.id} />
-        ) : (
-          nickname
-        )}
+        <ClassDisplay classSpec={main} />
       </TableCell>
       <TableCell>
-        {editing ? (
-          <ClassInput config={fields.main} form={form.id} />
-        ) : (
-          <ClassDisplay classSpec={main} />
-        )}
+        <RoleDisplay playerRole={assignedRole} />
       </TableCell>
       <TableCell>
-        {editing ? (
-          <RoleInput config={fields.assignedRole} form={form.id} />
-        ) : (
-          <RoleDisplay playerRole={assignedRole} />
-        )}
+        <ClassDisplay classSpec={spec} />
       </TableCell>
-      <TableCell>
-        {editing ? (
-          <SpecInput config={fields.spec} form={form.id} />
-        ) : (
-          <ClassDisplay classSpec={spec} />
-        )}
-      </TableCell>
-      <TableCell>
-        {editing ? (
-          <CTextInput config={fields.playerName} label="" form={form.id} />
-        ) : (
-          playerName
-        )}
-      </TableCell>
-      <TableCell>
-        {editing ? (
-          <CTextInput config={fields.team} label="" form={form.id} />
-        ) : (
-          team?.name ?? "unassigned"
-        )}
-      </TableCell>
+      <TableCell>{playerName}</TableCell>
+      <TableCell>{team?.name ?? "unassigned"}</TableCell>
       <TableCell>
         <Button asChild variant="default">
           <Link to={`/event/${player.eventId}/roll/${player.id}`}>Roll</Link>
         </Button>
-        {editing ? (
-          <>
-            <CForm method="post" config={form} fetcher={fetcher}>
-              <CHiddenInput config={fields.id} />
-              <Button type="submit" name="action" value="update">
-                Save
-              </Button>
-            </CForm>
-          </>
-        ) : (
-          <Button variant="secondary" onClick={() => setEditing(true)}>
-            Edit
-          </Button>
-        )}
+        <Button variant="secondary" onClick={() => setEditing(true)}>
+          Edit
+        </Button>
+        <Button
+          variant="destructive"
+          onClick={() =>
+            fetcher.submit(
+              {
+                action: "delete",
+                id,
+              },
+              {
+                method: "post",
+              }
+            )
+          }
+        >
+          Delete
+        </Button>
       </TableCell>
     </TableRow>
   );
