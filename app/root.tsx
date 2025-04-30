@@ -68,7 +68,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="h-screen overscroll-none p-4">
         <div className="flex flex-row items-center space-x-4">
-          <img src="/logo.png" alt="Logo" className="h-16 w-16 inline-block" />
+          <Link to="/">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              className="h-16 w-16 inline-block"
+            />
+          </Link>
           <H1 className="grow">First Seasonal Tito and Dom's M+ Adventure</H1>
           <div className="flex flex-row space-x-2">
             {username ? (
