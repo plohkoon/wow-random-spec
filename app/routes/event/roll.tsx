@@ -1,17 +1,66 @@
-// @ts-nocheck
-import { usePinwheelState } from "@/lib/pinwheelState";
+import { redirect, useNavigate, useSubmit } from "react-router";
+import { Route } from "./+types/roll";
+import { allClassSpecs, availableSpecsForPlayer } from "~/lib/classes";
+import { ClassDisplay } from "~/components/display/classDisplay";
+import { Button } from "~/components/ui/button";
 import { motion, useAnimation } from "motion/react";
-import { useState } from "react";
-import { ClassDisplay } from "./display/classDisplay";
-import { Button } from "./ui/button";
+import { db } from "~/lib/db.server";
+import { AppSession } from "~/lib/session.server";
 
-export function PinwheelModal() {
-  const { open, respond, items, close, playerData } = usePinwheelState();
+export const loader = async ({
+  params: { slug, id },
+  request,
+}: Route.LoaderArgs) => {
+  const session = await AppSession.fromRequest(request);
+  await session.requireAdmin(`/event/${slug}`);
 
+  const event = await db.event.findFirst({
+    where: { slug: slug },
+    include: {
+      players: {
+        where: {
+          id,
+        },
+      },
+    },
+  });
+
+  if (!event || event.players.length < 1) throw redirect(`/event/${slug}/edit`);
+
+  const player = event.players[0];
+
+  const items = availableSpecsForPlayer(player);
+
+  return { items, event, player };
+};
+export const action = async ({ request, params: { id } }: Route.ActionArgs) => {
+  const formData = await request.formData();
+  const classSpec = formData.get("classSpec");
+
+  console.log(classSpec, allClassSpecs);
+
+  if (typeof classSpec !== "string" || !allClassSpecs.includes(classSpec)) {
+    return;
+  }
+
+  await db.player.update({
+    where: {
+      id,
+    },
+    data: {
+      spec: classSpec,
+    },
+  });
+};
+
+export default function RollSpecForPlayer({
+  params: { slug },
+  loaderData: { items, player },
+}: Route.ComponentProps) {
   const segmentAngle = 360 / items.length;
-
-  const [selected, setSelected] = useState<number>(-1);
   const controls = useAnimation();
+  const navigate = useNavigate();
+  const submit = useSubmit();
 
   const spin = async () => {
     let randomIndex = Math.floor(Math.random() * items.length);
@@ -38,8 +87,8 @@ export function PinwheelModal() {
     const baseAngle = (items.length - randomIndex) * segmentAngle;
     const finalAngle = spins * 360 + baseAngle;
 
+    // Randomize the spin length a bit
     const duration = 4 + 2 * Math.random();
-
     const ease = [
       [0.16, 1, 0.3, 1],
       [0.33, 1, 0.68, 1],
@@ -51,26 +100,26 @@ export function PinwheelModal() {
         transition: { duration, ease },
       })
       .then(() => {
-        setSelected(randomIndex);
+        submit(
+          {
+            classSpec: items[randomIndex],
+          },
+          {
+            method: "post",
+          }
+        );
         // Set it to the base angle so that subsequent spins actually do a full 5 spins
         controls.set({ rotate: baseAngle });
       });
   };
 
   const handleClose = () => {
-    if (selected < 0) {
-      close();
-    } else {
-      respond?.(items[selected]);
-    }
-
-    setSelected(-1);
+    navigate(`/event/${slug}/edit`);
   };
 
   return (
     <div
-      data-open={open}
-      className="fixed w-screen min-h-screen h-full place-content-center data-[open=true]:grid hidden bg-blend-darken bg-black/50 z-50"
+      className="fixed w-screen min-h-screen h-full place-content-center grid bg-blend-darken bg-black/50 z-50"
       onClick={handleClose}
     >
       <div
@@ -78,7 +127,7 @@ export function PinwheelModal() {
         onClick={(e) => e.stopPropagation()}
       >
         <h1 className="text-center text-2xl font-bold">
-          Roll a New Class for {playerData?.name ?? "Someone"}
+          Roll a New Class for {player.nickname}
         </h1>
         <div className="relative max-w-full h-full aspect-square">
           <motion.div
@@ -113,21 +162,21 @@ export function PinwheelModal() {
           <div className="absolute top-1/2 -right-4 w-0 h-0 border-l-8 border-r-8 border-b-16 border-transparent border-b-black transform -translate-y-1/2 -rotate-90" />
         </div>
         <div className="flex flex-col items-center justify-center gap-8">
-          {selected < 0 ? (
-            <p>
-              <Button onClick={spin}>Spin the Wheel</Button>
-              <Button onClick={handleClose}>Cancel</Button>
-            </p>
-          ) : (
+          {player.spec ? (
             <p className="text-lg">
               You got{" "}
               <ClassDisplay
-                classSpec={items[selected]}
+                classSpec={player.spec}
                 fillIn
                 className="p-2 underline rounded-md"
               />{" "}
               <Button onClick={spin}>Respin</Button>
               <Button onClick={handleClose}>Done</Button>
+            </p>
+          ) : (
+            <p>
+              <Button onClick={spin}>Spin the Wheel</Button>
+              <Button onClick={handleClose}>Cancel</Button>
             </p>
           )}
         </div>

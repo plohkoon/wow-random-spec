@@ -1,3 +1,5 @@
+import { Player } from "generated/prisma";
+
 export const classSpecs = {
   druid: {
     balance: "rdps",
@@ -131,25 +133,17 @@ export const allClassSpecs = Object.entries(classSpecs).flatMap(([c, specs]) =>
   })
 );
 
-// export function availableSpecsForPlayer(
-//   player: PlayerType,
-//   forceRole?: string
-// ) {
-//   return Object.keys(classSpecs)
-//     .filter((c) => c !== player.main)
-//     .flatMap((c) => {
-//       const specs = classSpecs[c as keyof typeof classSpecs];
+export function availableSpecsForPlayer(
+  player: Pick<Player, "main" | "assignedRole">
+) {
+  return Object.keys(classSpecs).flatMap((c) => {
+    const specs = classSpecs[c as keyof typeof classSpecs];
 
-//       return Object.entries(specs)
-//         .filter(
-//           ([, r]) =>
-//             (forceRole === undefined ? r === player.role : r === forceRole) &&
-//             c !== player.main &&
-//             c !== player.rolledSpec
-//         )
-//         .map(([s]) => makeClassSpec(c, s));
-//     });
-// }
+    return Object.entries(specs)
+      .filter(([, r]) => r === player.assignedRole && c !== player.main)
+      .map(([s]) => makeClassSpec(c, s));
+  });
+}
 
 export function getClassAndSpec(
   classSpec?: string | undefined | null

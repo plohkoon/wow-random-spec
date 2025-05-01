@@ -23,6 +23,7 @@ import {
   data,
   FetcherWithComponents,
   Link,
+  Outlet,
   redirect,
   useFetcher,
 } from "react-router";
@@ -321,8 +322,10 @@ function EditPlayerRow({
 
 function PlayerRow({
   player,
+  slug,
 }: {
   player: Route.ComponentProps["loaderData"]["event"]["players"][number];
+  slug: string;
 }) {
   const fetcher = useFetcher();
   const [editing, setEditing] = useState(false);
@@ -365,7 +368,7 @@ function PlayerRow({
       <TableCell>{team?.name ?? "unassigned"}</TableCell>
       <TableCell>
         <Button asChild variant="default">
-          <Link to={`/event/${player.eventId}/roll/${player.id}`}>Roll</Link>
+          <Link to={`/event/${slug}/edit/${player.id}/roll`}>Roll</Link>
         </Button>
         <Button variant="secondary" onClick={() => setEditing(true)}>
           Edit
@@ -403,74 +406,80 @@ export default function EventEdit({
   });
 
   return (
-    <main className="space-y-4">
-      <H2>
-        {event.name}{" "}
-        <Button asChild>
-          <Link to={`/event/${slug}`}>Done Editing</Link>
-        </Button>
-      </H2>
-
-      <section>
-        <H3>Players</H3>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Normal Main</TableHead>
-              <TableHead>Assigned Role</TableHead>
-              <TableHead>Spec</TableHead>
-              <TableHead>Character Name</TableHead>
-              <TableHead>Character Server</TableHead>
-              <TableHead>Team</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {event.players.map((p) => {
-              return <PlayerRow key={p.id} player={p} />;
-            })}
-          </TableBody>
-        </Table>
-      </section>
-
-      <section>
-        <H3>Add a Player</H3>
-
-        <CForm
-          method="post"
-          config={addPlayerForm}
-          className="grid gap-4 grid-cols-1 sm:grid-cols-2"
-        >
-          <fieldset className="space-y-2">
-            <CTextInput config={addPlayerFields.nickname} label="Nickname" />
-            <ClassInput config={addPlayerFields.main} label="Main Class" />
-            <RoleInput
-              config={addPlayerFields.assignedRole}
-              label="Assigned Role"
-            />
-          </fieldset>
-          <fieldset className="space-y-2">
-            <CTextInput
-              config={addPlayerFields.playerName}
-              label="Player Name (if known)"
-            />
-            <CTextInput
-              config={addPlayerFields.playerServer}
-              label="Player Server (if known)"
-            />
-            <SpecInput
-              config={addPlayerFields.spec}
-              label="Spec (if Setting Manually)"
-            />
-            <CTextInput config={addPlayerFields.team} label="Team (if Known)" />
-          </fieldset>
-
-          <Button type="submit" name="action" value="add">
-            Add Player
+    <>
+      <Outlet />
+      <main className="space-y-4">
+        <H2>
+          {event.name}{" "}
+          <Button asChild>
+            <Link to={`/event/${slug}`}>Done Editing</Link>
           </Button>
-        </CForm>
-      </section>
-    </main>
+        </H2>
+
+        <section>
+          <H3>Players</H3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Normal Main</TableHead>
+                <TableHead>Assigned Role</TableHead>
+                <TableHead>Spec</TableHead>
+                <TableHead>Character Name</TableHead>
+                <TableHead>Character Server</TableHead>
+                <TableHead>Team</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {event.players.map((p) => {
+                return <PlayerRow key={p.id} player={p} slug={slug} />;
+              })}
+            </TableBody>
+          </Table>
+        </section>
+
+        <section>
+          <H3>Add a Player</H3>
+
+          <CForm
+            method="post"
+            config={addPlayerForm}
+            className="grid gap-4 grid-cols-1 sm:grid-cols-2"
+          >
+            <fieldset className="space-y-2">
+              <CTextInput config={addPlayerFields.nickname} label="Nickname" />
+              <ClassInput config={addPlayerFields.main} label="Main Class" />
+              <RoleInput
+                config={addPlayerFields.assignedRole}
+                label="Assigned Role"
+              />
+            </fieldset>
+            <fieldset className="space-y-2">
+              <CTextInput
+                config={addPlayerFields.playerName}
+                label="Player Name (if known)"
+              />
+              <CTextInput
+                config={addPlayerFields.playerServer}
+                label="Player Server (if known)"
+              />
+              <SpecInput
+                config={addPlayerFields.spec}
+                label="Spec (if Setting Manually)"
+              />
+              <CTextInput
+                config={addPlayerFields.team}
+                label="Team (if Known)"
+              />
+            </fieldset>
+
+            <Button type="submit" name="action" value="add">
+              Add Player
+            </Button>
+          </CForm>
+        </section>
+      </main>
+    </>
   );
 }

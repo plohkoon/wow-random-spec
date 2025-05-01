@@ -21,4 +21,8 @@ type Params = {
   "/event/:slug/edit": {
     "slug": string;
   };
+  "/event/:slug/edit/:id/roll": {
+    "slug": string;
+    "id": string;
+  };
 };
