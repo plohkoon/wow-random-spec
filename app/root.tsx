@@ -49,6 +49,10 @@ export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
 ];
 
+export const meta: Route.MetaFunction = () => [
+  { title: "Tito and Dom's M+ Adventure" },
+];
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const rootLoaderData = useRouteLoaderData(
     "root"
@@ -75,7 +79,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               className="h-16 w-16 inline-block"
             />
           </Link>
-          <H1 className="grow">First Seasonal Tito and Dom's M+ Adventure</H1>
+          <H1 className="grow">Tito and Dom's M+ Adventure</H1>
           <div className="flex flex-row space-x-2">
             {username ? (
               <>

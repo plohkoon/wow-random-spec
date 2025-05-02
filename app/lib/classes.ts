@@ -68,6 +68,22 @@ export const classSpecs = {
   },
 };
 
+export const raiderIOToInternal = {
+  Warrior: "warrior",
+  "Death Knight": "deathKnight",
+  Druid: "druid",
+  Hunter: "hunter",
+  Mage: "mage",
+  Monk: "monk",
+  Paladin: "paladin",
+  Priest: "priest",
+  Rogue: "rogue",
+  Shaman: "shaman",
+  Warlock: "warlock",
+  "Demon Hunter": "demonHunter",
+  Evoker: "evoker",
+};
+
 export const classes = Object.keys(classSpecs) as Array<
   keyof typeof classSpecs
 >;
@@ -153,6 +169,14 @@ export function getClassAndSpec(
   const [c, s] = classSpec.split("-");
 
   return [c, s];
+}
+
+export function makeRaiderIOClassSpec(playerClass: string, spec?: string) {
+  return makeClassSpec(
+    raiderIOToInternal[playerClass as keyof typeof raiderIOToInternal] ??
+      playerClass,
+    spec
+  );
 }
 
 export function makeClassSpec(playerClass: string, spec?: string): string {

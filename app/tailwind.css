@@ -21,6 +21,11 @@
   --color-dps: var(--color-red-900);
   --color-tank: var(--color-blue-900);
   --color-healer: var(--color-green-900);
+
+  --color-uncommon: #1eff00;
+  --color-rare: #0070dd;
+  --color-epic: #a335ee;
+  --color-legendary: #ff8000;
 }
 
 @theme inline {

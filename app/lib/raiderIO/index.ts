@@ -4,6 +4,7 @@ import { Guild } from "./guild";
 import { LRUCache } from "lru-cache";
 import { cachified } from "@epic-web/cachified";
 import { MAX_CACHE_SIZE, RAIDERIO_API_KEY, TTL } from "../env.server";
+import { MythicPlus } from "./mythicPlus";
 
 export namespace RootNS {
   export type Region = "us" | "eu" | "tw" | "kr" | "cn";
@@ -45,6 +46,7 @@ export class RaiderIOClient {
   private subClients: {
     character: Character;
     guild: Guild;
+    mythicPlus: MythicPlus;
   };
 
   private constructor({
@@ -146,6 +148,7 @@ export class RaiderIOClient {
     this.subClients = {
       character: new Character(this),
       guild: new Guild(this),
+      mythicPlus: new MythicPlus(this),
     };
   }
 
@@ -174,5 +177,9 @@ export class RaiderIOClient {
 
   get guild(): Guild {
     return this.subClients.guild;
+  }
+
+  get mythicPlus(): MythicPlus {
+    return this.subClients.mythicPlus;
   }
 }

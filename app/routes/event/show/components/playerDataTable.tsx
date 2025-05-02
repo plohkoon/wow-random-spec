@@ -29,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { useParams, Link } from "react-router";
+import { CharacterName } from "~/components/display/characterName";
 
 type Player = Route.ComponentProps["loaderData"]["event"]["players"][number];
 
@@ -46,6 +47,12 @@ const columns = [
         </Button>
       </>
     ),
+    cell: ({ row }) => {
+      const { slug } = useParams();
+      const { id, nickname } = row.original;
+
+      return <Link to={`/event/${slug}/player/${id}`}>{nickname}</Link>;
+    },
   },
   {
     accessorKey: "main",
@@ -116,12 +123,7 @@ const columns = [
     ),
     cell: ({ row }) => {
       const { playerName, playerServer } = row.original;
-      return (
-        <>
-          {playerName}
-          {playerServer ? ` - ${playerServer}` : null}
-        </>
-      );
+      return <CharacterName name={playerName} server={playerServer} />;
     },
   },
   {

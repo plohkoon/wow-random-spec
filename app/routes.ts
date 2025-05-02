@@ -17,6 +17,7 @@ export default [
     route("new", "./routes/event/new.tsx"),
     ...prefix(":slug", [
       index("./routes/event/show/route.tsx"),
+      route("player/:id", "./routes/event/player/route.tsx"),
       route("edit", "./routes/event/edit.tsx", [
         route(":id/roll/", "./routes/event/roll.tsx"),
       ]),
