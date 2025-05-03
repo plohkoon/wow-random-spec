@@ -1,4 +1,4 @@
-import { Await, redirect } from "react-router";
+import { Await, Link, redirect } from "react-router";
 import { H2 } from "~/components/display/headers";
 import { db } from "~/lib/db.server";
 import { Route } from "./+types/route";
@@ -146,6 +146,9 @@ export default function TeamShow({
 }: Route.ComponentProps) {
   return (
     <article>
+      <Link to={`/event/${slug}/`} className="underline">
+        {"<"} Back to event.
+      </Link>
       <H2>{team.name}</H2>
       {playersPromises.map((playerPromise, index) => (
         <PlayerData player={playerPromise} key={index} />

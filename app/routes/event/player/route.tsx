@@ -1,4 +1,4 @@
-import { redirect } from "react-router";
+import { Link, redirect } from "react-router";
 import { H2 } from "~/components/display/headers";
 import { db } from "~/lib/db.server";
 import { RaiderIOClient } from "~/lib/raiderIO";
@@ -56,6 +56,9 @@ export default function PlayerShow({
 }: Route.ComponentProps) {
   return (
     <article>
+      <Link to={`/event/${slug}/`} className="underline">
+        {"<"} Back to event.
+      </Link>
       <H2>Player</H2>
 
       <PlayerData player={player} eventSlug={slug} />
