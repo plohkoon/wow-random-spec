@@ -161,7 +161,7 @@ function MissingMythicInfo() {
   );
 }
 
-export function MythicInfo({ mythics }: { mythics: MythicsPromise }) {
+export function MythicInfo({ mythics }: { mythics: MythicsPromise | null }) {
   return (
     <Suspense fallback={<div>loading...</div>}>
       <Await resolve={mythics} errorElement={<MissingMythicInfo />}>

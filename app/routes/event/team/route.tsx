@@ -41,8 +41,8 @@ export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
   return {
     team,
     playersPromises,
-    allPlayersPromise: Promise.resolve(null),
-    mythicsPromise: Promise.resolve(null),
+    allPlayersPromise: null,
+    mythicsPromise: null,
   };
 };
 export const action = async ({}: Route.ActionArgs) => ({});
