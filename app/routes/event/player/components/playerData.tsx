@@ -51,7 +51,7 @@ export function PlayerData({
         </TableBody>
       </Table>
       {player.team ? (
-        <TeamDataTable team={player.team} />
+        <TeamDataTable team={player.team} slug={eventSlug} />
       ) : (
         <div>No Team Assigned Yet</div>
       )}

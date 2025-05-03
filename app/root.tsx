@@ -104,7 +104,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Switch
               checked={colorScheme === "dark"}
               onCheckedChange={(v) => {
-                console.log(v);
                 const newValue = v ? "dark" : "light";
                 setColorScheme(newValue);
                 submit(

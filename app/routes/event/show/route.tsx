@@ -76,7 +76,7 @@ export default function Event({
 
         <div className="grid grid-cols-3">
           {teams.map((team) => (
-            <TeamDataTable key={team.id} team={team} />
+            <TeamDataTable key={team.id} team={team} slug={slug} />
           ))}
         </div>
       </section>

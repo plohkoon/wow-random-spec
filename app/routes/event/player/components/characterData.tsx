@@ -1,16 +1,16 @@
+import { User } from "lucide-react";
 import { Suspense } from "react";
 import { Await } from "react-router";
-import type { Route } from "../+types/route";
-import { H3, H4 } from "~/components/display/headers";
-import { ClassDisplay } from "~/components/display/classDisplay";
-import { makeClassSpec, makeRaiderIOClassSpec } from "~/lib/classes";
-import { RoleDisplay } from "~/components/display/roleDisplay";
-import { Button } from "~/components/ui/button";
 import { CharacterName } from "~/components/display/characterName";
-import { User } from "lucide-react";
-import { msToDuration } from "~/lib/time";
+import { ClassDisplay } from "~/components/display/classDisplay";
+import { H3, H4 } from "~/components/display/headers";
 import { IlvlDisplay } from "~/components/display/ilvlDisplay";
+import { RoleDisplay } from "~/components/display/roleDisplay";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
+import { Button } from "~/components/ui/button";
+import { makeRaiderIOClassSpec } from "~/lib/classes";
+import { msToDuration } from "~/lib/time";
+import type { Route } from "../+types/route";
 
 type PlayerData = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["playerData"]>

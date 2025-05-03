@@ -21,6 +21,7 @@ import { H4 } from "~/components/display/headers";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router";
 
 type Team = Route.ComponentProps["loaderData"]["event"]["teams"][number];
 
@@ -100,7 +101,7 @@ const columns = [
   },
 ] satisfies ColumnDef<Team["players"][number]>[];
 
-export function TeamDataTable({ team }: { team: Team }) {
+export function TeamDataTable({ team, slug }: { team: Team; slug: string }) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
@@ -116,7 +117,9 @@ export function TeamDataTable({ team }: { team: Team }) {
 
   return (
     <div className="p-4 border">
-      <H4>{team.name}</H4>
+      <Link to={`/event/${slug}/team/${team.id}`}>
+        <H4>{team.name}</H4>
+      </Link>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

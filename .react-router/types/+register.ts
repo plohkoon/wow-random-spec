@@ -22,6 +22,10 @@ type Params = {
     "slug": string;
     "id": string;
   };
+  "/event/:slug/team/:id": {
+    "slug": string;
+    "id": string;
+  };
   "/event/:slug/edit": {
     "slug": string;
   };
