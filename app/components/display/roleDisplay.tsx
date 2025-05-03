@@ -11,12 +11,15 @@ export function RoleDisplay<C extends React.ElementType = "span">({
   const roleText =
     {
       dps: "DPS",
+      rdps: "Ranged DPS",
+      mdps: "Melee DPS",
       tank: "Tank",
       healer: "Healer",
+      healing: "Healer",
     }[playerRole ?? ""] ?? playerRole;
 
   let className =
-    "font-bold text-neutral-700 data-[role=dps]:text-dps data-[role=rdps]:text-dps data-[role=mdps]:text-dps data-[role=tank]:text-tank data-[role=healer]:text-healer data-[role=dps]:before:bg-[url('/dps.png')] data-[role=rdps]:before:bg-[url('/dps.png')] data-[role=mdps]:before:bg-[url('/dps.png')] data-[role=healer]:before:bg-[url('/healer.png')] data-[role=tank]:before:bg-[url('/tank.png')] before:w-5 before:h-5 before:bg-cover before:bg-center before:inline-block before:align-middle flex items-center gap-2";
+    "font-bold text-neutral-700 data-[role=dps]:text-dps data-[role=rdps]:text-dps data-[role=mdps]:text-dps data-[role=tank]:text-tank data-[role=healer]:text-healer data-[role=healing]:text-healer data-[role=dps]:before:bg-[url('/dps.png')] data-[role=rdps]:before:bg-[url('/dps.png')] data-[role=mdps]:before:bg-[url('/dps.png')] data-[role=healer]:before:bg-[url('/healer.png')] data-[role=tank]:before:bg-[url('/tank.png')] before:w-5 before:h-5 before:bg-cover before:bg-center before:inline-block before:align-middle flex items-center gap-2";
 
   if ("className" in rest) {
     className += ` ${rest.className}`;
