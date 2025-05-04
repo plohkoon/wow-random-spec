@@ -151,7 +151,10 @@ export function CharacterData({
 }) {
   return (
     <Suspense fallback={<div>Loading..</div>}>
-      <Await resolve={Promise.all([playerData, scoreTiers])}>
+      <Await
+        resolve={Promise.all([playerData, scoreTiers])}
+        errorElement={<MissingCharacterData />}
+      >
         {([data, tiers]) =>
           data ? (
             <CharacterDataInternal {...data} scoreTiers={tiers ?? []} />
