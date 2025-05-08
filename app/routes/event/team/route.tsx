@@ -59,6 +59,7 @@ export const clientLoader = async ({
   // Set these promises up in the client loader so they are stable in the react application.
   const allPlayersPromise = Promise.allSettled(serverRes.playersPromises);
   const mythicsPromise = allPlayersPromise.then((res) => {
+    console.log("Mythics Promise", res);
     if (!res) return res;
 
     const succeededRes = res
