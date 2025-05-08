@@ -51,7 +51,11 @@ const columns = [
       const { slug } = useParams();
       const { id, nickname } = row.original;
 
-      return <Link to={`/event/${slug}/player/${id}`}>{nickname}</Link>;
+      return (
+        <Link to={`/event/${slug}/player/${id}`} className="underline">
+          {nickname}
+        </Link>
+      );
     },
   },
   {

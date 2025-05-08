@@ -117,7 +117,7 @@ export function TeamDataTable({ team, slug }: { team: Team; slug: string }) {
 
   return (
     <div className="p-4 border">
-      <Link to={`/event/${slug}/team/${team.id}`}>
+      <Link to={`/event/${slug}/team/${team.id}`} className="underline">
         <H4>{team.name}</H4>
       </Link>
       <Table>
