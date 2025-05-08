@@ -80,6 +80,7 @@ export const clientLoader = async ({
         ({ playerName, playerServer }) =>
           playerName === player.name && playerServer === player.realm
       );
+      console.log("DB Players", players);
       console.log("DB Player", dbPlayer, player.name, player.realm);
       if (!dbPlayer) return;
 
