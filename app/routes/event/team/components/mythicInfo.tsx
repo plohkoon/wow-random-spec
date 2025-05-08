@@ -80,6 +80,11 @@ function MythicsInfoInternal({ mythics }: { mythics: Mythics }) {
             </span>
             <H5>Farthest Under Par</H5>
           </div>
+
+          <div className="flex flex-col items-center space-around space-y-2 p-4 rounded-lg border border-neutral-100 grow">
+            <span className="text-4xl font-semibold">{mythics.length}</span>
+            <H5>Mythics Ran</H5>
+          </div>
         </div>
 
         <H4>Dungeons</H4>

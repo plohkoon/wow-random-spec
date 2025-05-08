@@ -57,18 +57,22 @@ export const clientLoader = async ({
   players.forEach((p) => playersMap.set(p.id, p));
 
   // Set these promises up in the client loader so they are stable in the react application.
-  const allPlayersPromise = Promise.all(serverRes.playersPromises);
+  const allPlayersPromise = Promise.allSettled(serverRes.playersPromises);
   const mythicsPromise = allPlayersPromise.then((res) => {
     if (!res) return res;
 
+    const succeededRes = res
+      .filter((r) => r.status === "fulfilled")
+      .map((r) => r.value);
+
     type MythicType = NonNullable<
-      (typeof res)[number]
+      (typeof succeededRes)[number]
     >["mythic_plus_best_runs"][number];
 
     const mythicMap = new Map<number, MythicType>();
     const participantMap = new Map<number, string[]>();
 
-    res.forEach((player) => {
+    succeededRes.forEach((player) => {
       if (!player) return;
       // We just want to resolve via the dbPlayer ID so we find and ensure we have that.
       const dbPlayer = players.find(
