@@ -105,6 +105,9 @@ export const clientLoader = async ({
       });
     });
 
+    console.log("Mythic Map", mythicMap);
+    console.log("Participant Map", participantMap);
+
     // A mythic counts if at least 4 players of the team are in it.
     const mythics = Array.from(mythicMap.values())
       .flatMap((m) => {
