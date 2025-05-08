@@ -72,6 +72,7 @@ export const clientLoader = async ({
 
     const mythicMap = new Map<number, MythicType>();
     const participantMap = new Map<number, string[]>();
+    console.log("DB Players", players);
 
     succeededRes.forEach((player) => {
       if (!player) return;
@@ -80,7 +81,6 @@ export const clientLoader = async ({
         ({ playerName, playerServer }) =>
           playerName === player.name && playerServer === player.realm
       );
-      console.log("DB Players", players);
       console.log("DB Player", dbPlayer, player.name, player.realm);
       if (!dbPlayer) return;
 
