@@ -108,8 +108,8 @@ function MythicsInfoInternal({ mythics }: { mythics: Mythics }) {
                   Time: {msToDuration(run.clear_time_ms)} /{" "}
                   {msToDuration(run.par_time_ms)} (
                   {(
-                    (run.clear_time_ms - run.par_time_ms) /
-                    run.par_time_ms
+                    ((run.clear_time_ms - run.par_time_ms) / run.par_time_ms) *
+                    100
                   ).toFixed(3)}
                   %)
                 </p>
@@ -143,8 +143,8 @@ function MythicsInfoInternal({ mythics }: { mythics: Mythics }) {
                   Time: {msToDuration(run.clear_time_ms)} /{" "}
                   {msToDuration(run.par_time_ms)} (
                   {(
-                    (run.clear_time_ms - run.par_time_ms) /
-                    run.par_time_ms
+                    ((run.clear_time_ms - run.par_time_ms) / run.par_time_ms) *
+                    100
                   ).toFixed(3)}
                   %)
                 </p>
