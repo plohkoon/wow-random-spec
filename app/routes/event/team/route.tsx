@@ -59,7 +59,7 @@ export const clientLoader = async ({
   // Set these promises up in the client loader so they are stable in the react application.
   const allPlayersPromise = Promise.allSettled(serverRes.playersPromises);
   const mythicsPromise = allPlayersPromise.then((res) => {
-    console.log("Mythics Promise", res);
+    // console.log("Mythics Promise", res);
     if (!res) return res;
 
     const succeededRes = res
@@ -72,16 +72,23 @@ export const clientLoader = async ({
 
     const mythicMap = new Map<number, MythicType>();
     const participantMap = new Map<number, string[]>();
-    console.log("DB Players", players);
+    // console.log("DB Players", players);
 
     succeededRes.forEach((player) => {
       if (!player) return;
       // We just want to resolve via the dbPlayer ID so we find and ensure we have that.
-      const dbPlayer = players.find(
-        ({ playerName, playerServer }) =>
-          playerName === player.name && playerServer === player.realm
-      );
-      console.log("DB Player", dbPlayer, player.name, player.realm);
+      const dbPlayer = players.find(({ playerName, playerServer }) => {
+        // Stripe whitespace and replace lowercase to slugify everything for more accurate
+        // matching. This should be fine since names are not case sensitive.
+        const strip = (str: string | undefined | null) =>
+          str?.toLocaleLowerCase()?.replace(/\s/, "");
+
+        return (
+          strip(playerName) === strip(player.name) &&
+          strip(playerServer) === strip(player.realm)
+        );
+      });
+      // console.log("DB Player", dbPlayer, player.name, player.realm);
       if (!dbPlayer) return;
 
       const allMythics = [
@@ -107,8 +114,8 @@ export const clientLoader = async ({
       });
     });
 
-    console.log("Mythic Map", mythicMap);
-    console.log("Participant Map", participantMap);
+    // console.log("Mythic Map", mythicMap);
+    // console.log("Participant Map", participantMap);
 
     // A mythic counts if at least 4 players of the team are in it.
     const mythics = Array.from(mythicMap.values())
