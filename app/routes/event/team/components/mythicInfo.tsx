@@ -4,6 +4,7 @@ import { Await } from "react-router";
 import { H2, H3, H4, H5 } from "~/components/display/headers";
 import { msToDuration } from "~/lib/time";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
+import {CalculateBestMythicsAndTotalScore, CalculateBestScoreAndBestUnderTime} from "~/lib/mythics";
 
 type Mythics = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["mythicsPromise"]>
@@ -11,41 +12,9 @@ type Mythics = NonNullable<
 type MythicsPromise = Promise<Mythics | null>;
 
 function MythicsInfoInternal({ mythics }: { mythics: Mythics }) {
-  const [bestMythics, bestMythicsScore] = useMemo(() => {
-    const bestMythicsMap = {} as Record<string, (typeof mythics)[number]>;
+  const [bestMythics, bestMythicsScore] = useMemo(() => { return CalculateBestMythicsAndTotalScore(mythics) }, [mythics]);
 
-    mythics.forEach((m) => {
-      const existing = bestMythicsMap[m.dungeon];
-
-      // TODO: Maybe incorporate the most recent run into this somehow?
-      if (!existing || existing.score < m.score) {
-        bestMythicsMap[m.dungeon] = m;
-      }
-    });
-
-    const bestMythics = Object.values(bestMythicsMap);
-    const totalScore = bestMythics.reduce((acc, m) => acc + m.score, 0);
-
-    return [Object.values(bestMythicsMap), totalScore] as const;
-  }, [mythics]);
-
-  const [bestSingleScore, mostUnderTime] = useMemo(() => {
-    const bestSingleScore = mythics.reduce(
-      (score, m) => (score > m.score ? score : m.score),
-      0
-    );
-
-    const mostUnderTime = mythics.reduce((curr, m) => {
-      const percentUnder = (m.clear_time_ms - m.par_time_ms) / m.par_time_ms;
-
-      if (percentUnder > curr) {
-        return percentUnder;
-      } else {
-        return curr;
-      }
-    }, 0);
-    return [bestSingleScore, mostUnderTime] as const;
-  }, [mythics]);
+  const [bestSingleScore, mostUnderTime] = useMemo(() => { return CalculateBestScoreAndBestUnderTime(mythics) }, [mythics]);
 
   return (
     <div className="flex flex-col space-y-2">
