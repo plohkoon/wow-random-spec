@@ -6,7 +6,7 @@ import {
 } from "react-router";
 import { db, Prisma, User } from "./db.server";
 
-const ADMINS = ["plohkoon", "captainfrogs"];
+const ADMINS = ["plohkoon", "captainfrogs", "pointysalad"];
 
 export const { getSession, commitSession, destroySession } =
   createCookieSessionStorage({
