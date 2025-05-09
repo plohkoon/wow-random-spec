@@ -89,7 +89,7 @@ function MythicsInfoInternal({ mythics }: { mythics: Mythics }) {
 
         <H4>Dungeons</H4>
 
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-2">
+        <div className="grid sm:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-2">
           {bestMythics.map((run) => (
             <div
               key={run.keystone_run_id}
