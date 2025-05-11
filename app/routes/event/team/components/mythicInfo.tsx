@@ -1,20 +1,19 @@
-import { Suspense, useMemo } from "react";
+import { useMemo } from "react";
 import { Route } from "../+types/route";
-import { Await } from "react-router";
 import { H2, H3, H4, H5 } from "~/components/display/headers";
 import { msToDuration } from "~/lib/time";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
-import {CalculateBestMythicsAndTotalScore, CalculateBestScoreAndBestUnderTime} from "~/lib/mythics";
+import { calculateBestMythicsAndTotalScore, calculateBestScoreAndBestUnderTime, MythicData } from "~/lib/mythics";
 
-type Mythics = NonNullable<
-  Awaited<Route.ComponentProps["loaderData"]["mythicsPromise"]>
->;
-type MythicsPromise = Promise<Mythics | null>;
+function MythicsInfoInternal({ mythics }: { mythics: MythicData[] }) {
 
-function MythicsInfoInternal({ mythics }: { mythics: Mythics }) {
-  const [bestMythics, bestMythicsScore] = useMemo(() => { return CalculateBestMythicsAndTotalScore(mythics) }, [mythics]);
+  if(!mythics) {
+    return (<MissingMythicInfo></MissingMythicInfo>);
+  }
 
-  const [bestSingleScore, mostUnderTime] = useMemo(() => { return CalculateBestScoreAndBestUnderTime(mythics) }, [mythics]);
+  const [bestMythics, bestMythicsScore] = useMemo(() => { return calculateBestMythicsAndTotalScore(mythics) }, [mythics]);
+
+  const [bestSingleScore, mostUnderTime] = useMemo(() => { return calculateBestScoreAndBestUnderTime(mythics) }, [mythics]);
 
   return (
     <div className="flex flex-col space-y-2">
@@ -97,7 +96,9 @@ function MythicsInfoInternal({ mythics }: { mythics: Mythics }) {
         <H3>All Dungeons</H3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2">
-          {mythics.map((run) => (
+          {mythics
+              .filter((run) => run !== null)
+              .map((run) => (
             <div
               key={run.keystone_run_id}
               className="flex flex-row sm:even:flex-row-reverse gap-4"
@@ -127,6 +128,7 @@ function MythicsInfoInternal({ mythics }: { mythics: Mythics }) {
 }
 
 function MissingMythicInfo() {
+  console.log("Mythic Info Missing Component");
   return (
     <div className="flex flex-col gap-4">
       <H2>Mythics</H2>
@@ -135,18 +137,10 @@ function MissingMythicInfo() {
   );
 }
 
-export function MythicInfo({ mythics }: { mythics: MythicsPromise | null }) {
+export function MythicInfo({ mythics }: { mythics: MythicData[] | null }) {
   return (
-    <Suspense fallback={<div>loading...</div>}>
-      <Await resolve={mythics} errorElement={<MissingMythicInfo />}>
-        {(mythics) =>
-          mythics ? (
-            <MythicsInfoInternal mythics={mythics} />
-          ) : (
-            <MissingMythicInfo />
-          )
-        }
-      </Await>
-    </Suspense>
+      <div>
+        {mythics ? (<MythicsInfoInternal mythics={mythics} />) : (<MissingMythicInfo />)}
+      </div>
   );
 }

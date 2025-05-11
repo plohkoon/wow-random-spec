@@ -5,6 +5,7 @@ import { RaiderIOClient } from "~/lib/raiderIO";
 import { Route } from "./+types/route";
 import { CharacterData } from "./components/characterData";
 import { PlayerData } from "./components/playerData";
+import {getPlayersPromises, parseMythicDataPerTeam} from "~/lib/mythics";
 
 export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
   const player = await db.player.findFirst({
@@ -25,7 +26,7 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
     throw redirect(`/event/${slug}`);
   }
 
-  const client = await RaiderIOClient.getInstance();
+  const client = RaiderIOClient.getInstance();
 
   let playerData =
     player.playerServer && player.playerName
@@ -42,16 +43,34 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
 
   const scoreTiers = client.mythicPlus.scoreTiers();
 
+    const playersPromises =  getPlayersPromises(player.team, client);
+
   return {
     player,
     playerData,
     scoreTiers,
+    playersPromises,
+    mythicData: null
   };
 };
 export const action = async ({}: Route.ActionArgs) => {};
 
+export const clientLoader = async ({
+    serverLoader,
+}: Route.ClientLoaderArgs) => {
+    const serverRes = await serverLoader();
+
+    const mythicData = await parseMythicDataPerTeam(serverRes.player.team, serverRes.playersPromises);
+
+    return {
+        ...serverRes,
+        mythicData
+    };
+};
+clientLoader.hydrate = true;
+
 export default function PlayerShow({
-  loaderData: { player, playerData, scoreTiers },
+  loaderData: { player, playerData, scoreTiers, playersPromises, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
   return (
@@ -61,7 +80,7 @@ export default function PlayerShow({
       </Link>
       <H2>Player</H2>
 
-      <PlayerData player={player} eventSlug={slug} />
+      <PlayerData player={player} eventSlug={slug} mythicData={mythicData} />
 
       <CharacterData playerData={playerData} scoreTiers={scoreTiers} />
     </article>

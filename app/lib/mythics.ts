@@ -1,29 +1,112 @@
-export async function ParseMythicDataPerTeam(players: any, playersPromises: any) {
-    // const players = serverRes.team.players;
-    const playersMap = new Map<string, (typeof players)[number]>();
-    players.forEach((p: any) => playersMap.set(p.id, p));
+import {
+    OptionalCharacterProfilePayloadOptions,
+    OptionalCharacterProfilePayloadFields,
+    CharacterProfilePayload,
+    CharacterPayloadBase,
+    MythicPlusRun
+} from "~/lib/raiderIO/characters";
+import {RaiderIOClient} from "~/lib/raiderIO";
+
+export type DBPlayerInternalTeamType = {
+    name: string
+    id: string
+    createdAt: Date
+    updatedAt: Date
+    eventId: string
+};
+
+export type DBPlayerType = {
+    team?: DBPlayerInternalTeamType | null
+    id: string
+    createdAt: Date
+    updatedAt: Date
+    nickname: string
+    main?: string | null
+    teamId?: string | null
+    spec?: string | null
+    playerName?: string | null
+    playerServer?: string | null
+    eventId?: string | null
+    assignedRole?: string | null
+};
+
+export type DBTeamType = {
+    name: string
+    id: string
+    createdAt: Date
+    updatedAt: Date
+    eventId: string
+    players: DBPlayerType[]
+};
+
+export type MythicData = MythicPlusRun & {
+    participants: DBPlayerType[]
+};
+
+export function getPlayersPromises(team: DBTeamType | null, client: RaiderIOClient) {
+    if(!team) {
+        const playersPromises: Promise<null>[] = [Promise.resolve(null)];
+
+        return playersPromises;
+    }
+
+    const playersPromises: (Promise<null> | Promise<CharacterProfilePayload<OptionalCharacterProfilePayloadOptions>>)[] =
+        team.players.map((player) =>
+            player.playerServer && player.playerName
+                ? client.character.getCharacterProfile({
+                    region: "us",
+                    realm: player.playerServer,
+                    name: player.playerName,
+                    fields: {
+                        gear: true,
+                        mythic_plus_best_runs: true,
+                        mythic_plus_alternate_runs: true,
+                        mythic_plus_highest_level_runs: true,
+                        mythic_plus_recent_runs: true,
+                        mythic_plus_previous_weekly_highest_level_runs: true,
+                        mythic_plus_weekly_highest_level_runs: true,
+                    },
+                })
+                : Promise.resolve(null)
+        );
+
+    return playersPromises;
+}
+
+export async function parseMythicDataPerTeam(team: DBTeamType | null, playersPromises: (Promise<null> | Promise<CharacterProfilePayload<OptionalCharacterProfilePayloadOptions>>)[]) {
+
+    if(!team) {
+        const promiseOfAllMythicData: Promise<null> = Promise.resolve(null);
+
+        return promiseOfAllMythicData;
+    }
+
+    const playersOnTeam = team.players;
+
+    const playersMap = new Map<string, DBPlayerType>();
+    playersOnTeam.forEach((p: DBPlayerType) => playersMap.set(p.id, p));
 
     // Set these promises up in the client loader so they are stable in the react application.
     const allPlayersPromise = Promise.allSettled(playersPromises);
-    const mythicsPromise = allPlayersPromise.then((res) => { // console.log("Mythics Promise", res);
+    const promiseOfAllMythicData: Promise<MythicData[]> = allPlayersPromise.then((res) => {
+        // console.log("Mythics Promise", res);
         if (!res) return res;
 
-        const succeededRes = res
-            .filter((r: any) => r.status === "fulfilled")
-            .map((r: any) => r.value);
+        const succeededRes: ((CharacterPayloadBase & OptionalCharacterProfilePayloadFields) | null)[] = res
+            .filter((r) => r.status === "fulfilled")
+            .map((r) => r.value);
 
-        type MythicType = NonNullable<
-            (typeof succeededRes)[number]
-        >["mythic_plus_best_runs"][number];
+        // type MythicType = NonNullable<
+        //     (typeof succeededRes)[number]
+        // >["mythic_plus_best_runs"][number];
 
-        const mythicMap = new Map<number, MythicType>();
+        const mythicMap = new Map<number, MythicPlusRun>();
         const participantMap = new Map<number, string[]>();
-        // console.log("DB Players", players);
 
-        succeededRes.forEach((player: any) => {
+        succeededRes.forEach((player: ((CharacterPayloadBase & OptionalCharacterProfilePayloadFields) | null)) => {
             if (!player) return;
             // We just want to resolve via the dbPlayer ID so we find and ensure we have that.
-            const dbPlayer = players.find(({ playerName, playerServer }) => {
+            const dbPlayer: DBPlayerType | undefined = playersOnTeam.find(({ playerName, playerServer }) => {
                 // Strip whitespace and replace lowercase to slugify everything for more accurate
                 // matching. This should be fine since names are not case-sensitive.
                 const strip = (str: string | undefined | null) =>
@@ -64,7 +147,7 @@ export async function ParseMythicDataPerTeam(players: any, playersPromises: any)
         // console.log("Participant Map", participantMap);
 
         // A mythic counts if at least 4 players of the team are in it.
-        const mythics = Array.from(mythicMap.values())
+        const mythics: MythicData[]  = Array.from(mythicMap.values())
             .flatMap((m) => {
                 const participants = participantMap.get(m.keystone_run_id);
 
@@ -95,16 +178,13 @@ export async function ParseMythicDataPerTeam(players: any, playersPromises: any)
         return mythics;
     });
 
-    return {
-        allPlayersPromise,
-        mythicsPromise,
-    };
+    return promiseOfAllMythicData;
 }
 
-export function CalculateBestMythicsAndTotalScore(mythics: any) {
+export function calculateBestMythicsAndTotalScore(mythics: MythicData[]) {
     const bestMythicsMap = {} as Record<string, (typeof mythics)[number]>;
 
-    mythics.forEach((m: any) => {
+    mythics.forEach((m: MythicData) => {
         const existing = bestMythicsMap[m.dungeon];
 
         // TODO: Maybe incorporate the most recent run into this somehow?
@@ -119,13 +199,13 @@ export function CalculateBestMythicsAndTotalScore(mythics: any) {
     return [Object.values(bestMythicsMap), totalScore] as const;
 }
 
-export function CalculateBestScoreAndBestUnderTime(mythics: any) {
+export function calculateBestScoreAndBestUnderTime(mythics: MythicData[]) {
     const bestSingleScore = mythics.reduce(
         (score: any, m: any) => (score > m.score ? score : m.score),
         0
     );
 
-    const mostUnderTime = mythics.reduce((curr: any, m: any) => {
+    const mostUnderTime = mythics.reduce((curr: number, m: MythicData) => {
         const percentUnder = (m.clear_time_ms - m.par_time_ms) / m.par_time_ms;
 
         if (percentUnder > curr) {

@@ -12,13 +12,18 @@ import { CharacterName } from "~/components/display/characterName";
 import { TeamDataTable } from "../../show/components/teamDataTable";
 
 type Player = Route.ComponentProps["loaderData"]["player"];
+type Mythics = NonNullable<
+    Awaited<Route.ComponentProps["loaderData"]["mythicData"]>
+>;
 
 export function PlayerData({
   player,
   eventSlug,
+  mythicData
 }: {
   player: Player;
   eventSlug: string;
+  mythicData: Mythics | null;
 }) {
   return (
     <section className="grid grid-cols-[2fr_3fr] gap-4">
@@ -51,10 +56,8 @@ export function PlayerData({
         </TableBody>
       </Table>
       {player.team ? (
-        <TeamDataTable team={player.team} slug={eventSlug} />
-      ) : (
-        <div>No Team Assigned Yet</div>
-      )}
+          <TeamDataTable team={player.team} slug={eventSlug} mythicData={mythicData} />
+      ) : <div>No Team Assigned Yet</div>}
     </section>
   );
 }

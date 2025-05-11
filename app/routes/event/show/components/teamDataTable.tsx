@@ -20,16 +20,12 @@ import {
 import { H4 } from "~/components/display/headers";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import {Suspense, useMemo, useState} from "react";
-import {Await, Link} from "react-router";
+import { useMemo, useState } from "react";
+import { Link } from "react-router";
 import {ScoreDisplay} from "~/components/display/scoreDisplay";
-import {CalculateBestMythicsAndTotalScore, CalculateBestScoreAndBestUnderTime} from "~/lib/mythics";
+import {calculateBestMythicsAndTotalScore, calculateBestScoreAndBestUnderTime, MythicData} from "~/lib/mythics";
 
 type Team = Route.ComponentProps["loaderData"]["event"]["teams"][number];
-type Mythics = NonNullable<
-    Awaited<Route.ComponentProps["loaderData"]["parsedMythicDataArray"][number]>
->;
-type MythicsPromise = Promise<Mythics | null>;
 
 const columns = [
   {
@@ -107,10 +103,10 @@ const columns = [
   },
 ] satisfies ColumnDef<Team["players"][number]>[];
 
-function MythicsInfoOverview({ mythics }: { mythics: Mythics }) {
-    const [bestMythics, bestMythicsScore] = useMemo(() => { return CalculateBestMythicsAndTotalScore(mythics) }, [mythics]);
+function MythicsInfoOverview({ mythics }: { mythics: MythicData[] }) {
+    const [bestMythics, bestMythicsScore] = useMemo(() => { return calculateBestMythicsAndTotalScore(mythics) }, [mythics]);
 
-    const [bestSingleScore, mostUnderTime] = useMemo(() => { return CalculateBestScoreAndBestUnderTime(mythics) }, [mythics]);
+    const [bestSingleScore, mostUnderTime] = useMemo(() => { return calculateBestScoreAndBestUnderTime(mythics) }, [mythics]);
 
     return(
         <div className="flex flex-col space-y-4">
@@ -168,7 +164,7 @@ function MissingMythicInfo() {
     );
 }
 
-export function TeamDataTable({ team, slug, mythicData }: { team: Team; slug: string; mythicData: MythicsPromise }) {
+export function TeamDataTable({ team, slug, mythicData }: { team: Team; slug: string; mythicData: MythicData[] | null }) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
@@ -229,17 +225,7 @@ export function TeamDataTable({ team, slug, mythicData }: { team: Team; slug: st
           )}
         </TableBody>
       </Table>
-        <Suspense fallback={<div>loading...</div>}>
-            <Await resolve={mythicData} errorElement={<MissingMythicInfo />}>
-                {(mythicData) =>
-                    mythicData && mythicData.length > 0 ? (
-                        <MythicsInfoOverview mythics={mythicData} />
-                    ) : (
-                        <MissingMythicInfo />
-                    )
-                }
-            </Await>
-        </Suspense>
+        {mythicData && mythicData.length > 0 ? (<MythicsInfoOverview mythics={mythicData} />) : (<MissingMythicInfo />)}
     </div>
   );
 }
