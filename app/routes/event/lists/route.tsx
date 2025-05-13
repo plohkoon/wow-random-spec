@@ -1,19 +1,18 @@
-import { db } from "~/lib/db.server";
-import { Route } from "./+types/route";
-import { H2, H3 } from "~/components/display/headers";
-import { organizeTeams } from "~/lib/teams";
-import { AppSession } from "~/lib/session.server";
-import { Button } from "~/components/ui/button";
 import { Link } from "react-router";
-import { PlayerDataTable } from "./components/playerDataTable";
-import { TeamDataTable } from "./components/teamDataTable";
-import { RaiderIOClient } from "~/lib/raiderIO";
+import { H2, H3 } from "~/components/display/headers";
+import { Button } from "~/components/ui/button";
+import { db } from "~/lib/db.server";
 import {
   getPlayersPromises,
-  parseMythicDataPerTeam,
   MythicData,
+  parseMythicDataPerTeam,
 } from "~/lib/mythics";
-import { CharacterNS } from "~/lib/raiderIO/characters";
+import { RaiderIOClient } from "~/lib/raiderIO";
+import { AppSession } from "~/lib/session.server";
+import { organizeTeams } from "~/lib/teams";
+import { Route } from "./+types/route";
+import { PlayerDataTable } from "./components/playerDataTable";
+import { TeamDataTable } from "./components/teamDataTable";
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   const [event, isAdmin] = await Promise.all([
