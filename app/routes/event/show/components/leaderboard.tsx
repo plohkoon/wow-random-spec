@@ -1,5 +1,5 @@
 import { Suspense, useMemo, useState } from "react";
-import { Await } from "react-router";
+import { Await, Link, useParams } from "react-router";
 import { PlayerShortDisplay } from "~/components/display/playerShortDisplay";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Route } from "../+types/route";
@@ -12,6 +12,7 @@ type MythicZip = NonNullable<
 type MythicZipPromise = Promise<MythicZip | null>;
 
 function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
+  const { slug } = useParams();
   const [sortBy, setSortBy] = useState<
     "single_score" | "team_score" | "num_ran" | null
   >(null);
@@ -36,8 +37,8 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
 
   return (
     <>
-      <div className="flex flex-row space-x-4">
-        <p>Sort By</p>
+      <div className="flex flex-row space-x-4 flex-wrap">
+        <p>Sort By:</p>
         <Button
           variant={sortBy === "num_ran" ? "default" : "outline"}
           onClick={() => setSortBy("num_ran")}
@@ -81,12 +82,20 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
               >
                 <div>
                   <div className="flex flex-row justify-evenly flex-wrap">
+                    <Link to={`/event/${slug}/team/${team.id}`}>
+                      <H3 className="underline">{team.name}:</H3>
+                    </Link>
                     {team.players.map((player) => (
-                      <PlayerShortDisplay
+                      <Link
+                        to={`/event/${slug}/player/${player.id}`}
                         key={player.id}
-                        player={player}
-                        className="text-xl font-bold before:w-8 before:h-8"
-                      />
+                      >
+                        <PlayerShortDisplay
+                          key={player.id}
+                          player={player}
+                          className="text-xl font-bold before:w-8 before:h-8 underline"
+                        />
+                      </Link>
                     ))}
                   </div>
 
@@ -129,7 +138,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                     </li>
                   </ul>
 
-                  <ul className="flex flex-row gap-2 justify-evenly">
+                  <ul className="flex flex-row gap-2 justify-evenly flex-wrap">
                     {bestMythics.map((mythic) => (
                       <li
                         key={mythic.keystone_run_id}

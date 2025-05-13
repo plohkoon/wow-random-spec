@@ -88,6 +88,11 @@ export default function Event({
     <main className="space-y-4">
       <H2>
         {event.name}{" "}
+        <Button asChild>
+          <Link to={`/event/${slug}/lists`} className="underline">
+            View Lists{" >"}
+          </Link>
+        </Button>
         {isAdmin ? (
           <Button asChild>
             <Link to={`/event/${slug}/edit`}>Edit</Link>
