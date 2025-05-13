@@ -2,12 +2,18 @@ import { Link } from "react-router";
 import { H2 } from "~/components/display/headers";
 import { Button } from "~/components/ui/button";
 import { db } from "~/lib/db.server";
-import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
+import {
+  calculateBestMythicsAndTotalScore,
+  calculateBestScoreAndBestUnderTime,
+  getPlayersPromises,
+  parseMythicDataPerTeam,
+} from "~/lib/mythics";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { CharacterNS } from "~/lib/raiderIO/characters";
 import { AppSession } from "~/lib/session.server";
 import { organizeTeams } from "~/lib/teams";
 import { Route } from "./+types/route";
+import { LeaderBoard } from "./components/leaderboard";
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   const [event, isAdmin] = await Promise.all([
@@ -49,37 +55,35 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
     teams,
     isAdmin,
     eachTeamsPlayersPromises,
-    mythicTeamZip: null,
+    mythicTeamZip: Promise.all(
+      teams.map(async (team, i) => {
+        const mythicData = await parseMythicDataPerTeam(
+          team,
+          eachTeamsPlayersPromises[i]
+        );
+
+        const [bestMythics, bestMythicsScore] =
+          calculateBestMythicsAndTotalScore(mythicData ?? []);
+        const [bestSingleScore, mostUnderTime] =
+          calculateBestScoreAndBestUnderTime(mythicData ?? []);
+
+        return {
+          team,
+          mythics: mythicData,
+          bestMythics,
+          bestMythicsScore,
+          bestSingleScore,
+          mostUnderTime,
+        };
+      })
+    ),
   };
 }
-
-export const clientLoader = async ({
-  serverLoader,
-}: Route.ClientLoaderArgs) => {
-  const serverRes = await serverLoader();
-
-  const mythicTeamZip = await Promise.all(
-    serverRes.teams.map(async (team, i) => ({
-      team,
-      mythics: await parseMythicDataPerTeam(
-        team,
-        serverRes.eachTeamsPlayersPromises[i]
-      ),
-    }))
-  );
-
-  return {
-    ...serverRes,
-    mythicTeamZip,
-  };
-};
-clientLoader.hydrate = true;
 
 export default function Event({
   loaderData: { event, isAdmin, mythicTeamZip },
   params: { slug },
 }: Route.ComponentProps) {
-  console.log(mythicTeamZip);
   return (
     <main className="space-y-4">
       <H2>
@@ -90,6 +94,8 @@ export default function Event({
           </Button>
         ) : null}
       </H2>
+
+      <LeaderBoard zip={mythicTeamZip} />
     </main>
   );
 }

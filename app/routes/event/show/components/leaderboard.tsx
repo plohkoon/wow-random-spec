@@ -1,12 +1,165 @@
-import { Suspense } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { Await } from "react-router";
+import { PlayerShortDisplay } from "~/components/display/playerShortDisplay";
+import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Route } from "../+types/route";
+import { H3, H5 } from "~/components/display/headers";
+import { Button } from "~/components/ui/button";
 
-type MythicZip = Awaited<Route.ComponentProps["loaderData"]["mythicTeamZip"]>;
+type MythicZip = NonNullable<
+  Awaited<Route.ComponentProps["loaderData"]["mythicTeamZip"]>
+>;
 type MythicZipPromise = Promise<MythicZip | null>;
 
-function LeaderBoardInternal({ zip }: { zip: MythicZipPromise }) {
-  return <></>;
+function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
+  const [sortBy, setSortBy] = useState<
+    "single_score" | "team_score" | "num_ran" | null
+  >(null);
+  const orderedZip = useMemo(() => {
+    if (!sortBy) return zip;
+
+    const sortFn = (a: MythicZip[number], b: MythicZip[number]) => {
+      if (sortBy === "single_score") {
+        return b.bestSingleScore - a.bestSingleScore;
+      } else if (sortBy === "team_score") {
+        return b.bestMythicsScore - a.bestMythicsScore;
+      } else if (sortBy === "num_ran") {
+        const aMythics = a.mythics?.length ?? 0;
+        const bMythics = b.mythics?.length ?? 0;
+        return bMythics - aMythics;
+      }
+      return 0;
+    };
+
+    return [...zip].sort(sortFn);
+  }, [zip, sortBy]);
+
+  return (
+    <>
+      <div className="flex flex-row space-x-4">
+        <p>Sort By</p>
+        <Button
+          variant={sortBy === "num_ran" ? "default" : "outline"}
+          onClick={() => setSortBy("num_ran")}
+        >
+          Mythic Ran
+        </Button>
+        <Button
+          variant={sortBy === "team_score" ? "default" : "outline"}
+          onClick={() => setSortBy("team_score")}
+        >
+          Team Score
+        </Button>
+
+        <Button
+          variant={sortBy === "single_score" ? "default" : "outline"}
+          onClick={() => setSortBy("single_score")}
+        >
+          Best Single Score
+        </Button>
+        <Button
+          variant={sortBy === null ? "default" : "outline"}
+          onClick={() => setSortBy(null)}
+        >
+          Reset Sort
+        </Button>
+      </div>
+      <ol className="list-decimal list-outside">
+        {orderedZip.map(
+          ({
+            team,
+            mythics,
+            bestMythics,
+            bestMythicsScore,
+            mostUnderTime,
+            bestSingleScore,
+          }) => {
+            return (
+              <li
+                key={team.id}
+                className="border-1 border-neutral-200 p-4 ml-12 rounded-lg marker:text-4xl marker:m-2"
+              >
+                <div>
+                  <div className="flex flex-row justify-evenly flex-wrap">
+                    {team.players.map((player) => (
+                      <PlayerShortDisplay
+                        key={player.id}
+                        player={player}
+                        className="text-xl font-bold before:w-8 before:h-8"
+                      />
+                    ))}
+                  </div>
+
+                  <ul className="grid grid-cols-2 sm:grid-cols-4 p-4 gap-2">
+                    <li className="rounded-lg border border-neutral-100 grow">
+                      <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                        <span className="text-4xl font-semibold">
+                          {mythics?.length ?? 0}
+                        </span>
+                        <span className="text-md font-bold">Mythics Ran</span>
+                      </div>
+                    </li>
+                    <li className="rounded-lg border border-neutral-100 grow">
+                      <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                        <ScoreDisplay
+                          score={bestMythicsScore}
+                          className="text-4xl font-semibold"
+                        />
+                        <span className="text-md font-bold">Team Score</span>
+                      </div>
+                    </li>
+
+                    <li className="rounded-lg border border-neutral-100 grow">
+                      <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                        <ScoreDisplay
+                          score={bestSingleScore}
+                          individual
+                          className="text-4xl font-semibold"
+                        />
+                        <span className="text-md font-bold">
+                          Best Single Score
+                        </span>
+                      </div>
+                    </li>
+                    <li className="rounded-lg border border-neutral-100 grow">
+                      <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                        <span className="text-4xl font-semibold">
+                          {(mostUnderTime * 100).toFixed(2)}%
+                        </span>
+                        <span className="text-md font-bold">
+                          Best Under Par
+                        </span>
+                      </div>
+                    </li>
+                  </ul>
+
+                  <ul className="flex flex-row gap-2 justify-evenly">
+                    {bestMythics.map((mythic) => (
+                      <li
+                        key={mythic.keystone_run_id}
+                        className="bg-(image:--bg-image) h-16 w-16 bg-cover grid place-items-center bg-background/30 dark:bg-blend-darken bg-blend-lighten bg-no-repeat"
+                        style={{
+                          // @ts-expect-error: Variables are not typed
+                          "--bg-image": `url(${mythic.icon_url})`,
+                        }}
+                      >
+                        <ScoreDisplay
+                          score={mythic.score}
+                          individual
+                          className="text-xl font-bold"
+                        />
+                        <H5>{mythic.short_name}</H5>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            );
+          }
+        )}
+      </ol>
+    </>
+  );
 }
 
 function LeaderBoardLoading() {
@@ -17,14 +170,14 @@ function LeaderBoardMissing() {
   return <div className="text-center">No Mythic Data Found</div>;
 }
 
-export function LeaderBoard({ zip }: { zip: MythicZipPromise }) {
+export function LeaderBoard({ zip }: { zip: MythicZipPromise | null }) {
   return (
     <Suspense fallback={<LeaderBoardLoading />}>
       <Await resolve={zip}>
         {(mythicZip) => {
           if (!mythicZip) return <LeaderBoardMissing />;
 
-          return <LeaderBoardInternal zip={zip} />;
+          return <LeaderBoardInternal zip={mythicZip} />;
         }}
       </Await>
     </Suspense>
