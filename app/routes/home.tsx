@@ -36,7 +36,7 @@ export async function action({ request }: Route.ActionArgs) {
 export default function App({ loaderData: { events } }: Route.ComponentProps) {
   return (
     <div>
-      <H2>Events</H2>
+      <h2 className="text-4xl mb-6 mt-4 font-bold leading-none tracking-light underline decoration-4 decoration-light-blue text-black dark:text-white">Events</h2>
       <Table>
         <TableHeader>
           <TableRow>

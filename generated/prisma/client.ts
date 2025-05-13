@@ -67,7 +67,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "/Users/greg/repos/wow-rando-comp/generated/prisma",
+      "value": "C:\\Users\\anti_\\OneDrive\\Desktop\\New folder (2)\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -76,12 +76,16 @@ const config: runtime.GetPrismaClientConfig = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "windows"
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/greg/repos/wow-rando-comp/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\anti_\\OneDrive\\Desktop\\New folder (2)\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../prisma",
@@ -99,8 +103,8 @@ const config: runtime.GetPrismaClientConfig = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ngenerator types {\n  provider = \"prisma-generator-typescript-interfaces\"\n  output   = \"../generated/prisma.types.ts\"\n  enumType = \"enum\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Event {\n  id        String   @id @default(cuid())\n  slug      String   @unique\n  name      String\n  players   Player[]\n  teams     Team[]\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nenum Role {\n  rdps\n  mdps\n  tank\n  healer\n}\n\nmodel Player {\n  id           String   @id @default(cuid())\n  nickname     String\n  main         String?\n  playerName   String?\n  playerServer String?\n  assignedRole Role?\n  spec         String?\n  eventId      String\n  event        Event    @relation(fields: [eventId], references: [id])\n  teamId       String?\n  team         Team?    @relation(fields: [teamId], references: [id])\n  createdAt    DateTime @default(now())\n  updatedAt    DateTime @updatedAt\n}\n\nmodel Team {\n  id        String   @id @default(cuid())\n  name      String\n  players   Player[]\n  eventId   String\n  event     Event    @relation(fields: [eventId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel User {\n  id                 String   @id @default(uuid())\n  email              String   @unique\n  name               String\n  username           String   @unique\n  password           String // Stores the hashed password (includes salt)\n  twoFactorSecret    String? // Optional: Secret for 2FA\n  isTwoFactorEnabled Boolean  @default(false)\n  createdAt          DateTime @default(now())\n  updatedAt          DateTime @updatedAt\n}\n",
-  "inlineSchemaHash": "3f4e0f9f8ebd7b526f3a759d05b3bf6f903d2be918e8da44d36b2b3e1fcf0705",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"windows\"]\n}\n\ngenerator types {\n  provider = \"prisma-generator-typescript-interfaces\"\n  output   = \"../generated/prisma.types.ts\"\n  enumType = \"enum\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Event {\n  id        String   @id @default(cuid())\n  slug      String   @unique\n  name      String\n  players   Player[]\n  teams     Team[]\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nenum Role {\n  rdps\n  mdps\n  tank\n  healer\n}\n\nmodel Player {\n  id           String   @id @default(cuid())\n  nickname     String\n  main         String?\n  playerName   String?\n  playerServer String?\n  assignedRole Role?\n  spec         String?\n  eventId      String\n  event        Event    @relation(fields: [eventId], references: [id])\n  teamId       String?\n  team         Team?    @relation(fields: [teamId], references: [id])\n  createdAt    DateTime @default(now())\n  updatedAt    DateTime @updatedAt\n}\n\nmodel Team {\n  id        String   @id @default(cuid())\n  name      String\n  players   Player[]\n  eventId   String\n  event     Event    @relation(fields: [eventId], references: [id])\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel User {\n  id                 String   @id @default(uuid())\n  email              String   @unique\n  name               String\n  username           String   @unique\n  password           String // Stores the hashed password (includes salt)\n  twoFactorSecret    String? // Optional: Secret for 2FA\n  isTwoFactorEnabled Boolean  @default(false)\n  createdAt          DateTime @default(now())\n  updatedAt          DateTime @updatedAt\n}\n",
+  "inlineSchemaHash": "6231d5e887a845c5882683dd73e5f41247671f464bb275babc0cc3562138852a",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},
@@ -118,8 +122,8 @@ config.compilerWasm = undefined
 
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node")
-path.join(process.cwd(), "generated/prisma/libquery_engine-darwin-arm64.dylib.node")
+path.join(__dirname, "query_engine-windows.dll.node")
+path.join(process.cwd(), "generated/prisma/query_engine-windows.dll.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma")
 path.join(process.cwd(), "generated/prisma/schema.prisma")
