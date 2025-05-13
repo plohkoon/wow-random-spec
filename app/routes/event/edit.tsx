@@ -1,5 +1,5 @@
 import { db } from "~/lib/db.server";
-import { Route } from "./+types/show";
+import { Route } from "./lists/+types/route";
 import {
   TableHead,
   TableHeader,
