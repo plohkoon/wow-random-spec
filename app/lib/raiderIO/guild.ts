@@ -339,7 +339,6 @@ export class Guild {
     name: string;
     fields?: T;
   }): Promise<GuildNS.ProfilePayload<T>> {
-    console.log(fieldsString(fields));
     return this.client.get("/guilds/profile", {
       params: {
         region,

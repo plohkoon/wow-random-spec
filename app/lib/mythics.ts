@@ -220,6 +220,5 @@ export function calculateBestScoreAndBestUnderTime(mythics: MythicData[]) {
     }
   }, Infinity);
 
-  console.log(mostUnderTime);
   return [bestSingleScore, mostUnderTime] as const;
 }

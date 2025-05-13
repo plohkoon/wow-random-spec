@@ -3,17 +3,24 @@ import { Route } from "../+types/route";
 import { H2, H3, H4, H5 } from "~/components/display/headers";
 import { msToDuration } from "~/lib/time";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
-import { calculateBestMythicsAndTotalScore, calculateBestScoreAndBestUnderTime, MythicData } from "~/lib/mythics";
+import {
+  calculateBestMythicsAndTotalScore,
+  calculateBestScoreAndBestUnderTime,
+  MythicData,
+} from "~/lib/mythics";
 
 function MythicsInfoInternal({ mythics }: { mythics: MythicData[] }) {
-
-  if(!mythics) {
-    return (<MissingMythicInfo></MissingMythicInfo>);
+  if (!mythics) {
+    return <MissingMythicInfo></MissingMythicInfo>;
   }
 
-  const [bestMythics, bestMythicsScore] = useMemo(() => { return calculateBestMythicsAndTotalScore(mythics) }, [mythics]);
+  const [bestMythics, bestMythicsScore] = useMemo(() => {
+    return calculateBestMythicsAndTotalScore(mythics);
+  }, [mythics]);
 
-  const [bestSingleScore, mostUnderTime] = useMemo(() => { return calculateBestScoreAndBestUnderTime(mythics) }, [mythics]);
+  const [bestSingleScore, mostUnderTime] = useMemo(() => {
+    return calculateBestScoreAndBestUnderTime(mythics);
+  }, [mythics]);
 
   return (
     <div className="flex flex-col space-y-2">
@@ -97,30 +104,31 @@ function MythicsInfoInternal({ mythics }: { mythics: MythicData[] }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2">
           {mythics
-              .filter((run) => run !== null)
-              .map((run) => (
-            <div
-              key={run.keystone_run_id}
-              className="flex flex-row sm:even:flex-row-reverse gap-4"
-            >
-              <img src={run.icon_url} className="w-16 aspect-square" />
-              <div className="flex flex-col">
-                <H4>
-                  {run.dungeon} ({run.short_name} +{run.mythic_level}){" "}
-                  <ScoreDisplay individual score={run.score} />
-                </H4>
-                <p>
-                  Time: {msToDuration(run.clear_time_ms)} /{" "}
-                  {msToDuration(run.par_time_ms)} (
-                  {(
-                    ((run.clear_time_ms - run.par_time_ms) / run.par_time_ms) *
-                    100
-                  ).toFixed(3)}
-                  %)
-                </p>
+            .filter((run) => run !== null)
+            .map((run) => (
+              <div
+                key={run.keystone_run_id}
+                className="flex flex-row sm:even:flex-row-reverse gap-4"
+              >
+                <img src={run.icon_url} className="w-16 aspect-square" />
+                <div className="flex flex-col">
+                  <H4>
+                    {run.dungeon} ({run.short_name} +{run.mythic_level}){" "}
+                    <ScoreDisplay individual score={run.score} />
+                  </H4>
+                  <p>
+                    Time: {msToDuration(run.clear_time_ms)} /{" "}
+                    {msToDuration(run.par_time_ms)} (
+                    {(
+                      ((run.clear_time_ms - run.par_time_ms) /
+                        run.par_time_ms) *
+                      100
+                    ).toFixed(3)}
+                    %)
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>
@@ -128,7 +136,6 @@ function MythicsInfoInternal({ mythics }: { mythics: MythicData[] }) {
 }
 
 function MissingMythicInfo() {
-  console.log("Mythic Info Missing Component");
   return (
     <div className="flex flex-col gap-4">
       <H2>Mythics</H2>
@@ -139,8 +146,12 @@ function MissingMythicInfo() {
 
 export function MythicInfo({ mythics }: { mythics: MythicData[] | null }) {
   return (
-      <div>
-        {mythics ? (<MythicsInfoInternal mythics={mythics} />) : (<MissingMythicInfo />)}
-      </div>
+    <div>
+      {mythics ? (
+        <MythicsInfoInternal mythics={mythics} />
+      ) : (
+        <MissingMythicInfo />
+      )}
+    </div>
   );
 }

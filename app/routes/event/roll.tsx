@@ -37,8 +37,6 @@ export const action = async ({ request, params: { id } }: Route.ActionArgs) => {
   const formData = await request.formData();
   const classSpec = formData.get("classSpec");
 
-  console.log(classSpec, allClassSpecs);
-
   if (typeof classSpec !== "string" || !allClassSpecs.includes(classSpec)) {
     return;
   }

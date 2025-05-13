@@ -14,7 +14,7 @@ type MythicZipPromise = Promise<MythicZip | null>;
 function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
   const { slug } = useParams();
   const [sortBy, setSortBy] = useState<
-    "single_score" | "team_score" | "num_ran" | null
+    "single_score" | "team_score" | "num_ran" | "under_par" | null
   >(null);
   const orderedZip = useMemo(() => {
     if (!sortBy) return zip;
@@ -28,6 +28,8 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
         const aMythics = a.mythics?.length ?? 0;
         const bMythics = b.mythics?.length ?? 0;
         return bMythics - aMythics;
+      } else if (sortBy === "under_par") {
+        return a.mostUnderTime - b.mostUnderTime;
       }
       return 0;
     };
@@ -58,6 +60,14 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
         >
           Best Single Score
         </Button>
+
+        <Button
+          variant={sortBy === "under_par" ? "default" : "outline"}
+          onClick={() => setSortBy("under_par")}
+        >
+          Most Under Par
+        </Button>
+
         <Button
           variant={sortBy === null ? "default" : "outline"}
           onClick={() => setSortBy(null)}
@@ -65,7 +75,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
           Unsorted
         </Button>
       </div>
-      <ol className="list-decimal list-outside">
+      <ol className="list-decimal list-outside space-y-4">
         {orderedZip.map(
           ({
             team,
