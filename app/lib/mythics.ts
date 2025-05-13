@@ -1,10 +1,4 @@
-import {
-    OptionalCharacterProfilePayloadOptions,
-    OptionalCharacterProfilePayloadFields,
-    CharacterProfilePayload,
-    CharacterPayloadBase,
-    MythicPlusRun
-} from "~/lib/raiderIO/characters";
+import type { CharacterNS } from "~/lib/raiderIO/characters";
 import {RaiderIOClient} from "~/lib/raiderIO";
 
 export type DBPlayerInternalTeamType = {
@@ -39,7 +33,7 @@ export type DBTeamType = {
     players: DBPlayerType[]
 };
 
-export type MythicData = MythicPlusRun & {
+export type MythicData = CharacterNS.MythicPlusRun & {
     participants: DBPlayerType[]
 };
 
@@ -50,7 +44,7 @@ export function getPlayersPromises(team: DBTeamType | null, client: RaiderIOClie
         return playersPromises;
     }
 
-    const playersPromises: (Promise<null> | Promise<CharacterProfilePayload<OptionalCharacterProfilePayloadOptions>>)[] =
+    const playersPromises: (Promise<null> | Promise<CharacterNS.CharacterProfilePayload<CharacterNS.OptionalCharacterProfilePayloadOptions>>)[] =
         team.players.map((player) =>
             player.playerServer && player.playerName
                 ? client.character.getCharacterProfile({
@@ -73,7 +67,7 @@ export function getPlayersPromises(team: DBTeamType | null, client: RaiderIOClie
     return playersPromises;
 }
 
-export async function parseMythicDataPerTeam(team: DBTeamType | null, playersPromises: (Promise<null> | Promise<CharacterProfilePayload<OptionalCharacterProfilePayloadOptions>>)[]) {
+export async function parseMythicDataPerTeam(team: DBTeamType | null, playersPromises: (Promise<null> | Promise<CharacterNS.CharacterProfilePayload<CharacterNS.OptionalCharacterProfilePayloadOptions>>)[]) {
 
     if(!team) {
         const promiseOfAllMythicData: Promise<null> = Promise.resolve(null);
@@ -92,18 +86,14 @@ export async function parseMythicDataPerTeam(team: DBTeamType | null, playersPro
         // console.log("Mythics Promise", res);
         if (!res) return res;
 
-        const succeededRes: ((CharacterPayloadBase & OptionalCharacterProfilePayloadFields) | null)[] = res
+        const succeededRes: ((CharacterNS.CharacterPayloadBase & CharacterNS.OptionalCharacterProfilePayloadFields) | null)[] = res
             .filter((r) => r.status === "fulfilled")
             .map((r) => r.value);
 
-        // type MythicType = NonNullable<
-        //     (typeof succeededRes)[number]
-        // >["mythic_plus_best_runs"][number];
-
-        const mythicMap = new Map<number, MythicPlusRun>();
+        const mythicMap = new Map<number, CharacterNS.MythicPlusRun>();
         const participantMap = new Map<number, string[]>();
 
-        succeededRes.forEach((player: ((CharacterPayloadBase & OptionalCharacterProfilePayloadFields) | null)) => {
+        succeededRes.forEach((player: ((CharacterNS.CharacterPayloadBase & CharacterNS.OptionalCharacterProfilePayloadFields) | null)) => {
             if (!player) return;
             // We just want to resolve via the dbPlayer ID so we find and ensure we have that.
             const dbPlayer: DBPlayerType | undefined = playersOnTeam.find(({ playerName, playerServer }) => {
@@ -142,9 +132,6 @@ export async function parseMythicDataPerTeam(team: DBTeamType | null, playersPro
                 }
             });
         });
-
-        // console.log("Mythic Map", mythicMap);
-        // console.log("Participant Map", participantMap);
 
         // A mythic counts if at least 4 players of the team are in it.
         const mythics: MythicData[]  = Array.from(mythicMap.values())

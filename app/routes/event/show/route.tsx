@@ -9,7 +9,7 @@ import { PlayerDataTable } from "./components/playerDataTable";
 import { TeamDataTable } from "./components/teamDataTable";
 import {RaiderIOClient} from "~/lib/raiderIO";
 import { getPlayersPromises, parseMythicDataPerTeam, MythicData } from "~/lib/mythics"
-import {CharacterProfilePayload, OptionalCharacterProfilePayloadOptions} from "~/lib/raiderIO/characters";
+import { CharacterNS } from "~/lib/raiderIO/characters";
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   const [event, isAdmin] = await Promise.all([
@@ -40,7 +40,7 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   }
 
   const teams = organizeTeams(event.teams);
-  const eachTeamsPlayersPromises: (Promise<null> | Promise<CharacterProfilePayload<OptionalCharacterProfilePayloadOptions>>)[][] = [];
+  const eachTeamsPlayersPromises: (Promise<null> | Promise<CharacterNS.CharacterProfilePayload<CharacterNS.OptionalCharacterProfilePayloadOptions>>)[][] = [];
 
   const client = RaiderIOClient.getInstance();
 
