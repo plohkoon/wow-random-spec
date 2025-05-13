@@ -61,7 +61,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
           variant={sortBy === null ? "default" : "outline"}
           onClick={() => setSortBy(null)}
         >
-          Reset Sort
+          Unsorted
         </Button>
       </div>
       <ol className="list-decimal list-outside">
@@ -116,9 +116,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                           individual
                           className="text-4xl font-semibold"
                         />
-                        <span className="text-md font-bold">
-                          Best Single Score
-                        </span>
+                        <span className="text-md font-bold">Single Score</span>
                       </div>
                     </li>
                     <li className="rounded-lg border border-neutral-100 grow">
@@ -126,9 +124,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                         <span className="text-4xl font-semibold">
                           {(mostUnderTime * 100).toFixed(2)}%
                         </span>
-                        <span className="text-md font-bold">
-                          Best Under Par
-                        </span>
+                        <span className="text-md font-bold">Under Par</span>
                       </div>
                     </li>
                   </ul>
