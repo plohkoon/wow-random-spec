@@ -156,6 +156,45 @@ function MythicsInfoOverview({ mythics }: { mythics: MythicData[] | null }) {
                     ))}
                 </div>
             </div>
+            <div>
+                <H4>Total Team Score</H4>
+                <div className="grid md:grid-cols-1 lg:grid-cols-2 3xl:grid-cols-4 gap-2 w-full">
+                    <div className="rounded-lg border border-neutral-100 grow">
+                        <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <span className="text-4xl font-semibold">{mythics.length}</span>
+                            <span className="text-md font-bold">Mythics Ran</span>
+                        </div>
+                    </div>
+                    <div className="rounded-lg border border-neutral-100 grow">
+                        <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <ScoreDisplay
+                                score={bestMythicsScore}
+                                className="text-4xl font-semibold"
+                            />
+                            <span className="text-md font-bold">Team Score</span>
+                        </div>
+                    </div>
+
+                    <div className="rounded-lg border border-neutral-100 grow">
+                        <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <ScoreDisplay
+                                score={bestSingleScore}
+                                individual
+                                className="text-4xl font-semibold"
+                            />
+                            <span className="text-md font-bold">Best Single Score</span>
+                        </div>
+                    </div>
+                    <div className="rounded-lg border border-neutral-100 grow">
+                        <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <span className="text-4xl font-semibold">
+                              {(mostUnderTime * 100).toFixed(2)}%
+                            </span>
+                            <span className="text-md font-bold">Best Under Par</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
