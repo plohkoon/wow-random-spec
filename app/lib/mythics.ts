@@ -156,7 +156,7 @@ export async function parseMythicDataPerTeam<
           const participants = participantMap.get(m.keystone_run_id);
 
           // If there were no participants or not enough participants this does not count as a key for this team.
-          if (!participants || participants.length < 4) {
+          if (!participants || participants.length < 3) {
             return [];
           }
 
