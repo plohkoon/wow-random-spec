@@ -16,10 +16,8 @@ type PlayerData = NonNullable<
 type PlayerDataPromise = Promise<PlayerData | null>;
 
 function PlayerDataInternal(player: PlayerData) {
-  const playerScore = player.mythic_plus_best_runs.reduce(
-    (acc, run) => acc + run.score,
-    0
-  );
+  const playerScore =
+    player.mythic_plus_best_runs?.reduce((acc, run) => acc + run.score, 0) || 0;
 
   return (
     <div className="grid grid-cols-[8rem_1fr_8rem] gap-4">

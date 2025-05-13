@@ -9,7 +9,7 @@ import type { Route } from "../+types/route";
 import { ClassDisplay } from "~/components/display/classDisplay";
 import { RoleDisplay } from "~/components/display/roleDisplay";
 import { CharacterName } from "~/components/display/characterName";
-import { TeamDataTable } from "../../show/components/teamDataTable";
+import { TeamDataTable } from "../../lists/components/teamDataTable";
 import { MythicData } from "~/lib/mythics";
 
 type Player = Route.ComponentProps["loaderData"]["player"];
@@ -17,7 +17,7 @@ type Player = Route.ComponentProps["loaderData"]["player"];
 export function PlayerData({
   player,
   eventSlug,
-  mythicData
+  mythicData,
 }: {
   player: Player;
   eventSlug: string;
@@ -54,8 +54,14 @@ export function PlayerData({
         </TableBody>
       </Table>
       {player.team ? (
-          <TeamDataTable team={player.team} slug={eventSlug} mythicData={mythicData} />
-      ) : <div>No Team Assigned Yet</div>}
+        <TeamDataTable
+          team={player.team}
+          slug={eventSlug}
+          mythicData={mythicData}
+        />
+      ) : (
+        <div>No Team Assigned Yet</div>
+      )}
     </section>
   );
 }
