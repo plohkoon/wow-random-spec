@@ -213,11 +213,13 @@ export function calculateBestScoreAndBestUnderTime(mythics: MythicData[]) {
   const mostUnderTime = mythics.reduce((curr: number, m: MythicData) => {
     const percentUnder = (m.clear_time_ms - m.par_time_ms) / m.par_time_ms;
 
-    if (percentUnder > curr) {
+    if (percentUnder < curr) {
       return percentUnder;
     } else {
       return curr;
     }
-  }, 0);
+  }, Infinity);
+
+  console.log(mostUnderTime);
   return [bestSingleScore, mostUnderTime] as const;
 }
