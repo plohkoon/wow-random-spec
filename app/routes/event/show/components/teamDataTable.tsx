@@ -20,8 +20,10 @@ import {
 import { H4 } from "~/components/display/headers";
 import { Button } from "~/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
+import {ScoreDisplay} from "~/components/display/scoreDisplay";
+import {calculateBestMythicsAndTotalScore, calculateBestScoreAndBestUnderTime, MythicData} from "~/lib/mythics";
 
 type Team = Route.ComponentProps["loaderData"]["event"]["teams"][number];
 
@@ -101,7 +103,112 @@ const columns = [
   },
 ] satisfies ColumnDef<Team["players"][number]>[];
 
-export function TeamDataTable({ team, slug }: { team: Team; slug: string }) {
+function MythicsInfoOverview({ mythics }: { mythics: MythicData[] | null }) {
+
+    if(!mythics) {
+        return (<MissingMythicInfo></MissingMythicInfo>);
+    }
+
+    const [bestMythics, bestMythicsScore] = useMemo(() => { return calculateBestMythicsAndTotalScore(mythics) }, [mythics]);
+
+    const [bestSingleScore, mostUnderTime] = useMemo(() => { return calculateBestScoreAndBestUnderTime(mythics) }, [mythics]);
+
+    return(
+        <div className="flex flex-col space-y-4">
+            <div>
+                <H4>Dungeons</H4>
+
+                <div className="grid md:grid-cols-1 lg:grid-cols-2 3xl:grid-cols-4 6xl:grid-cols-8 gap-2 w-full">
+                    {bestMythics.map((run) => (
+                        <div
+                            key={run.keystone_run_id}
+                            className="grow rounded-lg border-gray-100 border p-4 gap-2 bg-background/60 bg-(image:--bg-image) dark:bg-blend-darken bg-blend-lighten bg-linear-to-b bg-cover bg-no-repeat"
+                            style={{
+                                // @ts-expect-error: Variables are not typed
+                                "--bg-image": `url(${run.background_image_url})`,
+                            }}
+                        >
+                            <div className="flex flex-col items-center gap-y-2">
+                                <div className="flex flex-col justify-start text-3xl">
+                                    <ScoreDisplay
+                                        individual
+                                        score={run.score}
+                                        className=""
+                                    />
+                                </div>
+                                <div className="flex flex-row justify-evenly gap-4">
+                                    <p className="flex text-lg">
+                                        +{run.mythic_level}
+                                    </p>
+                                    <p className="flex text-lg">
+                                        {(
+                                            ((run.clear_time_ms - run.par_time_ms) / run.par_time_ms) *
+                                            100
+                                        ).toFixed(2)}
+                                        %
+                                    </p>
+                                </div>
+                                <p className="text-xl font-bold">
+                                    {run.short_name}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <div>
+                <H4>Total Team Score</H4>
+                <div className="grid md:grid-cols-1 lg:grid-cols-2 3xl:grid-cols-4 gap-2 w-full">
+                    <div className="rounded-lg border border-neutral-100 grow">
+                        <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <span className="text-4xl font-semibold">{mythics.length}</span>
+                            <span className="text-md font-bold">Mythics Ran</span>
+                        </div>
+                    </div>
+                    <div className="rounded-lg border border-neutral-100 grow">
+                        <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <ScoreDisplay
+                                score={bestMythicsScore}
+                                className="text-4xl font-semibold"
+                            />
+                            <span className="text-md font-bold">Team Score</span>
+                        </div>
+                    </div>
+
+                    <div className="rounded-lg border border-neutral-100 grow">
+                        <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <ScoreDisplay
+                                score={bestSingleScore}
+                                individual
+                                className="text-4xl font-semibold"
+                            />
+                            <span className="text-md font-bold">Best Single Score</span>
+                        </div>
+                    </div>
+                    <div className="rounded-lg border border-neutral-100 grow">
+                        <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <span className="text-4xl font-semibold">
+                              {(mostUnderTime * 100).toFixed(2)}%
+                            </span>
+                            <span className="text-md font-bold">Best Under Par</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function MissingMythicInfo() {
+    return (
+        <div className="flex flex-col gap-4">
+            <H4>Dungeons</H4>
+            <p>No Mythic data available.</p>
+        </div>
+    );
+}
+
+export function TeamDataTable({ team, slug, mythicData }: { team: Team; slug: string; mythicData: MythicData[] | null }) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
@@ -162,6 +269,7 @@ export function TeamDataTable({ team, slug }: { team: Team; slug: string }) {
           )}
         </TableBody>
       </Table>
+        {mythicData && mythicData.length > 0 ? (<MythicsInfoOverview mythics={mythicData} />) : (<MissingMythicInfo />)}
     </div>
   );
 }

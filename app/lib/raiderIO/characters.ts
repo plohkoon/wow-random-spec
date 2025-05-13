@@ -2,8 +2,9 @@ import type { RaiderIOClient } from ".";
 import type { RootNS } from "./index";
 import { fieldsString, HasChildBool } from "./utils";
 
-export namespace CharacterNS {
-  type CharacterPayloadBase = {
+export namespace CharacterNS
+{
+  export type CharacterPayloadBase = {
     name: string;
     race: RootNS.Race;
     class: RootNS.Class;
@@ -240,23 +241,23 @@ export namespace CharacterNS {
   type RaidMetaAchievementType = unknown;
   type RaidAchievementCurveType = unknown;
 
-  type OptionalCharacterProfilePayloadFields = {
-    gear: GearType;
-    talents: TalentType;
-    guild: GuildType;
-    covenant: CovenantType;
-    raid_progression: RaidProgressionType;
-    mythic_plus_scores_by_season: MythicPlusScoresBySeasonType;
-    mythic_plus_ranks: MythicPlusRanksType;
-    mythic_plus_recent_runs: MythicPlusRecentRunsType;
-    mythic_plus_best_runs: MythicPlusBestRunsType;
-    mythic_plus_alternate_runs: MythicPlusAlternateRunsType;
-    mythic_plus_highest_level_runs: MythicPlusHighestLevelRunsType;
-    mythic_plus_weekly_highest_level_runs: MythicPlusWeeklyHighestLevelRunsType;
-    mythic_plus_previous_weekly_highest_level_runs: MythicPlusPreviousWeeklyHighestLevelRunsType;
-    previous_mythic_plus_ranks: PreviousMythicPlusRanksType;
-    raid_achievement_meta: RaidMetaAchievementType;
-    raid_achievement_curve: RaidAchievementCurveType;
+  export type OptionalCharacterProfilePayloadFields = {
+    gear?: GearType;
+    talents?: TalentType;
+    guild?: GuildType;
+    covenant?: CovenantType;
+    raid_progression?: RaidProgressionType;
+    mythic_plus_scores_by_season?: MythicPlusScoresBySeasonType;
+    mythic_plus_ranks?: MythicPlusRanksType;
+    mythic_plus_recent_runs?: MythicPlusRecentRunsType;
+    mythic_plus_best_runs?: MythicPlusBestRunsType;
+    mythic_plus_alternate_runs?: MythicPlusAlternateRunsType;
+    mythic_plus_highest_level_runs?: MythicPlusHighestLevelRunsType;
+    mythic_plus_weekly_highest_level_runs?: MythicPlusWeeklyHighestLevelRunsType;
+    mythic_plus_previous_weekly_highest_level_runs?: MythicPlusPreviousWeeklyHighestLevelRunsType;
+    previous_mythic_plus_ranks?: PreviousMythicPlusRanksType;
+    raid_achievement_meta?: RaidMetaAchievementType;
+    raid_achievement_curve?: RaidAchievementCurveType;
   };
 
   // This entire hash is just for the fact that talents does not match the output key.
@@ -283,17 +284,17 @@ export namespace CharacterNS {
   export type OptionalCharacterProfilePayloadOptions = {
     gear?: boolean;
     talents?:
-      | boolean
-      | {
-          categorized: true;
-        };
+        | boolean
+        | {
+      categorized: true;
+    };
     guild?: boolean;
     covenant?: boolean;
     raid_progression?:
-      | boolean
-      | {
-          [
-            key:
+        | boolean
+        | {
+      [
+          key:
               | string
               | number
               | "current-expansion"
@@ -301,24 +302,24 @@ export namespace CharacterNS {
               | "current-tier"
               | "previous-tier"
           ]: boolean;
-        };
+    };
     mythic_plus_scores_by_season?:
-      | boolean
-      | {
-          [key: "current" | "previous" | `season-${string}` | string]: boolean;
-        };
+        | boolean
+        | {
+      [key: "current" | "previous" | `season-${string}` | string]: boolean;
+    };
     mythic_plus_ranks?: boolean;
     mythic_plus_recent_runs?: boolean;
     mythic_plus_best_runs?:
-      | boolean
-      | {
-          all: boolean;
-        };
+        | boolean
+        | {
+      all: boolean;
+    };
     mythic_plus_alternate_runs?:
-      | boolean
-      | {
-          all: boolean;
-        };
+        | boolean
+        | {
+      all: boolean;
+    };
     mythic_plus_highest_level_runs?: boolean;
     mythic_plus_weekly_highest_level_runs?: boolean;
     mythic_plus_previous_weekly_highest_level_runs?: boolean;
@@ -333,15 +334,15 @@ export namespace CharacterNS {
 
   // Build up the output hash with only the keys that are requested.
   export type CharacterProfilePayload<
-    T extends OptionalCharacterProfilePayloadOptions
+      T extends OptionalCharacterProfilePayloadOptions
   > = CharacterPayloadBase & {
     [key in keyof OptionalCharacterProfilePayloadFields as HasChildBool<
-      T[key]
+        T[key]
     > extends true
-      ? OutputKey[key]
-      : never]: OptionalCharacterProfilePayloadFields[key];
+        ? OutputKey[key]
+        : never]: OptionalCharacterProfilePayloadFields[key];
   };
-}
+};
 
 export class Character {
   private client: RaiderIOClient;

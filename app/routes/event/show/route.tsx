@@ -1,22 +1,15 @@
 import { db } from "~/lib/db.server";
 import { Route } from "./+types/route";
-import {
-  TableHead,
-  TableHeader,
-  TableRow,
-  Table,
-  TableCell,
-} from "~/components/ui/table";
-import { TableBody } from "~/components/ui/table";
 import { H2, H3 } from "~/components/display/headers";
-import { ClassDisplay } from "~/components/display/classDisplay";
-import { RoleDisplay } from "~/components/display/roleDisplay";
 import { organizeTeams } from "~/lib/teams";
 import { AppSession } from "~/lib/session.server";
 import { Button } from "~/components/ui/button";
-import { Link } from "react-router";
+import {Link} from "react-router";
 import { PlayerDataTable } from "./components/playerDataTable";
 import { TeamDataTable } from "./components/teamDataTable";
+import {RaiderIOClient} from "~/lib/raiderIO";
+import { getPlayersPromises, parseMythicDataPerTeam, MythicData } from "~/lib/mythics"
+import { CharacterNS } from "~/lib/raiderIO/characters";
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   const [event, isAdmin] = await Promise.all([
@@ -47,12 +40,43 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   }
 
   const teams = organizeTeams(event.teams);
+  const eachTeamsPlayersPromises: (Promise<null> | Promise<CharacterNS.CharacterProfilePayload<CharacterNS.OptionalCharacterProfilePayloadOptions>>)[][] = [];
 
-  return { event, teams, isAdmin };
+  const client = RaiderIOClient.getInstance();
+
+  for(const team of teams) {
+
+    const parsedPlayersPromises = getPlayersPromises(team, client);
+
+    eachTeamsPlayersPromises.push(parsedPlayersPromises);
+  }
+
+  return { event, teams, isAdmin, eachTeamsPlayersPromises, parsedMythicDataArray: null };
 }
 
+export const clientLoader = async ({
+  serverLoader,
+}: Route.ClientLoaderArgs) => {
+  const serverRes = await serverLoader();
+
+  const parsedMythicDataArray: (MythicData[] | null)[] = [];
+  let counter: number = 0;
+
+  for(const team of serverRes.teams) {
+    const mythicData = await parseMythicDataPerTeam(team, serverRes.eachTeamsPlayersPromises[counter]);
+    parsedMythicDataArray.push(mythicData);
+    ++counter;
+  }
+
+  return {
+    ...serverRes,
+    parsedMythicDataArray
+  };
+};
+clientLoader.hydrate = true;
+
 export default function Event({
-  loaderData: { event, teams, isAdmin },
+  loaderData: { event, teams, isAdmin, parsedMythicDataArray },
   params: { slug },
 }: Route.ComponentProps) {
   return (
@@ -75,8 +99,8 @@ export default function Event({
         <H3>Teams</H3>
 
         <div className="grid grid-cols-3">
-          {teams.map((team) => (
-            <TeamDataTable key={team.id} team={team} slug={slug} />
+          {teams.map((team, index) => (
+            <TeamDataTable key={team.id} team={team} slug={slug} mythicData={parsedMythicDataArray ? parsedMythicDataArray[index] : null} />
           ))}
         </div>
       </section>

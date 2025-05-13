@@ -26,6 +26,9 @@
   --color-rare: #0070dd;
   --color-epic: #a335ee;
   --color-legendary: #ff8000;
+
+  --breakpoint-3xl: 120rem;
+  --breakpoint-6xl: 230rem;
 }
 
 @theme inline {
