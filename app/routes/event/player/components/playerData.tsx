@@ -10,11 +10,9 @@ import { ClassDisplay } from "~/components/display/classDisplay";
 import { RoleDisplay } from "~/components/display/roleDisplay";
 import { CharacterName } from "~/components/display/characterName";
 import { TeamDataTable } from "../../show/components/teamDataTable";
+import { MythicData } from "~/lib/mythics";
 
 type Player = Route.ComponentProps["loaderData"]["player"];
-type Mythics = NonNullable<
-    Awaited<Route.ComponentProps["loaderData"]["mythicData"]>
->;
 
 export function PlayerData({
   player,
@@ -23,7 +21,7 @@ export function PlayerData({
 }: {
   player: Player;
   eventSlug: string;
-  mythicData: Mythics | null;
+  mythicData: MythicData[] | null;
 }) {
   return (
     <section className="grid grid-cols-[2fr_3fr] gap-4">

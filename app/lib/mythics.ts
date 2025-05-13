@@ -188,7 +188,7 @@ export function calculateBestMythicsAndTotalScore(mythics: MythicData[]) {
 
 export function calculateBestScoreAndBestUnderTime(mythics: MythicData[]) {
     const bestSingleScore = mythics.reduce(
-        (score: any, m: any) => (score > m.score ? score : m.score),
+        (score: number, m: MythicData) => (score > m.score ? score : m.score),
         0
     );
 

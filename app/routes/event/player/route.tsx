@@ -5,7 +5,7 @@ import { RaiderIOClient } from "~/lib/raiderIO";
 import { Route } from "./+types/route";
 import { CharacterData } from "./components/characterData";
 import { PlayerData } from "./components/playerData";
-import {getPlayersPromises, parseMythicDataPerTeam} from "~/lib/mythics";
+import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
 
 export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
   const player = await db.player.findFirst({
@@ -43,7 +43,7 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
 
   const scoreTiers = client.mythicPlus.scoreTiers();
 
-    const playersPromises =  getPlayersPromises(player.team, client);
+  const playersPromises =  getPlayersPromises(player.team, client);
 
   return {
     player,
@@ -70,7 +70,7 @@ export const clientLoader = async ({
 clientLoader.hydrate = true;
 
 export default function PlayerShow({
-  loaderData: { player, playerData, scoreTiers, playersPromises, mythicData },
+  loaderData: { player, playerData, scoreTiers, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
   return (

@@ -103,7 +103,12 @@ const columns = [
   },
 ] satisfies ColumnDef<Team["players"][number]>[];
 
-function MythicsInfoOverview({ mythics }: { mythics: MythicData[] }) {
+function MythicsInfoOverview({ mythics }: { mythics: MythicData[] | null }) {
+
+    if(!mythics) {
+        return (<MissingMythicInfo></MissingMythicInfo>);
+    }
+
     const [bestMythics, bestMythicsScore] = useMemo(() => { return calculateBestMythicsAndTotalScore(mythics) }, [mythics]);
 
     const [bestSingleScore, mostUnderTime] = useMemo(() => { return calculateBestScoreAndBestUnderTime(mythics) }, [mythics]);

@@ -5,7 +5,7 @@ import { Route } from "./+types/route";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { PlayerData } from "./components/playerData";
 import { MythicInfo } from "./components/mythicInfo";
-import {getPlayersPromises, parseMythicDataPerTeam} from "~/lib/mythics"
+import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics"
 
 export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
   const team = await db.team.findFirst({
