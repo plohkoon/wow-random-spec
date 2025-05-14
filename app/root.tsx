@@ -12,14 +12,10 @@ import {
   useSubmit,
 } from "react-router";
 import { Route } from "./+types/root";
-import { H1 } from "./components/display/headers";
-import { Label } from "./components/ui/label";
-import { Switch } from "./components/ui/switch";
 import { ClientHintCheck, getHints } from "./lib/clientHints";
 import { getDarkmodeSession } from "./lib/darkmode";
 import "./tailwind.css";
 import { AppSession } from "./lib/session.server";
-import { Button } from "./components/ui/button";
 import Header from "./components/display/header";
 
 export async function loader({ request }: Route.LoaderArgs) {
