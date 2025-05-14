@@ -5,6 +5,14 @@ import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Route } from "../+types/route";
 import { H3, H5 } from "~/components/display/headers";
 import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuArrow,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 
 type MythicZip = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["mythicTeamZip"]>
@@ -39,7 +47,184 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
 
   return (
     <>
-      <div className="flex flex-row space-x-4 flex-wrap">
+    <div className="w-full">
+      <Tabs
+        defaultValue="team_score"
+        value={sortBy ?? "null"}
+        onValueChange={(val) => {
+          setSortBy(val === "null" ? null : (val as typeof sortBy));
+        }}
+        className="w-full"
+      >
+        {" "}
+        <TabsList className="flex justify-center flex-wrap gap-2 mb-4">
+          <TabsTrigger
+            value="num_ran"
+            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+          >
+            Mythic Ran
+          </TabsTrigger>
+          <TabsTrigger
+            value="team_score"
+            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+          >
+            Team Score
+          </TabsTrigger>
+          <TabsTrigger
+            value="single_score"
+            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+          >
+            Best Single Score
+          </TabsTrigger>
+          <TabsTrigger
+            value="under_par"
+            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+          >
+            Most Under Par
+          </TabsTrigger>
+          <TabsTrigger
+            value="null"
+            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+          >
+            Unsorted
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value={sortBy ?? "null"}>
+          <ol className="list-decimal list-outside space-y-4">
+            {orderedZip.map(
+              ({
+                team,
+                mythics,
+                bestMythics,
+                bestMythicsScore,
+                mostUnderTime,
+                bestSingleScore,
+              }) => {
+                return (
+                  <li
+                    key={team.id}
+                    className="border-1 border-neutral-200 p-4 ml-12 rounded-lg marker:text-4xl marker:m-2"
+                  >
+                    <div>
+                      <div className="flex flex-row justify-evenly flex-wrap">
+                        <Link to={`/event/${slug}/team/${team.id}`}>
+                          <H3 className="underline">{team.name}:</H3>
+                        </Link>
+                        {team.players.map((player) => (
+                          <Link
+                            to={`/event/${slug}/player/${player.id}`}
+                            key={player.id}
+                          >
+                            <PlayerShortDisplay
+                              key={player.id}
+                              player={player}
+                              className="text-xl font-bold before:w-8 before:h-8 underline"
+                            />
+                          </Link>
+                        ))}
+                      </div>
+
+                      <ul className="grid grid-cols-2 sm:grid-cols-4 p-4 gap-2">
+                        <li className="rounded-lg border border-neutral-100 grow">
+                          <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <span className="text-4xl font-semibold">
+                              {mythics?.length ?? 0}
+                            </span>
+                            <span className="text-md font-bold">
+                              Mythics Ran
+                            </span>
+                          </div>
+                        </li>
+                        <li className="rounded-lg border border-neutral-100 grow">
+                          <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <ScoreDisplay
+                              score={bestMythicsScore}
+                              className="text-4xl font-semibold"
+                            />
+                            <span className="text-md font-bold">
+                              Team Score
+                            </span>
+                          </div>
+                        </li>
+
+                        <li className="rounded-lg border border-neutral-100 grow">
+                          <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <ScoreDisplay
+                              score={bestSingleScore}
+                              individual
+                              className="text-4xl font-semibold"
+                            />
+                            <span className="text-md font-bold">
+                              Single Score
+                            </span>
+                          </div>
+                        </li>
+                        <li className="rounded-lg border border-neutral-100 grow">
+                          <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
+                            <span className="text-4xl font-semibold">
+                              {(mostUnderTime * 100).toFixed(2)}%
+                            </span>
+                            <span className="text-md font-bold">Under Par</span>
+                          </div>
+                        </li>
+                      </ul>
+
+                      <ul className="flex flex-row gap-2 justify-evenly flex-wrap">
+                        {bestMythics.map((mythic) => (
+                          <li
+                            key={mythic.keystone_run_id}
+                            className="bg-(image:--bg-image) h-16 w-16 bg-cover grid place-items-center bg-background/30 dark:bg-blend-darken bg-blend-lighten bg-no-repeat"
+                            style={{
+                              // @ts-expect-error: Variables are not typed
+                              "--bg-image": `url(${mythic.icon_url})`,
+                            }}
+                          >
+                            <ScoreDisplay
+                              score={mythic.score}
+                              individual
+                              className="text-xl font-bold"
+                            />
+                            <H5>{mythic.short_name}</H5>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </li>
+                );
+              }
+            )}
+          </ol>
+        </TabsContent>
+      </Tabs>
+    </div>
+    </>
+  );
+}
+
+function LeaderBoardLoading() {
+  return <div className="text-center">Loading...</div>;
+}
+
+function LeaderBoardMissing() {
+  return <div className="text-center">No Mythic Data Found</div>;
+}
+
+export function LeaderBoard({ zip }: { zip: MythicZipPromise | null }) {
+  return (
+    <Suspense fallback={<LeaderBoardLoading />}>
+      <Await resolve={zip}>
+        {(mythicZip) => {
+          if (!mythicZip) return <LeaderBoardMissing />;
+
+          return <LeaderBoardInternal zip={mythicZip} />;
+        }}
+      </Await>
+    </Suspense>
+  );
+}
+
+{
+  /* <div className="flex flex-row space-x-4 flex-wrap">
         <p>Sort By:</p>
         <Button
           variant={sortBy === "num_ran" ? "default" : "outline"}
@@ -74,127 +259,5 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
         >
           Unsorted
         </Button>
-      </div>
-      <ol className="list-decimal list-outside space-y-4">
-        {orderedZip.map(
-          ({
-            team,
-            mythics,
-            bestMythics,
-            bestMythicsScore,
-            mostUnderTime,
-            bestSingleScore,
-          }) => {
-            return (
-              <li
-                key={team.id}
-                className="border-1 border-neutral-200 p-4 ml-12 rounded-lg marker:text-4xl marker:m-2"
-              >
-                <div>
-                  <div className="flex flex-row justify-evenly flex-wrap">
-                    <Link to={`/event/${slug}/team/${team.id}`}>
-                      <H3 className="underline">{team.name}:</H3>
-                    </Link>
-                    {team.players.map((player) => (
-                      <Link
-                        to={`/event/${slug}/player/${player.id}`}
-                        key={player.id}
-                      >
-                        <PlayerShortDisplay
-                          key={player.id}
-                          player={player}
-                          className="text-xl font-bold before:w-8 before:h-8 underline"
-                        />
-                      </Link>
-                    ))}
-                  </div>
-
-                  <ul className="grid grid-cols-2 sm:grid-cols-4 p-4 gap-2">
-                    <li className="rounded-lg border border-neutral-100 grow">
-                      <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
-                        <span className="text-4xl font-semibold">
-                          {mythics?.length ?? 0}
-                        </span>
-                        <span className="text-md font-bold">Mythics Ran</span>
-                      </div>
-                    </li>
-                    <li className="rounded-lg border border-neutral-100 grow">
-                      <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
-                        <ScoreDisplay
-                          score={bestMythicsScore}
-                          className="text-4xl font-semibold"
-                        />
-                        <span className="text-md font-bold">Team Score</span>
-                      </div>
-                    </li>
-
-                    <li className="rounded-lg border border-neutral-100 grow">
-                      <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
-                        <ScoreDisplay
-                          score={bestSingleScore}
-                          individual
-                          className="text-4xl font-semibold"
-                        />
-                        <span className="text-md font-bold">Single Score</span>
-                      </div>
-                    </li>
-                    <li className="rounded-lg border border-neutral-100 grow">
-                      <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
-                        <span className="text-4xl font-semibold">
-                          {(mostUnderTime * 100).toFixed(2)}%
-                        </span>
-                        <span className="text-md font-bold">Under Par</span>
-                      </div>
-                    </li>
-                  </ul>
-
-                  <ul className="flex flex-row gap-2 justify-evenly flex-wrap">
-                    {bestMythics.map((mythic) => (
-                      <li
-                        key={mythic.keystone_run_id}
-                        className="bg-(image:--bg-image) h-16 w-16 bg-cover grid place-items-center bg-background/30 dark:bg-blend-darken bg-blend-lighten bg-no-repeat"
-                        style={{
-                          // @ts-expect-error: Variables are not typed
-                          "--bg-image": `url(${mythic.icon_url})`,
-                        }}
-                      >
-                        <ScoreDisplay
-                          score={mythic.score}
-                          individual
-                          className="text-xl font-bold"
-                        />
-                        <H5>{mythic.short_name}</H5>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-            );
-          }
-        )}
-      </ol>
-    </>
-  );
-}
-
-function LeaderBoardLoading() {
-  return <div className="text-center">Loading...</div>;
-}
-
-function LeaderBoardMissing() {
-  return <div className="text-center">No Mythic Data Found</div>;
-}
-
-export function LeaderBoard({ zip }: { zip: MythicZipPromise | null }) {
-  return (
-    <Suspense fallback={<LeaderBoardLoading />}>
-      <Await resolve={zip}>
-        {(mythicZip) => {
-          if (!mythicZip) return <LeaderBoardMissing />;
-
-          return <LeaderBoardInternal zip={mythicZip} />;
-        }}
-      </Await>
-    </Suspense>
-  );
+      </div> */
 }

@@ -11,6 +11,10 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { Button } from "~/components/ui/button";
+import { LeaderBoard } from "./event/show/components/leaderboard";
+import Leaderboard2 from "~/components/ui/leaderboard";
 
 export async function loader(_: Route.LoaderArgs) {
   const events = await db.event.findMany();
@@ -34,7 +38,10 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function App({ loaderData: { events } }: Route.ComponentProps) {
+
   return (
+    <>
+    <Leaderboard2 />
     <div>
       <h2 className="text-4xl mb-6 mt-4 font-bold leading-none tracking-light underline decoration-4 decoration-light-blue text-black dark:text-white">Events</h2>
       <Table>
@@ -58,5 +65,6 @@ export default function App({ loaderData: { events } }: Route.ComponentProps) {
         </TableBody>
       </Table>
     </div>
+          </>
   );
 }

@@ -85,7 +85,7 @@ export default function Event({
   params: { slug },
 }: Route.ComponentProps) {
   return (
-    <main className="space-y-4">
+    <main className="w-full">
       <H2>
         {event.name}{" "}
         <Button asChild>
