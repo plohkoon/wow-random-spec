@@ -88,6 +88,10 @@ function CharacterDataInternal(
                 className="even:flex-row-reverse odd:flex-row flex group even:text-right"
                 key={item.item_id}
               >
+                
+                {/* This works but we don't wanna get in trouble lmao */}
+                {/* <img src={`https://cdn.raiderio.net/images/wow/icons/large/${item.icon}.jpg`} /> */}
+
                 <User width={64} height={64} />
                 <div>
                   <H4>{item.name}</H4>

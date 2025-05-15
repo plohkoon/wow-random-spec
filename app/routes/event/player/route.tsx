@@ -73,6 +73,8 @@ export default function PlayerShow({
   loaderData: { player, playerData, scoreTiers, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
+  console.log(playerData);
+  console.log(player);
   return (
     <article>
       <Link to={`/event/${slug}/`} className="underline">
