@@ -82,8 +82,8 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
     console.log(value);
     if (value === 1) return "text-black bg-yellow-400";
     if (value === 2) return "text-black bg-gray-300";
-    if (value === 3) return "text-white bg-amber-700"
-    return "text-black bg-white"
+    if (value === 3) return "text-white bg-amber-700";
+    return "text-black bg-white";
   }
   return (
     <>
@@ -97,6 +97,80 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
           className="w-full"
         >
           <TabsContent value={sortBy ?? "null"}>
+            {/* <div className="flex items-center gap-2"> */}
+            {/* Change sorting to Tabs or Dropdown depending on mobile view or not. */}
+            {isMobile ? (
+              <div className="flex justify-center flex-wrap gap-2 mt-6">
+              <DropdownMenu>
+                <span className="text-sm text-gray-400 mr-2 mt-2">Sort By:</span>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="border-gray-700 bg-gray-900"
+                  >
+                    {sortBy ? SORT_LABELS[sortBy] : "Unsorted"}
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  side="bottom"
+                  align="end"
+                  className="z-50 bg-gray-900 border border-gray-700 mt-1 min-w-[180px]"
+                >
+                  <DropdownMenuItem onClick={() => setSortBy("num_ran")}>
+                    Mythic Ran
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("team_score")}>
+                    Team Score
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("single_score")}>
+                    Best Single Score
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("under_par")}>
+                    Most Under Par
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy(null)}>
+                    Unsorted
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              </div>
+            ) : (
+              <TabsList className="flex justify-center flex-wrap gap-2 mb-4">
+                <p className="text-sm text-gray-400 mr-2 mb-4">Sort By:</p>
+                <TabsTrigger
+                  value="num_ran"
+                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                >
+                  Mythic Ran
+                </TabsTrigger>
+                <TabsTrigger
+                  value="team_score"
+                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                >
+                  Team Score
+                </TabsTrigger>
+                <TabsTrigger
+                  value="single_score"
+                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                >
+                  Best Single Score
+                </TabsTrigger>
+                <TabsTrigger
+                  value="under_par"
+                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                >
+                  Most Under Par
+                </TabsTrigger>
+                <TabsTrigger
+                  value="null"
+                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                >
+                  Unsorted
+                </TabsTrigger>
+              </TabsList>
+            )}
+            {/* </div> */}
             <ol className="list-decimal list-outside space-y-4">
               {orderedZip.map(
                 (
@@ -111,106 +185,34 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                   index
                 ) => {
                   return (
-                    <li key={team.id} className="ps-4 pe-4 mt-24">
-                      <div className="w-full mx-auto bg-black text-white p-6 rounded-xl">
-                        <div className="flex items-center justify-between mb-6">
-                          <div className="flex items-center gap-2">
-                            <p className="text-sm text-gray-400 mr-2 mb-4">
-                              Sort By:
-                            </p>
-                            {isMobile ? (
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    className="border-gray-700 bg-gray-900"
-                                  >
-                                    {sortBy ? SORT_LABELS[sortBy] : "Unsorted"}
-                                    <ChevronDown className="ml-2 h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                  side="bottom"
-                                  align="end"
-                                  className="z-50 bg-gray-900 border border-gray-700 mt-1 min-w-[180px]"
-                                >
-                                  <DropdownMenuItem
-                                    onClick={() => setSortBy("num_ran")}
-                                  >
-                                    Mythic Ran
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => setSortBy("team_score")}
-                                  >
-                                    Team Score
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => setSortBy("single_score")}
-                                  >
-                                    Best Single Score
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => setSortBy("under_par")}
-                                  >
-                                    Most Under Par
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => setSortBy(null)}
-                                  >
-                                    Unsorted
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            ) : (
-                              <TabsList className="flex justify-center flex-wrap gap-2 mb-4">
-                                <TabsTrigger
-                                  value="num_ran"
-                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-                                >
-                                  Mythic Ran
-                                </TabsTrigger>
-                                <TabsTrigger
-                                  value="team_score"
-                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-                                >
-                                  Team Score
-                                </TabsTrigger>
-                                <TabsTrigger
-                                  value="single_score"
-                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-                                >
-                                  Best Single Score
-                                </TabsTrigger>
-                                <TabsTrigger
-                                  value="under_par"
-                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-                                >
-                                  Most Under Par
-                                </TabsTrigger>
-                                <TabsTrigger
-                                  value="null"
-                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-                                >
-                                  Unsorted
-                                </TabsTrigger>
-                              </TabsList>
-                            )}
-                          </div>
-                        </div>
+                    <li key={team.id} className="px-6 lg:px-24 lg:mt-12 mt-4">
+                      <div className="w-full mx-auto bg-white dark:bg-black text-white p-6 rounded-xl mb-12">
+                        <div className="flex items-center justify-between mb-6"></div>
                         <div className="space-y-4">
                           <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-6 border border-gray-800">
-<div className={`absolute -top-3 -left-3 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-lg ${getMedalColourClass(index + 1)}`}>
+                            {/* "Place" of team (1st, 2nd, 3rd etc) */}
+                            <div
+                              className={`absolute -top-3 -left-3 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-lg ${getMedalColourClass(
+                                index + 1
+                              )}`}
+                            >
                               {index + 1}
                             </div>
                             <div className="mb-8">
+                              {/* Team Name */}
                               <div className="flex justify-center mb-2">
-                                <h2 className="text-3xl underline decoration-3 decoration-light-red font-bold flex items-center gap-2">
-                                  <Users className="h-6 w-6 text-gray-400" />
-                                  <Link to={`/event/${slug}/team/${team.id}`}>
-                                    {team.name}
+                                <h2 className="text-3xl md:text-4xl lg:text-5xl mb-4 underline decoration-3 decoration-light-brown font-bold flex items-center gap-2 overflow-hidden whitespace-nowrap">
+                                  <Users className="h-8 w-8 text-gray-400" />
+                                  <Link
+                                    to={`/event/${slug}/team/${team.id}`}
+                                    className="truncate overflow-hidden whitespace-nowrap block"
+                                  >
+                                    {/* {team.name} */}
+                                    This team name is way too long
                                   </Link>
                                 </h2>
                               </div>
+                              {/* Players */}
                               <div className="flex flex-wrap justify-center gap-2">
                                 {team.players.map((player: any) => (
                                   <Link
@@ -219,7 +221,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   >
                                     <PlayerShortDisplay
                                       player={player}
-                                      className="text-md before:w-4 before:h-4 underline"
+                                      className="text-lg before:w-4 before:h-4 underline"
                                     />
                                   </Link>
                                 ))}
@@ -234,7 +236,6 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   {mythics?.length ?? 0}
                                 </span>
                               </div>
-
                               <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-gray-400 text-sm mb-1">
                                   Team Score
@@ -243,7 +244,6 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   <ScoreDisplay score={bestMythicsScore} />
                                 </span>
                               </div>
-
                               <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-gray-400 text-sm mb-1">
                                   Single Score
@@ -255,14 +255,13 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   />
                                 </span>
                               </div>
-
                               <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-gray-400 text-sm mb-1">
                                   Under Par
                                 </span>
                                 <span
                                   className={`text-3xl font-bold ${getGreenTextClass(
-                                    (mostUnderTime * 100)
+                                    mostUnderTime * 100
                                   )}`}
                                 >
                                   {(mostUnderTime * 100).toFixed(2)}
@@ -307,6 +306,7 @@ export function LeaderBoard({ zip }: { zip: MythicZipPromise | null }) {
   );
 }
 
+// old code for reference rn
 {
   /* <div className="flex flex-row space-x-4 flex-wrap">
         <p>Sort By:</p>

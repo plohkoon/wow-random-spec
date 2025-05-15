@@ -35,6 +35,7 @@
   --color-light-green: #4B311F;
   --color-light-blue: #669BBC;
   --color-light-red: #DB5461;
+  --color-black: #222222;
 }
 
 @theme inline {
