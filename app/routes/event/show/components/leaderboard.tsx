@@ -3,17 +3,14 @@ import { Await, Link, useParams } from "react-router";
 import { PlayerShortDisplay } from "~/components/display/playerShortDisplay";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Route } from "../+types/route";
-import { H3, H5 } from "~/components/display/headers";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuArrow,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import LeaderboardNew from "~/components/ui/leaderboard";
 import { ChevronDown, Users } from "lucide-react";
 import MythicDisplay from "~/components/ui/mythicdisplay";
 
