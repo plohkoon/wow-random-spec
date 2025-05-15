@@ -68,14 +68,15 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
     under_par: "Most Under Par",
   };
 
+  //func to set a green colour via tailwind for under par values
   function getGreenTextClass(value: number): string {
-  if (value <= -40) return "text-green-700";
-  if (value <= -30) return "text-green-600";
-  if (value <= -20) return "text-green-500";
-  if (value <= -10) return "text-green-400";
-  if (value < 0) return "text-green-300";
-  return "text-gray-400";
-}
+    if (value <= -40) return "text-green-600";
+    if (value <= -30) return "text-green-500";
+    if (value <= -20) return "text-green-400";
+    if (value <= -10) return "text-green-300";
+    if (value < 0) return "text-white";
+    return "text-white";
+  }
   return (
     <>
       <div className="w-full">
@@ -90,16 +91,17 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
           <TabsContent value={sortBy ?? "null"}>
             <ol className="list-decimal list-outside space-y-4">
               {orderedZip.map(
-                ({
-                  team,
-                  mythics,
-                  bestMythics,
-                  bestMythicsScore,
-                  mostUnderTime,
-                  bestSingleScore,
-                },
-                index
-              ) => {
+                (
+                  {
+                    team,
+                    mythics,
+                    bestMythics,
+                    bestMythicsScore,
+                    mostUnderTime,
+                    bestSingleScore,
+                  },
+                  index
+                ) => {
                   return (
                     <li key={team.id} className="ps-4 pe-4 mt-24">
                       <div className="w-full mx-auto bg-black text-white p-6 rounded-xl">
@@ -230,7 +232,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   Team Score
                                 </span>
                                 <span className="text-3xl font-bold">
-                                  <ScoreDisplay score={bestMythicsScore}/>
+                                  <ScoreDisplay score={bestMythicsScore} />
                                 </span>
                               </div>
 
@@ -239,7 +241,10 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   Single Score
                                 </span>
                                 <span className="text-3xl font-bold">
-                                  <ScoreDisplay score={bestSingleScore} individual/>
+                                  <ScoreDisplay
+                                    score={bestSingleScore}
+                                    individual
+                                  />
                                 </span>
                               </div>
 
@@ -247,9 +252,13 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                 <span className="text-gray-400 text-sm mb-1">
                                   Under Par
                                 </span>
-<span className={`text-3xl font-bold ${getGreenTextClass(mostUnderTime)}`}>
-  {(mostUnderTime * 100).toFixed(2)}
-</span>
+                                <span
+                                  className={`text-3xl font-bold ${getGreenTextClass(
+                                    (mostUnderTime * 100)
+                                  )}`}
+                                >
+                                  {(mostUnderTime * 100).toFixed(2)}
+                                </span>
                               </div>
                             </div>
                             <MythicDisplay bestMythics={bestMythics} />
