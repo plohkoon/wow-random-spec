@@ -77,6 +77,14 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
     if (value < 0) return "text-white";
     return "text-white";
   }
+
+  function getMedalColourClass(value: number): string {
+    console.log(value);
+    if (value === 1) return "text-black bg-yellow-400";
+    if (value === 2) return "text-black bg-gray-300";
+    if (value === 3) return "text-white bg-amber-700"
+    return "text-black bg-white"
+  }
   return (
     <>
       <div className="w-full">
@@ -191,7 +199,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                         </div>
                         <div className="space-y-4">
                           <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-6 border border-gray-800">
-                            <div className="absolute -top-3 -left-3 bg-light-red text-black font-bold rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-lg">
+<div className={`absolute -top-3 -left-3 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-lg ${getMedalColourClass(index + 1)}`}>
                               {index + 1}
                             </div>
                             <div className="mb-8">
