@@ -75,12 +75,15 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
     return "text-white";
   }
 
+  //func to set a medal colour depending on index value
   function getMedalColourClass(value: number): string {
     if (value === 1) return "text-black bg-yellow-400";
     if (value === 2) return "text-black bg-gray-300";
     if (value === 3) return "text-white bg-amber-700";
     return "text-black bg-white";
   }
+
+  // the dang component
   return (
     <>
       <div className="w-full">
@@ -187,7 +190,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                       <div className="w-full mx-auto bg-white dark:bg-black text-white p-6 rounded-xl mb-12">
                         <div className="flex items-center justify-between mb-6"></div>
                         <div className="space-y-4">
-                          <div className="relative bg-gradient-to-r from-stone-300 to-stone-400 dark:from-gray-900 dark:to-gray-800 dark:bg-gradient-to-r rounded-xl p-6 border border-neutral-200 dark:border-gray-800 shadow-xl">
+                          <div className="relative bg-gradient-to-r from-stone-300 to-stone-400 dark:from-[#2A2A2A] dark:to-[#333333] dark:bg-gradient-to-r rounded-xl p-6 border border-neutral-200 dark:border-black-light shadow-xl">
                             {/* "Place" of team (1st, 2nd, 3rd etc) */}
                             <div
                               className={`absolute -top-3 -left-3 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-lg ${getMedalColourClass(
@@ -226,7 +229,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                             </div>
                             {/* Statistics for Team */}
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                              <div className="bg-stone-300 dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                              <div className="bg-stone-300 dark:bg-black-light rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Mythics Ran
                                 </span>
@@ -234,7 +237,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   {mythics?.length ?? 0}
                                 </span>
                               </div>
-                              <div className="bg-stone-300 dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                              <div className="bg-stone-300 dark:bg-black-light rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Team Score
                                 </span>
@@ -242,7 +245,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   <ScoreDisplay score={bestMythicsScore} />
                                 </span>
                               </div>
-                              <div className="bg-stone-300 dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                              <div className="bg-stone-300 dark:bg-black-light rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Single Score
                                 </span>
@@ -253,7 +256,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   />
                                 </span>
                               </div>
-                              <div className="bg-stone-300 dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                              <div className="bg-stone-300 dark:bg-black-light rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Under Par
                                 </span>

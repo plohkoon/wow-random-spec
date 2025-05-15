@@ -11,7 +11,7 @@ export default function MythicDisplay({ bestMythics }: MythicProps) {
         {bestMythics.map((mythic: any) => (
           <div
             key={mythic.keystone_run_id}
-            className="bg-stone-300 dark:bg-gray-900 rounded p-2 flex flex-col items-center"
+            className="bg-stone-300 dark:bg-[#222222] rounded p-2 flex flex-col items-center"
           >
             <div className="relative h-16 w-16 rounded overflow-hidden bg-cover bg-center">
               <img
