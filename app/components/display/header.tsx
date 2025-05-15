@@ -26,7 +26,7 @@ export default function Header({
 
   return (
     <>
-<div className="sticky top-0 z-50 bg-white dark:bg-black flex items-center justify-between w-full p-2">
+      <div className="sticky top-0 z-50 bg-white dark:bg-black flex items-center justify-between w-full p-2">
         {/* Logo + Title */}
         <div className="flex items-center space-x-4">
           <Link to="/">
