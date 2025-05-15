@@ -7,6 +7,7 @@ type TitleProps = {
     slug: string;
     isAdmin: boolean;
 }
+
 //Function for event titles.
 export default function EventTitle({event, slug, isAdmin}: TitleProps) {
     return (
