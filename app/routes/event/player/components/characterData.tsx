@@ -82,7 +82,6 @@ function CharacterDataInternal(
           {objectKeys.map((key) => {
             const item = props.gear.items[key];
             if (!item) return null;
-
             return (
               <div
                 className="even:flex-row-reverse odd:flex-row flex group even:text-right"
