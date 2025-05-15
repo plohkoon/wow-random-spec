@@ -212,7 +212,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   </Link>
                                 </h2>
                               </div>
-                              {/* Players */}
+                              {/* Team Players */}
                               <div className="flex flex-wrap justify-center gap-2">
                                 {team.players.map((player: any) => (
                                   <Link
@@ -227,6 +227,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                 ))}
                               </div>
                             </div>
+                            {/* Statistics for Team */}
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                               <div className="bg-stone-300 dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
@@ -268,6 +269,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                 </span>
                               </div>
                             </div>
+                            {/* Mythic Display list component */}
                             <MythicDisplay bestMythics={bestMythics} />
                           </div>
                         </div>
