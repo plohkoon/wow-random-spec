@@ -14,6 +14,7 @@ import { AppSession } from "~/lib/session.server";
 import { organizeTeams } from "~/lib/teams";
 import { Route } from "./+types/route";
 import { LeaderBoard } from "./components/leaderboard";
+import EventTitle from "./title";
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   const [event, isAdmin] = await Promise.all([
@@ -85,27 +86,9 @@ export default function Event({
   params: { slug },
 }: Route.ComponentProps) {
   return (
-<main className="w-full">
-  <div className="flex items-center justify-between mb-2">
-    <div>
-      <Button asChild>
-        <Link to={`/event/${slug}/lists`} className="underline">
-          View Lists {">"}
-        </Link>
-      </Button>
-    </div>
-    <div className="flex-1 text-center">
-      <H2>{event.name}</H2>
-    </div>
-  {isAdmin && (
-    <div className="text-center mb-6">
-      <Button asChild>
-        <Link to={`/event/${slug}/edit`}>Edit</Link>
-      </Button>
-    </div>
-  )}
-</div>
-  <LeaderBoard zip={mythicTeamZip} />
-</main>
+    <main className="w-full">
+      <EventTitle event={event.name} slug={slug} isAdmin={isAdmin} />
+      <LeaderBoard zip={mythicTeamZip} />
+    </main>
   );
 }
