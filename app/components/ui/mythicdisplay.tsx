@@ -1,7 +1,14 @@
 import { ScoreDisplay } from "../display/scoreDisplay";
 
+type Mythic = {
+  keystone_run_id: string | number;
+  icon_url: string;
+  short_name: string;
+  score: number;
+};
+
 type MythicProps = {
-  bestMythics: any;
+  bestMythics: Mythic[];
 };
 
 export default function MythicDisplay({ bestMythics }: MythicProps) {
