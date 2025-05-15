@@ -9,7 +9,7 @@ type TitleProps = {
 }
 //Function for event titles.
 export default function EventTitle({event, slug, isAdmin}: TitleProps) {
-    console.log(event);
+    console.log(isAdmin);
     return (
       <>
         <div className="flex items-center justify-between mb-2 mt-12">
@@ -19,7 +19,6 @@ export default function EventTitle({event, slug, isAdmin}: TitleProps) {
                 View Lists {">"}
               </Link>
             </Button>
-            <p>warning this is real cluttered</p>
           </div>
           <div className="flex-1 text-center mb-4">
             <H2>{event}</H2>
