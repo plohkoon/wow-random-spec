@@ -79,7 +79,6 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
   }
 
   function getMedalColourClass(value: number): string {
-    console.log(value);
     if (value === 1) return "text-black bg-yellow-400";
     if (value === 2) return "text-black bg-gray-300";
     if (value === 3) return "text-white bg-amber-700";
@@ -101,43 +100,45 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
             {/* Change sorting to Tabs or Dropdown depending on mobile view or not. */}
             {isMobile ? (
               <div className="flex justify-center flex-wrap gap-2 mt-6">
-              <DropdownMenu>
-                <span className="text-sm text-gray-400 mr-2 mt-2">Sort By:</span>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="border-gray-700 bg-gray-900"
+                <DropdownMenu>
+                  <span className="text-sm text-gray-400 mr-2 mt-2">
+                    Sort By:
+                  </span>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="border-neutral-300 dark:border-gray-700 bg-neutral-300 dark:bg-gray-900"
+                    >
+                      {sortBy ? SORT_LABELS[sortBy] : "Unsorted"}
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="bottom"
+                    align="end"
+                    className="z-50 bg-neutral-300 dark: bg-gray-900 border border-gray-700 mt-1 min-w-[180px]"
                   >
-                    {sortBy ? SORT_LABELS[sortBy] : "Unsorted"}
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="bottom"
-                  align="end"
-                  className="z-50 bg-gray-900 border border-gray-700 mt-1 min-w-[180px]"
-                >
-                  <DropdownMenuItem onClick={() => setSortBy("num_ran")}>
-                    Mythic Ran
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("team_score")}>
-                    Team Score
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("single_score")}>
-                    Best Single Score
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy("under_par")}>
-                    Most Under Par
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setSortBy(null)}>
-                    Unsorted
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <DropdownMenuItem onClick={() => setSortBy("num_ran")}>
+                      Mythic Ran
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy("team_score")}>
+                      Team Score
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy("single_score")}>
+                      Best Single Score
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy("under_par")}>
+                      Most Under Par
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortBy(null)}>
+                      Unsorted
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ) : (
-              <TabsList className="flex justify-center flex-wrap gap-2 mb-4">
-                <p className="text-sm text-gray-400 mr-2 mb-4">Sort By:</p>
+              <TabsList className="flex justify-center flex-wrap gap-2 mb-4 mt-4">
+                <p className="text-sm text-black dark:text-gray-400 my-auto me-2">Sort By:</p>
                 <TabsTrigger
                   value="num_ran"
                   className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
@@ -170,7 +171,6 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                 </TabsTrigger>
               </TabsList>
             )}
-            {/* </div> */}
             <ol className="list-decimal list-outside space-y-4">
               {orderedZip.map(
                 (
@@ -189,7 +189,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                       <div className="w-full mx-auto bg-white dark:bg-black text-white p-6 rounded-xl mb-12">
                         <div className="flex items-center justify-between mb-6"></div>
                         <div className="space-y-4">
-                          <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-6 border border-gray-800">
+                          <div className="relative bg-gradient-to-r from-stone-300 to-stone-400 dark:from-gray-900 dark:to-gray-800 dark:bg-gradient-to-r rounded-xl p-6 border border-neutral-200 dark:border-gray-800 shadow-xl">
                             {/* "Place" of team (1st, 2nd, 3rd etc) */}
                             <div
                               className={`absolute -top-3 -left-3 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-lg ${getMedalColourClass(
@@ -201,11 +201,11 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                             <div className="mb-8">
                               {/* Team Name */}
                               <div className="flex justify-center mb-2">
-                                <h2 className="text-3xl md:text-4xl lg:text-5xl mb-4 underline decoration-3 decoration-light-brown font-bold flex items-center gap-2 overflow-hidden whitespace-nowrap">
+                                <h2 className="text-3xl md:text-4xl lg:text-5xl mb-4 underline decoration-3 decoration-white dark:decoration-light-brown font-bold flex items-center gap-2 overflow-hidden whitespace-nowrap">
                                   <Users className="h-8 w-8 text-gray-400" />
                                   <Link
                                     to={`/event/${slug}/team/${team.id}`}
-                                    className="truncate overflow-hidden whitespace-nowrap block"
+                                    className="truncate overflow-hidden whitespace-nowrap block text-black dark:text-white"
                                   >
                                     {/* {team.name} */}
                                     This team name is way too long
@@ -228,39 +228,39 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                               </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                              <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
-                                <span className="text-gray-400 text-sm mb-1">
+                              <div className="bg-stone-300 dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                                <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Mythics Ran
                                 </span>
-                                <span className="text-3xl font-bold">
+                                <span className="text-3xl font-bold text-black dark:text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
                                   {mythics?.length ?? 0}
                                 </span>
                               </div>
-                              <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
-                                <span className="text-gray-400 text-sm mb-1">
+                              <div className="bg-stone-300 dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                                <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Team Score
                                 </span>
-                                <span className="text-3xl font-bold">
+                                <span className="text-3xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
                                   <ScoreDisplay score={bestMythicsScore} />
                                 </span>
                               </div>
-                              <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
-                                <span className="text-gray-400 text-sm mb-1">
+                              <div className="bg-stone-300 dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                                <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Single Score
                                 </span>
-                                <span className="text-3xl font-bold">
+                                <span className="text-3xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
                                   <ScoreDisplay
                                     score={bestSingleScore}
                                     individual
                                   />
                                 </span>
                               </div>
-                              <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
-                                <span className="text-gray-400 text-sm mb-1">
+                              <div className="bg-stone-300 dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                                <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Under Par
                                 </span>
                                 <span
-                                  className={`text-3xl font-bold ${getGreenTextClass(
+                                  className={`text-3xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] ${getGreenTextClass(
                                     mostUnderTime * 100
                                   )}`}
                                 >
