@@ -41,7 +41,6 @@ export default function App({ loaderData: { events } }: Route.ComponentProps) {
 
   return (
     <>
-    <Leaderboard2 />
     <div>
       <h2 className="text-4xl mb-6 mt-4 font-bold leading-none tracking-light underline decoration-4 decoration-light-blue text-black dark:text-white">Events</h2>
       <Table>

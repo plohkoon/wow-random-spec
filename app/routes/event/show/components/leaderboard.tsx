@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { Await, Link, useParams } from "react-router";
 import { PlayerShortDisplay } from "~/components/display/playerShortDisplay";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
@@ -13,6 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import LeaderboardNew from "~/components/ui/leaderboard";
+import { ChevronDown, Users } from "lucide-react";
+import MythicDisplay from "~/components/ui/mythicdisplay";
 
 type MythicZip = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["mythicTeamZip"]>
@@ -45,67 +48,281 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
     return [...zip].sort(sortFn);
   }, [zip, sortBy]);
 
+  function useIsMobile(breakpoint = 768) {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+      const update = () => setIsMobile(window.innerWidth < breakpoint);
+      update();
+      window.addEventListener("resize", update);
+      return () => window.removeEventListener("resize", update);
+    }, [breakpoint]);
+
+    return isMobile;
+  }
+  const isMobile = useIsMobile();
+  const SORT_LABELS: Record<NonNullable<typeof sortBy>, string> = {
+    single_score: "Best Single Score",
+    team_score: "Team Score",
+    num_ran: "Mythic Ran",
+    under_par: "Most Under Par",
+  };
   return (
     <>
-    <div className="w-full">
-      <Tabs
-        defaultValue="team_score"
-        value={sortBy ?? "null"}
-        onValueChange={(val) => {
-          setSortBy(val === "null" ? null : (val as typeof sortBy));
+      <div className="w-full">
+        <Tabs
+          defaultValue="team_score"
+          value={sortBy ?? "null"}
+          onValueChange={(val) => {
+            setSortBy(val === "null" ? null : (val as typeof sortBy));
+          }}
+          className="w-full"
+        >
+          <TabsContent value={sortBy ?? "null"}>
+            <ol className="list-decimal list-outside space-y-4">
+              {orderedZip.map(
+                ({
+                  team,
+                  mythics,
+                  bestMythics,
+                  bestMythicsScore,
+                  mostUnderTime,
+                  bestSingleScore,
+                },
+                index
+              ) => {
+                  return (
+                    <li key={team.id}>
+                      <div className="w-full max-w-7xl mx-auto bg-black text-white p-6 rounded-xl">
+                        <div className="flex items-center justify-between mb-6">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm text-gray-400 mr-2 mb-4">
+                              Sort By:
+                            </p>
+                            {isMobile ? (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className="border-gray-700 bg-gray-900"
+                                  >
+                                    {sortBy ? SORT_LABELS[sortBy] : "Unsorted"}
+                                    <ChevronDown className="ml-2 h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  side="bottom"
+                                  align="end"
+                                  className="z-50 bg-gray-900 border border-gray-700 mt-1 min-w-[180px]"
+                                >
+                                  <DropdownMenuItem
+                                    onClick={() => setSortBy("num_ran")}
+                                  >
+                                    Mythic Ran
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => setSortBy("team_score")}
+                                  >
+                                    Team Score
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => setSortBy("single_score")}
+                                  >
+                                    Best Single Score
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => setSortBy("under_par")}
+                                  >
+                                    Most Under Par
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => setSortBy(null)}
+                                  >
+                                    Unsorted
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            ) : (
+                              <TabsList className="flex justify-center flex-wrap gap-2 mb-4">
+                                <TabsTrigger
+                                  value="num_ran"
+                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                                >
+                                  Mythic Ran
+                                </TabsTrigger>
+                                <TabsTrigger
+                                  value="team_score"
+                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                                >
+                                  Team Score
+                                </TabsTrigger>
+                                <TabsTrigger
+                                  value="single_score"
+                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                                >
+                                  Best Single Score
+                                </TabsTrigger>
+                                <TabsTrigger
+                                  value="under_par"
+                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                                >
+                                  Most Under Par
+                                </TabsTrigger>
+                                <TabsTrigger
+                                  value="null"
+                                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                                >
+                                  Unsorted
+                                </TabsTrigger>
+                              </TabsList>
+                            )}
+                          </div>
+                        </div>
+                        <div className="space-y-4">
+                          <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-6 border border-gray-800">
+                            <div className="absolute -top-3 -left-3 bg-light-red text-black font-bold rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-lg">
+                              {index + 1}
+                            </div>
+                            <div className="mb-8">
+                              <div className="flex justify-center mb-2">
+                                <h2 className="text-3xl underline decoration-3 decoration-light-red font-bold flex items-center gap-2">
+                                  <Users className="h-6 w-6 text-gray-400" />
+                                  <Link to={`/event/${slug}/team/${team.id}`}>
+                                    {team.name}
+                                  </Link>
+                                </h2>
+                              </div>
+                              <div className="flex flex-wrap justify-center gap-2">
+                                {team.players.map((player: any) => (
+                                  <Link
+                                    key={player.id}
+                                    to={`/event/${slug}/player/${player.id}`}
+                                  >
+                                    <PlayerShortDisplay
+                                      player={player}
+                                      className="text-md before:w-4 before:h-4 underline"
+                                    />
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                              <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                                <span className="text-gray-400 text-sm mb-1">
+                                  Mythics Ran
+                                </span>
+                                <span className="text-3xl font-bold">
+                                  {mythics?.length ?? 0}
+                                </span>
+                              </div>
+
+                              <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                                <span className="text-gray-400 text-sm mb-1">
+                                  Team Score
+                                </span>
+                                <span className="text-3xl font-bold">
+                                  {bestMythicsScore}
+                                </span>
+                              </div>
+
+                              <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                                <span className="text-gray-400 text-sm mb-1">
+                                  Single Score
+                                </span>
+                                <span className="text-3xl font-bold">
+                                  {bestSingleScore}
+                                </span>
+                              </div>
+
+                              <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center justify-center">
+                                <span className="text-gray-400 text-sm mb-1">
+                                  Under Par
+                                </span>
+                                <span className="text-3xl font-bold">
+                                  {(mostUnderTime * 100).toFixed(2)}
+                                </span>
+                              </div>
+                            </div>
+                            <MythicDisplay bestMythics={bestMythics} />
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                }
+              )}
+            </ol>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </>
+  );
+}
+
+function LeaderBoardLoading() {
+  return <div className="text-center">Loading...</div>;
+}
+
+function LeaderBoardMissing() {
+  return <div className="text-center">No Mythic Data Found</div>;
+}
+
+export function LeaderBoard({ zip }: { zip: MythicZipPromise | null }) {
+  return (
+    <Suspense fallback={<LeaderBoardLoading />}>
+      <Await resolve={zip}>
+        {(mythicZip) => {
+          if (!mythicZip) return <LeaderBoardMissing />;
+
+          return <LeaderBoardInternal zip={mythicZip} />;
         }}
-        className="w-full"
-      >
-        {" "}
-        <TabsList className="flex justify-center flex-wrap gap-2 mb-4">
-          <TabsTrigger
-            value="num_ran"
-            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-          >
-            Mythic Ran
-          </TabsTrigger>
-          <TabsTrigger
-            value="team_score"
-            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-          >
-            Team Score
-          </TabsTrigger>
-          <TabsTrigger
-            value="single_score"
-            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-          >
-            Best Single Score
-          </TabsTrigger>
-          <TabsTrigger
-            value="under_par"
-            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-          >
-            Most Under Par
-          </TabsTrigger>
-          <TabsTrigger
-            value="null"
-            className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-white data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-          >
-            Unsorted
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value={sortBy ?? "null"}>
-          <ol className="list-decimal list-outside space-y-4">
-            {orderedZip.map(
-              ({
-                team,
-                mythics,
-                bestMythics,
-                bestMythicsScore,
-                mostUnderTime,
-                bestSingleScore,
-              }) => {
-                return (
-                  <li
-                    key={team.id}
-                    className="border-1 border-neutral-200 p-4 ml-12 rounded-lg marker:text-4xl marker:m-2"
-                  >
-                    <div>
+      </Await>
+    </Suspense>
+  );
+}
+
+{
+  /* <div className="flex flex-row space-x-4 flex-wrap">
+        <p>Sort By:</p>
+        <Button
+          variant={sortBy === "num_ran" ? "default" : "outline"}
+          onClick={() => setSortBy("num_ran")}
+        >
+          Mythic Ran
+        </Button>
+        <Button
+          variant={sortBy === "team_score" ? "default" : "outline"}
+          onClick={() => setSortBy("team_score")}
+        >
+          Team Score
+        </Button>
+
+        <Button
+          variant={sortBy === "single_score" ? "default" : "outline"}
+          onClick={() => setSortBy("single_score")}
+        >
+          Best Single Score
+        </Button>
+
+        <Button
+          variant={sortBy === "under_par" ? "default" : "outline"}
+          onClick={() => setSortBy("under_par")}
+        >
+          Most Under Par
+        </Button>
+
+        <Button
+          variant={sortBy === null ? "default" : "outline"}
+          onClick={() => setSortBy(null)}
+        >
+          Unsorted
+        </Button>
+      </div> */
+}
+
+{
+  /* <div>
                       <div className="flex flex-row justify-evenly flex-wrap">
                         <Link to={`/event/${slug}/team/${team.id}`}>
                           <H3 className="underline">{team.name}:</H3>
@@ -123,7 +340,6 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                           </Link>
                         ))}
                       </div>
-
                       <ul className="grid grid-cols-2 sm:grid-cols-4 p-4 gap-2">
                         <li className="rounded-lg border border-neutral-100 grow">
                           <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
@@ -188,76 +404,5 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                           </li>
                         ))}
                       </ul>
-                    </div>
-                  </li>
-                );
-              }
-            )}
-          </ol>
-        </TabsContent>
-      </Tabs>
-    </div>
-    </>
-  );
-}
-
-function LeaderBoardLoading() {
-  return <div className="text-center">Loading...</div>;
-}
-
-function LeaderBoardMissing() {
-  return <div className="text-center">No Mythic Data Found</div>;
-}
-
-export function LeaderBoard({ zip }: { zip: MythicZipPromise | null }) {
-  return (
-    <Suspense fallback={<LeaderBoardLoading />}>
-      <Await resolve={zip}>
-        {(mythicZip) => {
-          if (!mythicZip) return <LeaderBoardMissing />;
-
-          return <LeaderBoardInternal zip={mythicZip} />;
-        }}
-      </Await>
-    </Suspense>
-  );
-}
-
-{
-  /* <div className="flex flex-row space-x-4 flex-wrap">
-        <p>Sort By:</p>
-        <Button
-          variant={sortBy === "num_ran" ? "default" : "outline"}
-          onClick={() => setSortBy("num_ran")}
-        >
-          Mythic Ran
-        </Button>
-        <Button
-          variant={sortBy === "team_score" ? "default" : "outline"}
-          onClick={() => setSortBy("team_score")}
-        >
-          Team Score
-        </Button>
-
-        <Button
-          variant={sortBy === "single_score" ? "default" : "outline"}
-          onClick={() => setSortBy("single_score")}
-        >
-          Best Single Score
-        </Button>
-
-        <Button
-          variant={sortBy === "under_par" ? "default" : "outline"}
-          onClick={() => setSortBy("under_par")}
-        >
-          Most Under Par
-        </Button>
-
-        <Button
-          variant={sortBy === null ? "default" : "outline"}
-          onClick={() => setSortBy(null)}
-        >
-          Unsorted
-        </Button>
-      </div> */
+                    </div> */
 }
