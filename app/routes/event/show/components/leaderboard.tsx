@@ -96,7 +96,6 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
           className="w-full"
         >
           <TabsContent value={sortBy ?? "null"}>
-            {/* <div className="flex items-center gap-2"> */}
             {/* Change sorting to Tabs or Dropdown depending on mobile view or not. */}
             {isMobile ? (
               <div className="flex justify-center flex-wrap gap-2 mt-6">
@@ -138,7 +137,9 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
               </div>
             ) : (
               <TabsList className="flex justify-center flex-wrap gap-2 mb-4 mt-4">
-                <p className="text-sm text-black dark:text-gray-400 my-auto me-2">Sort By:</p>
+                <p className="text-sm text-black dark:text-gray-400 my-auto me-2">
+                  Sort By:
+                </p>
                 <TabsTrigger
                   value="num_ran"
                   className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
@@ -207,8 +208,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                     to={`/event/${slug}/team/${team.id}`}
                                     className="truncate overflow-hidden whitespace-nowrap block text-black dark:text-white"
                                   >
-                                    {/* {team.name} */}
-                                    This team name is way too long
+                                    {team.name}
                                   </Link>
                                 </h2>
                               </div>
