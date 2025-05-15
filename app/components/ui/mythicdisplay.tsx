@@ -8,7 +8,7 @@ export default function MythicDisplay({ bestMythics }: MythicProps) {
   console.log(bestMythics);
   return (
     <>
-      <div className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+      <div className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
         {bestMythics.map((mythic: any) => (
           <div className="bg-gray-900 rounded p-2 flex flex-col items-center">
             <li
