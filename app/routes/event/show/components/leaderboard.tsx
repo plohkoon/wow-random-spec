@@ -229,7 +229,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                             </div>
                             {/* Statistics for Team */}
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                              <div className="bg-stone-300 dark:bg-black-light rounded-lg p-4 flex flex-col items-center justify-center">
+                              <div className="bg-stone-300 dark:bg-black-two rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Mythics Ran
                                 </span>
@@ -237,7 +237,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   {mythics?.length ?? 0}
                                 </span>
                               </div>
-                              <div className="bg-stone-300 dark:bg-black-light rounded-lg p-4 flex flex-col items-center justify-center">
+                              <div className="bg-stone-300 dark:bg-black-two rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Team Score
                                 </span>
@@ -245,7 +245,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   <ScoreDisplay score={bestMythicsScore} />
                                 </span>
                               </div>
-                              <div className="bg-stone-300 dark:bg-black-light rounded-lg p-4 flex flex-col items-center justify-center">
+                              <div className="bg-stone-300 dark:bg-black-two rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Single Score
                                 </span>
@@ -256,7 +256,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   />
                                 </span>
                               </div>
-                              <div className="bg-stone-300 dark:bg-black-light rounded-lg p-4 flex flex-col items-center justify-center">
+                              <div className="bg-stone-300 dark:bg-black-two rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
                                   Under Par
                                 </span>

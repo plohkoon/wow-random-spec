@@ -37,6 +37,7 @@
   --color-light-red: #DB5461;
   --color-black: #222222;
   --color-black-light: #2A2A2A;
+  --color-black-two: #252525;
 }
 
 @theme inline {
