@@ -1,4 +1,11 @@
-import { ChevronDown, ChevronUp, Heart, Shield, Sword } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Heart,
+  Shield,
+  Sword,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 import { ClassDisplay } from "~/components/display/classDisplay";
 import { RoleDisplay } from "~/components/display/roleDisplay";
@@ -29,6 +36,7 @@ export default function TeamData({
   mythicData: MythicData[] | null;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  console.log(player.team.players);
   return (
     <Card className="border-neutral-300 dark:border-black-two bg-neutral-300 dark:bg-black-bg shadow-2xl">
       <CardHeader className="border-b border-white/20 flex flex-row items-center justify-between">
@@ -69,13 +77,14 @@ export default function TeamData({
           >
             <div className="flex-shrink-0 mr-4 relative">
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#FF6B6B] bg-[#444444]">
-                <img
-                  src={member.avatar || "/placeholder.svg"}
+                <User width={45} height={50} className="object-cover" />
+                {/* <img
+                  src={""}
                   alt={member.name}
                   width={50}
                   height={50}
                   className="object-cover"
-                />
+                /> */}
               </div>
               <div className="absolute -bottom-1 -right-1 p-1 rounded-full bg-[#444444]">
                 {getRoleIcon(member.assignedRole)}

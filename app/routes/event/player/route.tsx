@@ -20,7 +20,7 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
         },
       },
     },
-  })
+  });
 
   if (!player) {
     throw redirect(`/event/${slug}`);
@@ -43,29 +43,32 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
 
   const scoreTiers = client.mythicPlus.scoreTiers();
 
-  const playersPromises =  getPlayersPromises(player.team, client);
+  const playersPromises = getPlayersPromises(player.team, client);
 
   return {
     player,
     playerData,
     scoreTiers,
     playersPromises,
-    mythicData: null
+    mythicData: null,
   };
 };
 export const action = async ({}: Route.ActionArgs) => {};
 
 export const clientLoader = async ({
-    serverLoader,
+  serverLoader,
 }: Route.ClientLoaderArgs) => {
-    const serverRes = await serverLoader();
+  const serverRes = await serverLoader();
 
-    const mythicData = await parseMythicDataPerTeam(serverRes.player.team, serverRes.playersPromises);
+  const mythicData = await parseMythicDataPerTeam(
+    serverRes.player.team,
+    serverRes.playersPromises
+  );
 
-    return {
-        ...serverRes,
-        mythicData
-    };
+  return {
+    ...serverRes,
+    mythicData,
+  };
 };
 clientLoader.hydrate = true;
 
@@ -73,8 +76,6 @@ export default function PlayerShow({
   loaderData: { player, playerData, scoreTiers, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
-  
-  
   return (
     <article>
       <Link to={`/event/${slug}/`} className="underline">
@@ -82,10 +83,15 @@ export default function PlayerShow({
       </Link>
 
       <div className="">
-      <CharacterData playerData={playerData} scoreTiers={scoreTiers} player={player} eventSlug={slug} mythicData={mythicData}/>
+        <CharacterData
+          playerData={playerData}
+          scoreTiers={scoreTiers}
+          player={player}
+          eventSlug={slug}
+          mythicData={mythicData}
+        />
       </div>
       {/* <PlayerData player={player} eventSlug={slug} mythicData={mythicData} /> */}
-
     </article>
   );
 }
