@@ -5,7 +5,7 @@ export function msToDuration(
   const ms = inputMs % 1000;
   const seconds = Math.floor((inputMs / 1000) % 60);
   const minutes = Math.floor((inputMs / (1000 * 60)) % 60);
-  const hours = Math.floor((inputMs / (1000 * 60 * 60)) % 24);
+  const hours = Math.floor(inputMs / (1000 * 60 * 60));
 
   return `${hours ? hours + ":" : ""}${minutes}:${seconds}.${ms}`;
 }
