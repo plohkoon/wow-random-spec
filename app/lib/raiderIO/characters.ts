@@ -385,8 +385,12 @@ export class Character {
       fields?: T;
     }[];
   }): Promise<CharacterNS.CharacterProfilePayload<T>[]> {
-    return Promise.all(
+    return Promise.allSettled(
       characters.map((character) => this.getCharacterProfile(character))
+    ).then((results) =>
+      results
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value)
     );
   }
 }

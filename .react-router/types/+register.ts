@@ -18,6 +18,9 @@ type Params = {
   "/event/:slug": {
     "slug": string;
   };
+  "/event/:slug/stats": {
+    "slug": string;
+  };
   "/event/:slug/lists": {
     "slug": string;
   };
