@@ -20,9 +20,9 @@ export default function MythicDisplay({ bestMythics }: MythicProps) {
             key={mythic.keystone_run_id}
             className="bg-stone-300 dark:bg-[#1E1E1E] rounded p-2 flex flex-col items-center"
           >
-            <div className="relative h-16 w-16 rounded overflow-hidden bg-cover bg-center">
+            <div className="relative h-16 w-full rounded overflow-hidden bg-cover bg-center">
               <img
-                src={mythic.icon_url}
+                src={mythic.background_image_url}
                 alt={mythic.short_name}
                 className="absolute inset-0 h-full w-full object-cover opacity-30"
               />
