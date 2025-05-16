@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { ScoreDisplay } from "../display/scoreDisplay";
 
 type Mythic = {
@@ -12,20 +13,24 @@ type MythicProps = {
 };
 
 export default function MythicDisplay({ bestMythics }: MythicProps) {
+  console.log(bestMythics)
   return (
     <>
-      <div className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+      <div className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 ">
         {bestMythics.map((mythic: any) => (
+          <Link to={mythic.url} target="_blank">
           <div
             key={mythic.keystone_run_id}
-            className="bg-stone-300 dark:bg-[#1E1E1E] rounded p-2 flex flex-col items-center"
+            className="bg-stone-300 dark:bg-[#1E1E1E] rounded p-2 flex flex-col items-center group"
           >
             <div className="relative h-16 w-full rounded overflow-hidden bg-cover bg-center">
-              <img
-                src={mythic.background_image_url}
-                alt={mythic.short_name}
-                className="absolute inset-0 h-full w-full object-cover opacity-30"
-              />
+              <div className="absolute inset-0 h-full w-full transition-transform duration-300 ease-in-out transform group-hover:scale-110">
+                <img
+                  src={mythic.background_image_url}
+                  alt={mythic.short_name}
+                  className="h-full w-full object-cover opacity-30"
+                />
+              </div>
               <div className="relative z-10 flex flex-col items-center justify-center h-full w-full text-white text-center">
                 <ScoreDisplay
                   score={mythic.score}
@@ -33,11 +38,12 @@ export default function MythicDisplay({ bestMythics }: MythicProps) {
                   className="text-xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
                 />
                 <h5 className="text-black dark:text-white text-xs">
-                  {mythic.short_name}
+                  +{mythic.mythic_level} {mythic.short_name}
                 </h5>
               </div>
             </div>
           </div>
+          </Link>
         ))}
       </div>
     </>
