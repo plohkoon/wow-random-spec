@@ -73,7 +73,7 @@ export default function TeamData({
         {player.team.players.map((member: any) => (
           <div
             key={member.id}
-            className="flex items-center p-3 rounded-md bg-[#555555] hover:bg-[#666666] transition-colors mb-2"
+            className="flex items-center p-3 mx-4 rounded-md bg-neutral-400 dark:bg-[#555555] hover:bg-[#666666] transition-colors mb-2 text-white "
           >
             <div className="flex-shrink-0 mr-4 relative">
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#FF6B6B] bg-[#444444]">
