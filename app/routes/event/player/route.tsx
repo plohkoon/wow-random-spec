@@ -79,7 +79,7 @@ export default function PlayerShow({
   return (
     <article>
       <Link to={`/event/${slug}/`} className="underline">
-        {"<"} Back to event.
+        {"<"} Back to leaderboard
       </Link>
 
       <div className="">
