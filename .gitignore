@@ -7,9 +7,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Git-specific files
-.gitconfig
-
 node_modules
 dist
 dist-ssr
@@ -28,5 +25,4 @@ dist-ssr
 
 prisma/prisma/sqlite.db
 generated/prisma/libquery*
-generated/*
 build

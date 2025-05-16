@@ -36,8 +36,10 @@
   --color-light-blue: #669BBC;
   --color-light-red: #DB5461;
   --color-black: #222222;
+  --color-black-bg: #333333;
   --color-black-light: #2A2A2A;
   --color-black-two: #252525;
+  --color-gold-yellow: #FFD166;
 }
 
 @theme inline {

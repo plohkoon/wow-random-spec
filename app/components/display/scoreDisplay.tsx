@@ -27,7 +27,7 @@ export function ScoreDisplay<C extends React.ElementType = "span">({
       className={clsx(className)}
       style={{ ...style, color }}
     >
-      {score.toLocaleString()}
+      <span> {score.toLocaleString()}</span>
     </Component>
   );
 }

@@ -20,7 +20,7 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
         },
       },
     },
-  });
+  })
 
   if (!player) {
     throw redirect(`/event/${slug}`);
@@ -73,16 +73,19 @@ export default function PlayerShow({
   loaderData: { player, playerData, scoreTiers, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
+  
+  
   return (
     <article>
       <Link to={`/event/${slug}/`} className="underline">
         {"<"} Back to event.
       </Link>
-      <H2>Player</H2>
 
-      <PlayerData player={player} eventSlug={slug} mythicData={mythicData} />
+      <div className="">
+      <CharacterData playerData={playerData} scoreTiers={scoreTiers} player={player} eventSlug={slug} mythicData={mythicData}/>
+      </div>
+      {/* <PlayerData player={player} eventSlug={slug} mythicData={mythicData} /> */}
 
-      <CharacterData playerData={playerData} scoreTiers={scoreTiers} />
     </article>
   );
 }

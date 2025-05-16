@@ -19,7 +19,6 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { Button } from "~/components/ui/button";
 import { LeaderBoard } from "./event/show/components/leaderboard";
-import Leaderboard2 from "~/components/ui/leaderboard";
 
 export async function loader(_: Route.LoaderArgs) {
   const events = await db.event.findMany();
