@@ -14,7 +14,8 @@ import { AppSession } from "~/lib/session.server";
 import { organizeTeams } from "~/lib/teams";
 import { Route } from "./+types/route";
 import { LeaderBoard } from "./components/leaderboard";
-import EventTitle from "./title";
+import EventTitle from "./components/title";
+
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   const [event, isAdmin] = await Promise.all([

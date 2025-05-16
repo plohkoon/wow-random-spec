@@ -42,4 +42,4 @@ export default function MythicDisplay({ bestMythics }: MythicProps) {
       </div>
     </>
   );
-}
+};

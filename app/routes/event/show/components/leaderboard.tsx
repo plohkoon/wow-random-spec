@@ -19,7 +19,44 @@ type MythicZip = NonNullable<
 >;
 type MythicZipPromise = Promise<MythicZip | null>;
 
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth < breakpoint);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [breakpoint]);
+  return isMobile;
+};
+
+const SORT_LABELS = {
+  single_score: "Best Single Score",
+  team_score: "Team Score",
+  num_ran: "Mythic Ran",
+  under_par: "Most Under Par",
+} as const;
+
+//func to set a green colour via tailwind for under par values
+function getGreenTextClass(value: number): string {
+  if (value <= -40) return "text-green-600";
+  if (value <= -30) return "text-green-500";
+  if (value <= -20) return "text-green-400";
+  if (value <= -10) return "text-green-300";
+  if (value < 0) return "text-white";
+  return "text-white";
+};
+
+//func to set a medal colour depending on index value
+function getMedalColourClass(value: number): string {
+  if (value === 1) return "text-black bg-yellow-400";
+  if (value === 2) return "text-black bg-gray-300";
+  if (value === 3) return "text-white bg-amber-700";
+  return "text-black bg-white";
+};
+
 function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
+  const isMobile = useIsMobile();
   const { slug } = useParams();
   const [sortBy, setSortBy] = useState<
     "single_score" | "team_score" | "num_ran" | "under_par" | null
@@ -44,44 +81,6 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
 
     return [...zip].sort(sortFn);
   }, [zip, sortBy]);
-
-  function useIsMobile(breakpoint = 768) {
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-      const update = () => setIsMobile(window.innerWidth < breakpoint);
-      update();
-      window.addEventListener("resize", update);
-      return () => window.removeEventListener("resize", update);
-    }, [breakpoint]);
-
-    return isMobile;
-  }
-  const isMobile = useIsMobile();
-  const SORT_LABELS: Record<NonNullable<typeof sortBy>, string> = {
-    single_score: "Best Single Score",
-    team_score: "Team Score",
-    num_ran: "Mythic Ran",
-    under_par: "Most Under Par",
-  };
-
-  //func to set a green colour via tailwind for under par values
-  function getGreenTextClass(value: number): string {
-    if (value <= -40) return "text-green-600";
-    if (value <= -30) return "text-green-500";
-    if (value <= -20) return "text-green-400";
-    if (value <= -10) return "text-green-300";
-    if (value < 0) return "text-white";
-    return "text-white";
-  }
-
-  //func to set a medal colour depending on index value
-  function getMedalColourClass(value: number): string {
-    if (value === 1) return "text-black bg-yellow-400";
-    if (value === 2) return "text-black bg-gray-300";
-    if (value === 3) return "text-white bg-amber-700";
-    return "text-black bg-white";
-  }
 
   // the dang component
   return (
@@ -284,15 +283,15 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
       </div>
     </>
   );
-}
+};
 
 function LeaderBoardLoading() {
   return <div className="text-center">Loading...</div>;
-}
+};
 
 function LeaderBoardMissing() {
   return <div className="text-center">No Mythic Data Found</div>;
-}
+};
 
 export function LeaderBoard({ zip }: { zip: MythicZipPromise | null }) {
   return (
@@ -306,130 +305,4 @@ export function LeaderBoard({ zip }: { zip: MythicZipPromise | null }) {
       </Await>
     </Suspense>
   );
-}
-
-// old code for reference rn
-{
-  /* <div className="flex flex-row space-x-4 flex-wrap">
-        <p>Sort By:</p>
-        <Button
-          variant={sortBy === "num_ran" ? "default" : "outline"}
-          onClick={() => setSortBy("num_ran")}
-        >
-          Mythic Ran
-        </Button>
-        <Button
-          variant={sortBy === "team_score" ? "default" : "outline"}
-          onClick={() => setSortBy("team_score")}
-        >
-          Team Score
-        </Button>
-
-        <Button
-          variant={sortBy === "single_score" ? "default" : "outline"}
-          onClick={() => setSortBy("single_score")}
-        >
-          Best Single Score
-        </Button>
-
-        <Button
-          variant={sortBy === "under_par" ? "default" : "outline"}
-          onClick={() => setSortBy("under_par")}
-        >
-          Most Under Par
-        </Button>
-
-        <Button
-          variant={sortBy === null ? "default" : "outline"}
-          onClick={() => setSortBy(null)}
-        >
-          Unsorted
-        </Button>
-      </div> */
-}
-
-{
-  /* <div>
-                      <div className="flex flex-row justify-evenly flex-wrap">
-                        <Link to={`/event/${slug}/team/${team.id}`}>
-                          <H3 className="underline">{team.name}:</H3>
-                        </Link>
-                        {team.players.map((player) => (
-                          <Link
-                            to={`/event/${slug}/player/${player.id}`}
-                            key={player.id}
-                          >
-                            <PlayerShortDisplay
-                              key={player.id}
-                              player={player}
-                              className="text-xl font-bold before:w-8 before:h-8 underline"
-                            />
-                          </Link>
-                        ))}
-                      </div>
-                      <ul className="grid grid-cols-2 sm:grid-cols-4 p-4 gap-2">
-                        <li className="rounded-lg border border-neutral-100 grow">
-                          <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
-                            <span className="text-4xl font-semibold">
-                              {mythics?.length ?? 0}
-                            </span>
-                            <span className="text-md font-bold">
-                              Mythics Ran
-                            </span>
-                          </div>
-                        </li>
-                        <li className="rounded-lg border border-neutral-100 grow">
-                          <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
-                            <ScoreDisplay
-                              score={bestMythicsScore}
-                              className="text-4xl font-semibold"
-                            />
-                            <span className="text-md font-bold">
-                              Team Score
-                            </span>
-                          </div>
-                        </li>
-
-                        <li className="rounded-lg border border-neutral-100 grow">
-                          <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
-                            <ScoreDisplay
-                              score={bestSingleScore}
-                              individual
-                              className="text-4xl font-semibold"
-                            />
-                            <span className="text-md font-bold">
-                              Single Score
-                            </span>
-                          </div>
-                        </li>
-                        <li className="rounded-lg border border-neutral-100 grow">
-                          <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
-                            <span className="text-4xl font-semibold">
-                              {(mostUnderTime * 100).toFixed(2)}%
-                            </span>
-                            <span className="text-md font-bold">Under Par</span>
-                          </div>
-                        </li>
-                      </ul>
-
-                      <ul className="flex flex-row gap-2 justify-evenly flex-wrap">
-                        {bestMythics.map((mythic) => (
-                          <li
-                            key={mythic.keystone_run_id}
-                            className="bg-(image:--bg-image) h-16 w-16 bg-cover grid place-items-center bg-background/30 dark:bg-blend-darken bg-blend-lighten bg-no-repeat"
-                            style={{
-                              // @ts-expect-error: Variables are not typed
-                              "--bg-image": `url(${mythic.icon_url})`,
-                            }}
-                          >
-                            <ScoreDisplay
-                              score={mythic.score}
-                              individual
-                              className="text-xl font-bold"
-                            />
-                            <H5>{mythic.short_name}</H5>
-                          </li>
-                        ))}
-                      </ul>
-                    </div> */
-}
+};
