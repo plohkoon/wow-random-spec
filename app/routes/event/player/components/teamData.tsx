@@ -2,32 +2,31 @@ import { ChevronDown, ChevronUp, Heart, Shield, Sword } from "lucide-react";
 import { useState } from "react";
 import { ClassDisplay } from "~/components/display/classDisplay";
 import { RoleDisplay } from "~/components/display/roleDisplay";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardHeader, CardTitle } from "~/components/ui/card";
-import { getClassAndSpec } from "~/lib/classes";
 import { MythicData } from "~/lib/mythics";
 
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case "tank":
-        return <Shield className="h-4 w-4 text-[#4ECDC4]" />
-      case "healer":
-        return <Heart className="h-4 w-4 text-[#A0E7A0]" />
-      case "rdps": 
-      case "mdps":
-        return <Sword className="h-4 w-4 text-[#FF6B6B]" />
-      default:
-        return <Shield className="h-4 w-4 text-gray-400" />
-    }
+//func to get icon for team list depending on spec
+const getRoleIcon = (role: string) => {
+  switch (role) {
+    case "tank":
+      return <Shield className="h-4 w-4 text-[#4ECDC4]" />;
+    case "healer":
+      return <Heart className="h-4 w-4 text-[#A0E7A0]" />;
+    case "rdps":
+    case "mdps":
+      return <Sword className="h-4 w-4 text-[#FF6B6B]" />;
+    default:
+      return <Shield className="h-4 w-4 text-gray-400" />;
   }
+};
 
-export default function TeamData({ 
-    player, 
-    mythicData 
+export default function TeamData({
+  player,
+  mythicData,
 }: {
-    player: any;
-    mythicData: MythicData[] | null;
+  player: any;
+  mythicData: MythicData[] | null;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
@@ -59,13 +58,11 @@ export default function TeamData({
         } transition-all duration-300 ease-in-out`}
       >
         <div className="flex">
-        <h2 className="mx-auto text-lg md:text-lg lg:text-2xl -mt-6 mb-4 underline decoration-3 decoration-white dark:decoration-light-brown font-bold flex items-center gap-2 overflow-hidden whitespace-nowrap">
-          {player.team.name}
-        </h2>
-
+          <h2 className="mx-auto text-lg md:text-lg lg:text-2xl -mt-6 mb-4 underline decoration-3 decoration-white dark:decoration-light-brown font-bold flex items-center gap-2 overflow-hidden whitespace-nowrap">
+            {player.team.name}
+          </h2>
         </div>
         {player.team.players.map((member: any) => (
-          
           <div
             key={member.id}
             className="flex items-center p-3 rounded-md bg-[#555555] hover:bg-[#666666] transition-colors mb-2"
@@ -90,7 +87,10 @@ export default function TeamData({
                 <h3 className="text-lg font-semibold">{member.playerName}</h3>
                 {/* <Badge className={`ml-2 text-xs ${getClassColor(member.class)} text-black`}>{member.class}</Badge> */}
               </div>
-              <RoleDisplay className="text-xs" playerRole={member.assignedRole.toLowerCase()} />
+              <RoleDisplay
+                className="text-xs"
+                playerRole={member.assignedRole.toLowerCase()}
+              />
             </div>
 
             <div className="flex-shrink-0">
@@ -98,18 +98,7 @@ export default function TeamData({
             </div>
           </div>
         ))}
-        {/* {player.team ? (
-            <div>{player.team.name}</div>
-        ) : (
-            <div>No Team Assigned Yet</div> 
-        )} */}
       </div>
     </Card>
   );
 }
-
-// <TeamDataTable
-//   team={player.team}
-//   slug={eventSlug}
-//   mythicData={mythicData}
-// />
