@@ -106,14 +106,15 @@ export default function TeamShow({
                 <PlayerData player={playerPromise} key={index} />
               ))}
             </div>
+            <MythicInfo
+              mythics={mythicData}
+              bestMythicsScore={bestMythicsScore}
+              bestMythics={bestMythics}
+            />
           </TabsContent>
+          <TabsContent value="dungeon-list"></TabsContent>
         </Tabs>
       </div>
-      <MythicInfo
-        mythics={mythicData}
-        bestMythicsScore={bestMythicsScore}
-        bestMythics={bestMythics}
-      />
     </div>
   );
 };
