@@ -58,6 +58,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
     return isMobile;
   }
   const isMobile = useIsMobile();
+  
   const SORT_LABELS: Record<NonNullable<typeof sortBy>, string> = {
     single_score: "Best Single Score",
     team_score: "Team Score",

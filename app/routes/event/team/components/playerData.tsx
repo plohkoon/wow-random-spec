@@ -16,6 +16,8 @@ type PlayerData = NonNullable<
 type PlayerDataPromise = Promise<PlayerData | null>;
 
 function PlayerDataInternal(player: PlayerData) {
+  
+
   const playerScore =
     player.mythic_plus_best_runs?.reduce((acc, run) => acc + run.score, 0) || 0;
 

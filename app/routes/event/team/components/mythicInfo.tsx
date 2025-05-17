@@ -9,14 +9,18 @@ import {
   MythicData,
 } from "~/lib/mythics";
 
-function MythicsInfoInternal({ mythics }: { mythics: MythicData[] }) {
+function MythicsInfoInternal({
+  mythics,
+  bestMythicsScore,
+  bestMythics,
+}: {
+  mythics: MythicData[];
+  bestMythicsScore: number;
+  bestMythics: MythicData[];
+}) {
   if (!mythics) {
     return <MissingMythicInfo></MissingMythicInfo>;
   }
-
-  const [bestMythics, bestMythicsScore] = useMemo(() => {
-    return calculateBestMythicsAndTotalScore(mythics);
-  }, [mythics]);
 
   const [bestSingleScore, mostUnderTime] = useMemo(() => {
     return calculateBestScoreAndBestUnderTime(mythics);
@@ -144,11 +148,21 @@ function MissingMythicInfo() {
   );
 }
 
-export function MythicInfo({ mythics }: { mythics: MythicData[] | null }) {
+export function MythicInfo({
+  mythics,
+  bestMythicsScore,
+  bestMythics,
+}: {
+  mythics: MythicData[] | null;
+  bestMythicsScore: number;
+  bestMythics: MythicData[];
+}) {
   return (
     <div>
       {mythics ? (
-        <MythicsInfoInternal mythics={mythics} />
+        <MythicsInfoInternal           mythics={mythics}
+          bestMythicsScore={bestMythicsScore}
+          bestMythics={bestMythics} />
       ) : (
         <MissingMythicInfo />
       )}
