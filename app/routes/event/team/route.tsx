@@ -5,7 +5,11 @@ import { Route } from "./+types/route";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { PlayerData } from "./components/playerData";
 import { MythicInfo } from "./components/mythicInfo";
-import { calculateBestMythicsAndTotalScore, getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
+import {
+  calculateBestMythicsAndTotalScore,
+  getPlayersPromises,
+  parseMythicDataPerTeam,
+} from "~/lib/mythics";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useEffect, useMemo, useState } from "react";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
@@ -49,7 +53,6 @@ export const clientLoader = async ({
 };
 clientLoader.hydrate = true;
 
-
 export default function TeamShow({
   loaderData: { team, playersPromises, mythicData },
   params: { slug },
@@ -92,18 +95,26 @@ export default function TeamShow({
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
                 <div className="absolute bottom-4 left-4 flex items-center gap-4">
                   <h1 className="text-2xl font-bold">{team.name}</h1>
-                  <span className="text-3xl font-bold text-green-500"><ScoreDisplay score={bestMythicsScore} /></span>
+                  <span className="text-3xl font-bold text-green-500">
+                    <ScoreDisplay score={bestMythicsScore} />
+                  </span>
                 </div>
               </div>
             )}
-            {playersPromises.map((playerPromise, index) => (
-              <PlayerData player={playerPromise} key={index} />
-            ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {playersPromises.map((playerPromise, index) => (
+                <PlayerData player={playerPromise} key={index} />
+              ))}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
       {/* {/* <H2>{team.name}</H2>  */}
-      <MythicInfo mythics={mythicData} bestMythicsScore={bestMythicsScore} bestMythics={bestMythics}/>
+      <MythicInfo
+        mythics={mythicData}
+        bestMythicsScore={bestMythicsScore}
+        bestMythics={bestMythics}
+      />
     </div>
   );
-}
+};
