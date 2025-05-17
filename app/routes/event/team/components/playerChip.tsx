@@ -1,4 +1,5 @@
 import { RoleDisplay } from "~/components/display/roleDisplay";
+import { SpecDisplay } from "~/components/display/specDisplay";
 import { getClassAndSpec } from "~/lib/classes";
 
 type Player = {
@@ -20,10 +21,11 @@ export default function PlayerChip({ player }: PlayerProps) {
     }[player.assignedRole?.toLowerCase() ?? ""] || "text-white";
 
   return (
-    <div className="bg-[#333333] rounded-full px-2 py-1 text-xs flex items-center me-4">
+    <div className="bg-[#333333] rounded-full px-2 p-2 text-xs flex items-center me-4">
       <span className="mr-1">{player.playerName}</span>
       <span className={roleColor}>
-        <RoleDisplay playerRole={player.assignedRole?.toLowerCase() ?? null} />
+        {/* <RoleDisplay playerRole={player.assignedRole?.toLowerCase() ?? null} /> */}
+        <SpecDisplay spec={player.spec ?? null} />
       </span>
     </div>
   );

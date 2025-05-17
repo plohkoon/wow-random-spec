@@ -68,12 +68,11 @@ export default function TeamDungeonRuns({
                   %)
                 </p>
                 <div className="flex flex-row mx-2">
-                {run.participants
-                  .filter((p) => p.playerName)
-                  .map((player) => (
-                    <PlayerChip key={player.id} player={player} />
-                  ))}
-
+                  {run.participants
+                    .filter((p) => p.playerName)
+                    .map((player) => (
+                      <PlayerChip key={player.id} player={player} />
+                    ))}
                 </div>
               </div>
             </div>
