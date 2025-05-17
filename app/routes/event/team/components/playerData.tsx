@@ -19,56 +19,61 @@ type PlayerDataPromise = Promise<PlayerData | null>;
 function PlayerDataInternal(player: PlayerData) {
   const playerScore =
     player.mythic_plus_best_runs?.reduce((acc, run) => acc + run.score, 0) || 0;
-  console.log(player);
   return (
-<div>
-  <Card className="bg-[#222222] border-[#333333] overflow-hidden">
-    <div className="flex items-center p-3">
-      <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-[#444444] mr-4 flex-shrink-0">
-        <img
-          src={player.thumbnail_url || "/placeholder.svg"}
-          alt={player.name}
-          width={128}
-          height={128}
-          className="object-cover"
-        />
-      </div>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between flex-1">
-        <div>
-          <CharacterName
-            as={H3}
-            name={player.name}
-            server={player.realm}
-            region={player.region}
-          />
-          <p className="text-xs mt-1 flex flex-wrap gap-2 text-gray-300">
-            <span>{player.race}</span>
-            <ClassDisplay
-              classSpec={makeRaiderIOClassSpec(
-                player.class,
-                player.active_spec_name
-              )}
+    <div>
+      <Card className="bg-[#222222] border-[#333333] overflow-hidden">
+        <div className="flex items-center p-3">
+          <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-[#444444] mr-4 flex-shrink-0">
+            <img
+              src={player.thumbnail_url || "/placeholder.svg"}
+              alt={player.name}
+              width={128}
+              height={128}
+              className="object-cover"
             />
-            <RoleDisplay playerRole={player.active_spec_role.toLowerCase()} />
-          </p>
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between flex-1">
+            <div>
+              <CharacterName
+                as={H3}
+                name={player.name}
+                server={player.realm}
+                region={player.region}
+              />
+              <p className="text-xs mt-1 flex flex-wrap gap-2 text-gray-300">
+                <span>{player.race}</span>
+                <ClassDisplay
+                  classSpec={makeRaiderIOClassSpec(
+                    player.class,
+                    player.active_spec_name
+                  )}
+                />
+                <RoleDisplay
+                  playerRole={player.active_spec_role.toLowerCase()}
+                />
+              </p>
+            </div>
+            <div className="mt-2 md:mt-0 text-green-500 text-lg font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+              <ScoreDisplay score={playerScore} />
+            </div>
+          </div>
         </div>
-        <div className="mt-2 md:mt-0 text-green-500 text-lg font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-          <ScoreDisplay score={playerScore} />
+        <div className="bg-[#2a2a2a] p-1 text-center border-t border-[#333333]">
+          <Button
+            asChild
+            className="text-xs text-gray-300 hover:text-white flex items-center justify-center w-full"
+          >
+            <a
+              href={player.profile_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View RaiderIO Profile
+            </a>
+          </Button>
         </div>
-      </div>
+      </Card>
     </div>
-    <div className="bg-[#2a2a2a] p-1 text-center border-t border-[#333333]">
-      <Button
-        asChild
-        className="text-xs text-gray-300 hover:text-white flex items-center justify-center w-full"
-      >
-        <a href={player.profile_url} target="_blank" rel="noopener noreferrer">
-          View RaiderIO Profile
-        </a>
-      </Button>
-    </div>
-  </Card>
-</div>
     // <div className="grid grid-cols-[8rem_1fr_8rem] gap-4">
     //   <img
     //     src={player.thumbnail_url}

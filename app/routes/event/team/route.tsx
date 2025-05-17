@@ -13,6 +13,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useEffect, useMemo, useState } from "react";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
+import PlayerMythicData from "../player/components/mythicData";
 
 export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
   const team = await db.team.findFirst({
@@ -62,7 +63,7 @@ export default function TeamShow({
   const [bestMythics, bestMythicsScore] = useMemo(() => {
     return calculateBestMythicsAndTotalScore(mythicData ?? []);
   }, [mythicData]);
-
+  console.log(mythicData);
   return (
     <div>
       <Link to={`/event/${slug}/`} className="underline">
@@ -109,7 +110,6 @@ export default function TeamShow({
           </TabsContent>
         </Tabs>
       </div>
-      {/* {/* <H2>{team.name}</H2>  */}
       <MythicInfo
         mythics={mythicData}
         bestMythicsScore={bestMythicsScore}

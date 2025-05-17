@@ -36,7 +36,6 @@ export default function TeamData({
   mythicData: MythicData[] | null;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  console.log(player.team.players);
   return (
     <Card className="border-neutral-300 dark:border-black-two bg-neutral-300 dark:bg-black-bg shadow-2xl">
       <CardHeader className="border-b border-white/20 flex flex-row items-center justify-between">
