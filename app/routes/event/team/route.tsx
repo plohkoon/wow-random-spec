@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useEffect, useMemo, useState } from "react";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import PlayerMythicData from "../player/components/mythicData";
+import TeamBestMythicDisplay from "./components/teamMythicDisplay";
 
 export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
   const team = await db.team.findFirst({
@@ -64,7 +65,7 @@ export default function TeamShow({
     return calculateBestMythicsAndTotalScore(mythicData ?? []);
   }, [mythicData]);
   return (
-    <div>
+    <div className="space-y-6">
       <Link to={`/event/${slug}/`} className="underline">
         {"<"} Back to event.
       </Link>
@@ -88,9 +89,9 @@ export default function TeamShow({
             {showBanner && (
               <div className="w-full h-40 relative rounded-md overflow-hidden mb-4">
                 <img
-                  src="/placeholder.svg?height=160&width=1200"
+                  src="https://placehold.co/420x69"
                   alt="Team Banner"
-                  className="object-cover"
+                  className="object-cover w-full h-full"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
                 <div className="absolute bottom-4 left-4 flex items-center gap-4">
@@ -111,10 +112,15 @@ export default function TeamShow({
               bestMythicsScore={bestMythicsScore}
               bestMythics={bestMythics}
             />
+            <div className="bg-[#1e1e1e] rounded-lg p-4 mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <TeamBestMythicDisplay bestMythics={bestMythics} />
+              </div>
+            </div>
           </TabsContent>
           <TabsContent value="dungeon-list"></TabsContent>
         </Tabs>
       </div>
     </div>
   );
-};
+}

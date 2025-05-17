@@ -10,6 +10,7 @@ import {
   MythicData,
 } from "~/lib/mythics";
 import { Card } from "~/components/ui/card";
+import MythicDisplay from "~/components/display/mythicdisplay";
 
 function MythicsInfoInternal({
   mythics,
@@ -65,32 +66,6 @@ function MythicsInfoInternal({
             </span>
           </p>
         </Card>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-[#222222] rounded-lg overflow-hidden">
-          <div className="relative h-28">
-            <img src={"./imageSrc"} alt={"name"} className="object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#222222] via-[#22222299] to-transparent"></div>
-
-            <div className="absolute top-2 left-3">
-              <h3 className="font-bold text-white">{"name"}</h3>
-            </div>
-
-            <div className="absolute bottom-2 left-3 right-3">
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col">
-                  <div className="flex items-center">
-                    <span className="font-bold mr-2">Score:</span>
-                    <span className={`font-bold text-xl ${""}`}>{""}</span>
-                  </div>
-                  <div className="text-xs text-gray-300">
-                    {/* Time: {time} / {timeLimit} ({percentage}) */}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
