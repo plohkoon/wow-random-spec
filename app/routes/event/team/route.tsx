@@ -63,13 +63,12 @@ export default function TeamShow({
   const [bestMythics, bestMythicsScore] = useMemo(() => {
     return calculateBestMythicsAndTotalScore(mythicData ?? []);
   }, [mythicData]);
-  console.log(mythicData);
   return (
     <div>
       <Link to={`/event/${slug}/`} className="underline">
         {"<"} Back to event.
       </Link>
-      <div className="flex justify-center mx-auto min-h-screen text-white p-4">
+      <div className="flex justify-center mx-auto text-white p-4">
         <Tabs defaultValue="team-roster" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger

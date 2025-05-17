@@ -46,7 +46,6 @@ function CharacterDataInternal(
     (acc, run) => acc + run.score,
     0
   );
-  console.log(props);
   return (
     <div className="flex flex-col gap-4 px-4 mt-4">
       <CharacterProfile character={props} score={playerScore} />
