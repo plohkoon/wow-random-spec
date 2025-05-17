@@ -8,6 +8,7 @@ import { MythicInfo } from "./components/mythicInfo";
 import { calculateBestMythicsAndTotalScore, getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { useEffect, useMemo, useState } from "react";
+import { ScoreDisplay } from "~/components/display/scoreDisplay";
 
 export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
   const team = await db.team.findFirst({
@@ -54,8 +55,6 @@ export default function TeamShow({
   params: { slug },
 }: Route.ComponentProps) {
   const showBanner = true;
-  console.log(team);
-  console.log(mythicData);
 
   const [bestMythics, bestMythicsScore] = useMemo(() => {
     return calculateBestMythicsAndTotalScore(mythicData ?? []);
@@ -93,7 +92,7 @@ export default function TeamShow({
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
                 <div className="absolute bottom-4 left-4 flex items-center gap-4">
                   <h1 className="text-2xl font-bold">{team.name}</h1>
-                  <span className="text-3xl font-bold text-green-500">{}</span>
+                  <span className="text-3xl font-bold text-green-500"><ScoreDisplay score={bestMythicsScore} /></span>
                 </div>
               </div>
             )}
