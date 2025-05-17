@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
 
 //Function to return an amount of stars based on the upgrade of the key ran.
+//idk if this is safe to do tbh
 export function getKeystoneUpgrade(upgrades: number) {
   return (
     <>
