@@ -16,12 +16,12 @@ export default function MythicDisplay({ bestMythics }: MythicProps) {
   console.log(bestMythics)
   return (
     <>
-      <div className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 ">
+      <div className="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
         {bestMythics.map((mythic: any) => (
           <Link to={mythic.url} target="_blank">
           <div
             key={mythic.keystone_run_id}
-            className="bg-stone-300 dark:bg-[#1E1E1E] rounded p-2 flex flex-col items-center group"
+            className="bg-stone-300 dark:bg-[#1E1E1E] rounded-lg p-1.5 flex flex-col items-center group"
           >
             <div className="relative h-16 w-full rounded overflow-hidden bg-cover bg-center">
               <div className="absolute inset-0 h-full w-full transition-transform duration-300 ease-in-out transform group-hover:scale-110">
