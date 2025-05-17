@@ -9,11 +9,32 @@ type TeamDungeonRunsProps = {
   showBanner: boolean;
 };
 
+function formatDate(str : string) {
+  const options = {
+  weekday: "long",
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  };
+
+  const runTime = new Date(str);
+  const runDate = runTime.toLocaleDateString("en-US", options);
+  const time = runTime.toLocaleTimeString();
+  return runDate + " " + time;
+};
+
 export default function TeamDungeonRuns({
   mythics,
   showBanner,
 }: TeamDungeonRunsProps) {
   console.log(mythics);
+  if (!mythics) {
+    return (
+      <div>
+        No Mythics Found pleb.
+      </div>
+    )
+  }
   return (
     <div>
       {!showBanner && (
@@ -45,17 +66,17 @@ export default function TeamDungeonRuns({
             <div
               key={run.keystone_run_id}
               className="flex flex-col md:flex-row"
-            >
+              >
               <div className="relative h-32 md:w-48 md:h-auto">
                 <img
                   src={run.background_image_url}
                   alt={run.dungeon}
                   className="object-cover w-full h-full"
-                />
+                  />
               </div>
               <div className="flex flex-col">
-                <h4>
-                  {run.dungeon} ({run.short_name} +{run.mythic_level}){" "}
+                <h4 className="text-xl text-center md:text-left lg:text-left xl:text-left">
+                  +{run.mythic_level} {run.dungeon}
                   <ScoreDisplay individual score={run.score} />
                 </h4>
                 <p>
@@ -67,6 +88,7 @@ export default function TeamDungeonRuns({
                   ).toFixed(3)}
                   %)
                 </p>
+                  {formatDate(run.completed_at).toString()}
                 <div className="flex flex-row mx-2">
                   {run.participants
                     .filter((p) => p.playerName)
