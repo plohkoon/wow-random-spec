@@ -11,6 +11,14 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import { Button } from "~/components/ui/button";
+import { LeaderBoard } from "./event/show/components/leaderboard";
 
 export async function loader(_: Route.LoaderArgs) {
   const events = await db.event.findMany();
@@ -35,28 +43,32 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function App({ loaderData: { events } }: Route.ComponentProps) {
   return (
-    <div>
-      <H2>Events</H2>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Event</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Started At</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {events.map((event) => (
-            <TableRow key={event.id}>
-              <TableCell>
-                <Link to={`/event/${event.slug}`}>{event.slug}</Link>
-              </TableCell>
-              <TableCell>{event.name}</TableCell>
-              <TableCell>{event.createdAt.toString()}</TableCell>
+    <>
+      <div>
+        <h2 className="text-4xl mb-6 mt-4 font-bold leading-none tracking-light underline decoration-4 decoration-light-blue text-black dark:text-white">
+          Events
+        </h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Event</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Started At</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {events.map((event) => (
+              <TableRow key={event.id}>
+                <TableCell>
+                  <Link to={`/event/${event.slug}`}>{event.slug}</Link>
+                </TableCell>
+                <TableCell>{event.name}</TableCell>
+                <TableCell>{event.createdAt.toString()}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }

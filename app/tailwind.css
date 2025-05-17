@@ -29,6 +29,17 @@
 
   --breakpoint-3xl: 120rem;
   --breakpoint-6xl: 230rem;
+  
+  --color-light-brown: #A5783A;
+  --color-dark-brown: #4B311F;
+  --color-light-green: #4B311F;
+  --color-light-blue: #669BBC;
+  --color-light-red: #DB5461;
+  --color-black: #222222;
+  --color-black-bg: #333333;
+  --color-black-light: #2A2A2A;
+  --color-black-two: #252525;
+  --color-gold-yellow: #FFD166;
 }
 
 @theme inline {
@@ -105,7 +116,8 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  /* --background: oklch(0.145 0 0); */
+  --background: #222222;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);

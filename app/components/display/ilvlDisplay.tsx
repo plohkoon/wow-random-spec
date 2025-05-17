@@ -23,7 +23,7 @@ export function IlvlDisplay<C extends React.ElementType = "span">({
       )}
       {...rest}
     >
-      {ilvl}
+      <span> {ilvl}</span>
     </Component>
   );
 }

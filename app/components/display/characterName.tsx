@@ -1,3 +1,5 @@
+import { CardTitle } from "../ui/card";
+
 type Props<C extends React.ElementType> = {
   as?: C;
   name: string | null;
@@ -16,8 +18,8 @@ export function CharacterName<C extends React.ElementType = "span">({
 
   return (
     <Component {...rest}>
-      {name ? name : "no name"}
-      {server && <span className="text-xs text-neutral-500"> - {server}</span>}
+      {name ? <CardTitle className="text-3xl font-bold text-gold-yellow drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">{name}</CardTitle> : "no name"}
+      {server && <span className="text-xs text-neutral-500">{server}</span>}
       {region && (
         <span className="text-xs text-neutral-500">
           {" "}

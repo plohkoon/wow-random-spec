@@ -11,6 +11,8 @@ import { RoleDisplay } from "~/components/display/roleDisplay";
 import { CharacterName } from "~/components/display/characterName";
 import { TeamDataTable } from "../../lists/components/teamDataTable";
 import { MythicData } from "~/lib/mythics";
+import PlayerMythicData from "./mythicData";
+import TeamData from "./teamData";
 
 type Player = Route.ComponentProps["loaderData"]["player"];
 
@@ -23,45 +25,48 @@ export function PlayerData({
   eventSlug: string;
   mythicData: MythicData[] | null;
 }) {
+  console.log(mythicData);
   return (
-    <section className="grid grid-cols-[2fr_3fr] gap-4">
-      <Table>
-        <TableBody>
-          <TableRow>
-            <TableHead>Nickname</TableHead>
-            <TableCell>{player.nickname}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableHead>Assigned Role</TableHead>
-            <RoleDisplay as={TableCell} playerRole={player.assignedRole} />
-          </TableRow>
-          <TableRow>
-            <TableHead>Main</TableHead>
-            <ClassDisplay as={TableCell} classSpec={player.main} />
-          </TableRow>
-          <TableRow>
-            <TableHead>Rolled Spec</TableHead>
-            <ClassDisplay as={TableCell} classSpec={player.spec} />
-          </TableRow>
-          <TableRow>
-            <TableHead>Character Name</TableHead>
-            <CharacterName
-              as={TableCell}
-              name={player.playerName}
-              server={player.playerServer}
-            />
-          </TableRow>
-        </TableBody>
-      </Table>
-      {player.team ? (
-        <TeamDataTable
-          team={player.team}
-          slug={eventSlug}
-          mythicData={mythicData}
-        />
-      ) : (
-        <div>No Team Assigned Yet</div>
-      )}
-    </section>
+    <TeamData player={player} />
+      // <PlayerMythicData mythicData={mythicData} />
+    // <section className="grid grid-cols-[2fr_3fr] gap-4">
+    //   <Table>
+    //     <TableBody>
+    //       <TableRow>
+    //         <TableHead>Nickname</TableHead>
+    //         <TableCell>{player.nickname}</TableCell>
+    //       </TableRow>
+    //       <TableRow>
+    //         <TableHead>Assigned Role</TableHead>
+    //         <RoleDisplay as={TableCell} playerRole={player.assignedRole} />
+    //       </TableRow>
+    //       <TableRow>
+    //         <TableHead>Main</TableHead>
+    //         <ClassDisplay as={TableCell} classSpec={player.main} />
+    //       </TableRow>
+    //       <TableRow>
+    //         <TableHead>Rolled Spec</TableHead>
+    //         <ClassDisplay as={TableCell} classSpec={player.spec} />
+    //       </TableRow>
+    //       <TableRow>
+    //         <TableHead>Character Name</TableHead>
+    //         <CharacterName
+    //           as={TableCell}
+    //           name={player.playerName}
+    //           server={player.playerServer}
+    //         />
+    //       </TableRow>
+    //     </TableBody>
+    //   </Table>
+    //   {player.team ? (
+    //     <TeamDataTable
+    //       team={player.team}
+    //       slug={eventSlug}
+    //       mythicData={mythicData}
+    //     />
+    //   ) : (
+    //     <div>No Team Assigned Yet</div>
+    //   )}
+    // </section>
   );
 }
