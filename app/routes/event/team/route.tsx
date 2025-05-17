@@ -87,7 +87,7 @@ export default function TeamShow({
           </TabsList>
           <TabsContent value="team-roster">
             {showBanner && (
-              <div className="w-full h-40 relative rounded-md overflow-hidden mb-4">
+              <div className="w-full h-60 relative rounded-md overflow-hidden mb-4">
                 <img
                   src="https://placehold.co/420x69"
                   alt="Team Banner"
