@@ -60,7 +60,9 @@ export default function TeamShow({
   loaderData: { team, playersPromises, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
-  const showBanner = false;
+  
+  //need to make a func to detect if a team has provided a banner photo or not
+  const showBanner = true;
 
   const [bestMythics, bestMythicsScore] = useMemo(() => {
     return calculateBestMythicsAndTotalScore(mythicData ?? []);
