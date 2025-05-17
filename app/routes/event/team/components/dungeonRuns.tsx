@@ -96,7 +96,6 @@ export default function TeamDungeonRuns({
                 Time: {time} / {timeLimit} ({percentage})
               </p> */}
         </div>
-
         <div className="flex items-center">
           <div className="text-right">
             {/* <p className="text-2xl font-bold text-right mr-2 whitespace-nowrap">
