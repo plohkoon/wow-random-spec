@@ -6,6 +6,7 @@ import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import {
   calculateBestMythicsAndTotalScore,
   calculateBestScoreAndBestUnderTime,
+  getGreenTextClass,
   MythicData,
 } from "~/lib/mythics";
 import { Card } from "~/components/ui/card";
@@ -32,33 +33,38 @@ function MythicsInfoInternal({
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
         <Card className="bg-[#222222] border-[#333333] p-4 text-center">
           <p className="text-2xl font-bold">
-          <p className="text-sm text-gray-400">Mythics Ran</p>
+            <p className="text-sm text-gray-400">Mythics Ran</p>
             <p>{mythics.length}</p>
           </p>
         </Card>
         <Card className="bg-[#222222] border-[#333333] p-4 text-center">
           <p className="text-2xl font-bold text-green-500">
-          <p className="text-sm text-gray-400">Team Score</p>
+            <p className="text-sm text-gray-400">Team Score</p>
             <ScoreDisplay score={bestMythicsScore} className="font-semibold" />
           </p>
         </Card>
         <Card className="bg-[#222222] border-[#333333] p-4 text-center">
           <p className="text-2xl font-bold text-green-500">
-          <p className="text-sm text-gray-400">Best Dungeon</p>
-            <ScoreDisplay score={bestSingleScore} individual className="font-semibold" />
+            <p className="text-sm text-gray-400">Best Dungeon</p>
+            <ScoreDisplay
+              score={bestSingleScore}
+              individual
+              className="font-semibold"
+            />
           </p>
         </Card>
         <Card className="bg-[#222222] border-[#333333] p-4 text-center">
           <p className="text-2xl font-bold text-green-500">
-          <p className="text-sm text-gray-400">Furthest Under Par</p>
-            <span>
-           {(mostUnderTime * 100).toFixed(2)}%
-         </span>
+            <p className="text-sm text-gray-400">Furthest Under Par</p>
+            <span
+              className={`text-3xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] ${getGreenTextClass(
+                mostUnderTime * 100
+              )}`}
+            >
+              {(mostUnderTime * 100).toFixed(2)}
+            </span>
           </p>
         </Card>
-        {/* <StatCard title="Best Single Dungeon" value="237.6" />
-        <StatCard title="Farthest Under Par" value="-25.85%" />
-        <StatCard title="Mythics Ran" value="16" /> */}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="bg-[#222222] rounded-lg overflow-hidden">
@@ -89,8 +95,6 @@ function MythicsInfoInternal({
     </div>
   );
 }
-
-
 
 function MissingMythicInfo() {
   return (

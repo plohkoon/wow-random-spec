@@ -13,6 +13,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { ChevronDown, Users } from "lucide-react";
 import MythicDisplay from "~/components/ui/mythicdisplay";
+import { getGreenTextClass } from "~/lib/mythics";
 
 type MythicZip = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["mythicTeamZip"]>
@@ -58,23 +59,13 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
     return isMobile;
   }
   const isMobile = useIsMobile();
-  
+
   const SORT_LABELS: Record<NonNullable<typeof sortBy>, string> = {
     single_score: "Best Single Score",
     team_score: "Team Score",
     num_ran: "Mythic Ran",
     under_par: "Most Under Par",
   };
-
-  //func to set a green colour via tailwind for under par values
-  function getGreenTextClass(value: number): string {
-    if (value <= -40) return "text-green-600";
-    if (value <= -30) return "text-green-500";
-    if (value <= -20) return "text-green-400";
-    if (value <= -10) return "text-green-300";
-    if (value < 0) return "text-white";
-    return "text-white";
-  }
 
   //func to set a medal colour depending on index value
   function getMedalColourClass(value: number): string {

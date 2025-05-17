@@ -223,11 +223,13 @@ export function calculateBestScoreAndBestUnderTime(mythics: MythicData[]) {
   return [bestSingleScore, mostUnderTime] as const;
 }
 
+//func to set a green colour via tailwind for under par values
 export function getGreenTextClass(value: number): string {
-    if (value <= -40) return "text-green-600";
-    if (value <= -30) return "text-green-500";
-    if (value <= -20) return "text-green-400";
-    if (value <= -10) return "text-green-300";
-    if (value < 0) return "text-white";
-    return "text-white";
-  }
+  if (value <= -40) return "text-green-600";
+  if (value <= -30) return "text-green-500";
+  if (value <= -20) return "text-green-400";
+  if (value <= -10) return "text-green-300";
+  if (value < 0) return "text-white";
+  return "text-white";
+};
+  
