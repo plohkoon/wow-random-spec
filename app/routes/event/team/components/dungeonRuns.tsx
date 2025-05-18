@@ -34,12 +34,14 @@ export default function TeamDungeonRuns({
   return (
     <div>
       {!showBanner && (
-        <div className="w-full h-60 relative rounded-md overflow-hidden mb-4 bg-neutral-400">
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
-          <div className="absolute bottom-4 left-4 flex items-center gap-4">
-            <h1 className="text-2xl font-bold">Dungeon Runs</h1>
-          </div>
+        <div>
         </div>
+        // <div className="w-full h-60 relative rounded-md overflow-hidden mb-4 bg-neutral-400">
+        //   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
+        //   <div className="absolute bottom-4 left-4 flex items-center gap-4">
+        //     <h1 className="text-2xl font-bold">Dungeon Runs</h1>
+        //   </div>
+        // </div>
       )}
 
       {showBanner && (
