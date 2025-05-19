@@ -93,7 +93,7 @@ export function ClassDisplay<C extends React.ElementType = "span">({
     >
       {classText}
       {spec && (
-        <span className="text-xs font-normal ml-1">{` (${specText})`}</span>
+        <span className="text-xs font-normal ml-1">{`(${specText})`}</span>
       )}
     </Component>
   );

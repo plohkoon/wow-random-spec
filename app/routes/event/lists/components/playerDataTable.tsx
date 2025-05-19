@@ -1,5 +1,3 @@
-import { ClassDisplay } from "~/components/display/classDisplay";
-import { Route } from "../+types/route";
 import {
   ColumnDef,
   flexRender,
@@ -8,7 +6,13 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
+import { useState } from "react";
+import { Link, useParams } from "react-router";
+import { CharacterName } from "~/components/display/characterName";
+import { ClassDisplay } from "~/components/display/classDisplay";
 import { RoleDisplay } from "~/components/display/roleDisplay";
+import { Button } from "~/components/ui/button";
 import {
   Table,
   TableBody,
@@ -17,19 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { useState } from "react";
-import { Button } from "~/components/ui/button";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { useParams, Link } from "react-router";
-import { CharacterName } from "~/components/display/characterName";
+import { Route } from "../+types/route";
 
 type Player = Route.ComponentProps["loaderData"]["event"]["players"][number];
 

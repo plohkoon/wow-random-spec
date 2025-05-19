@@ -1,6 +1,3 @@
-import { Link } from "react-router";
-import { H2 } from "~/components/display/headers";
-import { Button } from "~/components/ui/button";
 import { db } from "~/lib/db.server";
 import {
   calculateBestMythicsAndTotalScore,
@@ -9,7 +6,6 @@ import {
   parseMythicDataPerTeam,
 } from "~/lib/mythics";
 import { RaiderIOClient } from "~/lib/raiderIO";
-import { CharacterNS } from "~/lib/raiderIO/characters";
 import { AppSession } from "~/lib/session.server";
 import { organizeTeams } from "~/lib/teams";
 import { Route } from "./+types/route";
@@ -51,10 +47,6 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   );
 
   return {
-    event,
-    teams,
-    isAdmin,
-    eachTeamsPlayersPromises,
     mythicTeamZip: Promise.all(
       teams.map(async (team, i) => {
         const mythicData = await parseMythicDataPerTeam(
@@ -81,26 +73,11 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
 }
 
 export default function Event({
-  loaderData: { event, isAdmin, mythicTeamZip },
-  params: { slug },
+  loaderData: { mythicTeamZip },
 }: Route.ComponentProps) {
   return (
-    <main className="space-y-4">
-      <H2>
-        {event.name}{" "}
-        <Button asChild>
-          <Link to={`/event/${slug}/lists`} className="underline">
-            View Lists{" >"}
-          </Link>
-        </Button>
-        {isAdmin ? (
-          <Button asChild>
-            <Link to={`/event/${slug}/edit`}>Edit</Link>
-          </Button>
-        ) : null}
-      </H2>
-
+    <article className="w-full">
       <LeaderBoard zip={mythicTeamZip} />
-    </main>
+    </article>
   );
 }

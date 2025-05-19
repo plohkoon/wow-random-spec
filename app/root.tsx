@@ -1,8 +1,6 @@
 import { useState } from "react";
 import type { LinksFunction } from "react-router";
 import {
-  Form,
-  Link,
   Links,
   Meta,
   Outlet,
@@ -12,14 +10,11 @@ import {
   useSubmit,
 } from "react-router";
 import { Route } from "./+types/root";
-import { H1 } from "./components/display/headers";
-import { Label } from "./components/ui/label";
-import { Switch } from "./components/ui/switch";
+import Header from "./components/display/header";
 import { ClientHintCheck, getHints } from "./lib/clientHints";
 import { getDarkmodeSession } from "./lib/darkmode";
-import "./tailwind.css";
 import { AppSession } from "./lib/session.server";
-import { Button } from "./components/ui/button";
+import "./tailwind.css";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await AppSession.fromRequest(request);
@@ -60,7 +55,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const defaultColorScheme = rootLoaderData?.requestInfo?.colorScheme;
   const username = rootLoaderData?.requestInfo?.user?.username;
   const [colorScheme, setColorScheme] = useState(defaultColorScheme);
-  const submit = useSubmit();
 
   return (
     <html lang="en" className={colorScheme}>
@@ -70,8 +64,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="h-screen overscroll-none p-4">
-        <div className="flex flex-row items-center space-x-4">
+      <body className="h-screen overscroll-none w-full">
+        <Header
+          colorScheme={colorScheme}
+          setColorScheme={setColorScheme}
+          username={username}
+        />
+        {/* <div className="flex flex-row items-center space-x-4">
           <Link to="/">
             <img
               src="/logo.png"
@@ -118,7 +117,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               }}
             />
           </div>
-        </div>
+        </div> */}
         {children}
         <ScrollRestoration />
         <Scripts />

@@ -6,9 +6,14 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Route } from "../+types/route";
+import { ArrowUpDown } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Link } from "react-router";
 import { ClassDisplay } from "~/components/display/classDisplay";
+import { H4 } from "~/components/display/headers";
 import { RoleDisplay } from "~/components/display/roleDisplay";
+import { ScoreDisplay } from "~/components/display/scoreDisplay";
+import { Button } from "~/components/ui/button";
 import {
   Table,
   TableBody,
@@ -17,17 +22,12 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { H4 } from "~/components/display/headers";
-import { Button } from "~/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
-import { useMemo, useState } from "react";
-import { Link } from "react-router";
-import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import {
   calculateBestMythicsAndTotalScore,
   calculateBestScoreAndBestUnderTime,
   MythicData,
 } from "~/lib/mythics";
+import { Route } from "../+types/route";
 
 type Team = Route.ComponentProps["loaderData"]["event"]["teams"][number];
 
