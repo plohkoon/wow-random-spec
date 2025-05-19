@@ -64,8 +64,12 @@ export function getPlayersPromises(
           name: player.playerName,
           fields: {
             gear: true,
-            mythic_plus_best_runs: true,
-            mythic_plus_alternate_runs: true,
+            mythic_plus_best_runs: {
+              all: true,
+            },
+            mythic_plus_alternate_runs: {
+              all: true,
+            },
             mythic_plus_highest_level_runs: true,
             mythic_plus_recent_runs: true,
             mythic_plus_previous_weekly_highest_level_runs: true,
