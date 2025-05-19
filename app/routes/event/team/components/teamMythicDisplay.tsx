@@ -21,11 +21,13 @@ type MythicProps = {
 };
 
 export default function TeamBestMythicDisplay({ bestMythics }: MythicProps) {
-  console.log(bestMythics);
   return (
     <>
       {bestMythics.map((run) => (
-        <div className="group rounded-lg overflow-hidden transition-transform duration-300 ease-in-out transform hover:scale-105">
+        <div
+          className="group rounded-lg overflow-hidden transition-transform duration-300 ease-in-out transform hover:scale-105"
+          key={run.keystone_run_id}
+        >
           <div className="relative h-36 shadow-2xl">
             <img
               src={run.background_image_url}

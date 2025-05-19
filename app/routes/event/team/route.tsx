@@ -1,21 +1,19 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import { useMemo } from "react";
 import { Link, redirect } from "react-router";
-import { H2 } from "~/components/display/headers";
+import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { db } from "~/lib/db.server";
-import { Route } from "./+types/route";
-import { RaiderIOClient } from "~/lib/raiderIO";
-import { PlayerData } from "./components/playerData";
-import { MythicInfo } from "./components/mythicInfo";
 import {
   calculateBestMythicsAndTotalScore,
   getPlayersPromises,
   parseMythicDataPerTeam,
 } from "~/lib/mythics";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-import { useEffect, useMemo, useState } from "react";
-import { ScoreDisplay } from "~/components/display/scoreDisplay";
-import PlayerMythicData from "../player/components/mythicData";
-import TeamBestMythicDisplay from "./components/teamMythicDisplay";
+import { RaiderIOClient } from "~/lib/raiderIO";
+import { Route } from "./+types/route";
 import TeamDungeonRuns from "./components/dungeonRuns";
+import { MythicInfo } from "./components/mythicInfo";
+import { PlayerData } from "./components/playerData";
+import TeamBestMythicDisplay from "./components/teamMythicDisplay";
 
 export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
   const team = await db.team.findFirst({
@@ -60,7 +58,6 @@ export default function TeamShow({
   loaderData: { team, playersPromises, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
-  
   //need to make a func to detect if a team has provided a banner photo or not
   const showBanner = false;
 
@@ -106,8 +103,7 @@ export default function TeamShow({
               </div>
             )}
             {!showBanner && (
-              <div>
-              </div>
+              <div></div>
               // <div className="w-full h-60 relative rounded-md overflow-hidden mb-4 bg-neutral-400">
               //   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
               //   <div className="absolute bottom-4 left-4 flex items-center gap-4">

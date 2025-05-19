@@ -16,8 +16,6 @@ authenticator.use(
   new FormStrategy(async ({ form }) => {
     const data = parse(form, { schema });
 
-    console.log(data);
-
     if (data.status !== "success") {
       throw new Error("Invalid form data");
     }

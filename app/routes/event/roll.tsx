@@ -1,11 +1,11 @@
+import { motion, useAnimation } from "motion/react";
 import { redirect, useNavigate, useSubmit } from "react-router";
-import { Route } from "./+types/roll";
-import { allClassSpecs, availableSpecsForPlayer } from "~/lib/classes";
 import { ClassDisplay } from "~/components/display/classDisplay";
 import { Button } from "~/components/ui/button";
-import { motion, useAnimation } from "motion/react";
+import { allClassSpecs, availableSpecsForPlayer } from "~/lib/classes";
 import { db } from "~/lib/db.server";
 import { AppSession } from "~/lib/session.server";
+import { Route } from "./+types/roll";
 
 export const loader = async ({
   params: { slug, id },
@@ -116,7 +116,7 @@ export default function RollSpecForPlayer({
   };
 
   return (
-    <div
+    <article
       className="fixed w-screen min-h-screen h-full place-content-center grid bg-blend-darken bg-black/50 z-50"
       onClick={handleClose}
     >
@@ -179,6 +179,6 @@ export default function RollSpecForPlayer({
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }

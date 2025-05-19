@@ -4,7 +4,8 @@ import { Link } from "react-router";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-
+import { CharacterNS } from "~/lib/raiderIO/characters";
+import { msToDuration } from "~/lib/time";
 
 //Function to return an amount of stars based on the upgrade of the key ran.
 //idk if this is safe to do tbh
@@ -16,9 +17,13 @@ export function getKeystoneUpgrade(upgrades: number) {
       ))}
     </>
   );
-};
+}
 
-export default function PlayerMythicData({ props, msToDuration }: any) {
+export default function PlayerMythicData({
+  props,
+}: {
+  props: { mythic_plus_best_runs: CharacterNS.MythicPlusRun[] };
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <>
@@ -45,18 +50,14 @@ export default function PlayerMythicData({ props, msToDuration }: any) {
 
         {/* Always show content on desktop, respect isExpanded on mobile */}
         <div
-          className={`${
-            !isExpanded ? "hidden lg:block" : "block"
-          } transition-all duration-300 ease-in-out`}
+          className="transition-all duration-300 ease-in-out lg:block data-[expanded=true]:block data-[expanded=false]:hidden"
+          data-expanded={isExpanded}
         >
           <CardContent className="pt-6 transition-all duration-300 ease-in-out">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {props.mythic_plus_best_runs.map((run: any) => (
-                <Link to={run.url} target="_blank">
-                  <div
-                    key={run.id}
-                    className="relative h-48 rounded-lg overflow-hidden group"
-                  >
+              {props.mythic_plus_best_runs.map((run) => (
+                <Link to={run.url} target="_blank" key={run.keystone_run_id}>
+                  <div className="relative h-48 rounded-lg overflow-hidden group">
                     <img
                       src={run.background_image_url}
                       alt={run.dungeon}
@@ -94,4 +95,4 @@ export default function PlayerMythicData({ props, msToDuration }: any) {
       </Card>
     </>
   );
-};
+}

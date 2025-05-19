@@ -1,19 +1,10 @@
-import { Sword, ChevronDown, ChevronUp, User } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
+import { ChevronDown, ChevronUp, Sword } from "lucide-react";
 import { useState } from "react";
 import { IlvlDisplay } from "~/components/display/ilvlDisplay";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
-// type Equipment = {
-//   items: string[];
-//   name: string;
-//   item_level: number;
-// };
-
-// type EquipmentProps = {
-//   objectKeys: Equipment[];
-// };
 const SLOT_LABELS: Record<string, string> = {
   head: "Head",
   neck: "Neck",
@@ -61,9 +52,8 @@ export default function EquipmentData({ objectKeys, gear }: any) {
 
         {/* Always show content on desktop, respect isExpanded on mobile */}
         <div
-          className={`${
-            !isExpanded ? "hidden lg:block" : "block"
-          } transition-all duration-300 ease-in-out`}
+          className="transition-all duration-300 ease-in-out lg:block data-[expanded=true]:block data-[expanded=false]:hidden"
+          data-expanded={isExpanded}
         >
           <CardContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -74,11 +64,9 @@ export default function EquipmentData({ objectKeys, gear }: any) {
                   <a
                     href={`https://www.wowhead.com/item=${item.item_id}`}
                     target="_blank"
+                    key={key}
                   >
-                    <div
-                      key={key}
-                      className="flex items-center p-3 text-white dark:text-black rounded-md bg-neutral-400 dark:bg-[#555555] hover:bg-[#666666] transition-colors"
-                    >
+                    <div className="flex items-center p-3 text-white dark:text-black rounded-md bg-neutral-400 dark:bg-[#555555] hover:bg-[#666666] transition-colors">
                       <div className="flex-shrink-0 mr-3 relative">
                         <div className="w-10 h-10 rounded border border-[#A0E7A0] overflow-hidden bg-black">
                           {/* This works but we don't wanna get in trouble lmao */}
@@ -120,4 +108,4 @@ export default function EquipmentData({ objectKeys, gear }: any) {
       </Card>
     </>
   );
-};
+}

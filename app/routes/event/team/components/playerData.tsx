@@ -1,15 +1,14 @@
 import { Suspense } from "react";
-import { Route } from "../+types/route";
-import { Await, Link } from "react-router";
-import { Button } from "~/components/ui/button";
+import { Await } from "react-router";
 import { CharacterName } from "~/components/display/characterName";
-import { H3 } from "~/components/display/headers";
-import { IlvlDisplay } from "~/components/display/ilvlDisplay";
 import { ClassDisplay } from "~/components/display/classDisplay";
-import { makeRaiderIOClassSpec } from "~/lib/classes";
+import { H3 } from "~/components/display/headers";
 import { RoleDisplay } from "~/components/display/roleDisplay";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
+import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { makeRaiderIOClassSpec } from "~/lib/classes";
+import { Route } from "../+types/route";
 
 type PlayerData = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["playersPromises"][number]>
@@ -61,7 +60,7 @@ function PlayerDataInternal(player: PlayerData) {
         <div className="bg-[#2a2a2a] p-1 text-center border-t border-[#333333]">
           <Button
             asChild
-            className="text-xs text-gray-300 hover:text-white flex items-center justify-center w-full"
+            className="text-xs flex items-center justify-center w-full"
           >
             <a
               href={player.profile_url}

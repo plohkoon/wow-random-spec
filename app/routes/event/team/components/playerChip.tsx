@@ -1,6 +1,4 @@
-import { RoleDisplay } from "~/components/display/roleDisplay";
 import { SpecDisplay } from "~/components/display/specDisplay";
-import { getClassAndSpec } from "~/lib/classes";
 
 type Player = {
   playerName?: string | null;

@@ -1,9 +1,3 @@
-import { Suspense, useEffect, useMemo, useState } from "react";
-import { Await, Link, useParams } from "react-router";
-import { PlayerShortDisplay } from "~/components/display/playerShortDisplay";
-import { ScoreDisplay } from "~/components/display/scoreDisplay";
-import { Route } from "../+types/route";
-import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,19 +6,39 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { ChevronDown, Users } from "lucide-react";
+import { Suspense, useMemo, useState } from "react";
+import { Await, Link, useParams } from "react-router";
+import { PlayerShortDisplay } from "~/components/display/playerShortDisplay";
+import { ScoreDisplay } from "~/components/display/scoreDisplay";
+import { Button } from "~/components/ui/button";
 import MythicDisplay from "~/components/ui/mythicdisplay";
 import { getGreenTextClass } from "~/lib/mythics";
+import { Route } from "../+types/route";
 
 type MythicZip = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["mythicTeamZip"]>
 >;
 type MythicZipPromise = Promise<MythicZip | null>;
 
+type Sort = "single_score" | "team_score" | "num_ran" | "under_par" | null;
+
+function getMedalColourClass(value: number): string {
+  if (value === 1) return "text-black bg-yellow-400";
+  if (value === 2) return "text-black bg-gray-300";
+  if (value === 3) return "text-white bg-amber-700";
+  return "text-black bg-white";
+}
+
+const SORT_LABELS: Record<NonNullable<Sort>, string> = {
+  single_score: "Best Single Score",
+  team_score: "Team Score",
+  num_ran: "Mythic Ran",
+  under_par: "Most Under Par",
+};
+
 function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
   const { slug } = useParams();
-  const [sortBy, setSortBy] = useState<
-    "single_score" | "team_score" | "num_ran" | "under_par" | null
-  >(null);
+  const [sortBy, setSortBy] = useState<Sort>(null);
   const orderedZip = useMemo(() => {
     if (!sortBy) return zip;
 
@@ -46,35 +60,6 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
     return [...zip].sort(sortFn);
   }, [zip, sortBy]);
 
-  function useIsMobile(breakpoint = 768) {
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-      const update = () => setIsMobile(window.innerWidth < breakpoint);
-      update();
-      window.addEventListener("resize", update);
-      return () => window.removeEventListener("resize", update);
-    }, [breakpoint]);
-
-    return isMobile;
-  }
-  const isMobile = useIsMobile();
-
-  const SORT_LABELS: Record<NonNullable<typeof sortBy>, string> = {
-    single_score: "Best Single Score",
-    team_score: "Team Score",
-    num_ran: "Mythic Ran",
-    under_par: "Most Under Par",
-  };
-
-  //func to set a medal colour depending on index value
-  function getMedalColourClass(value: number): string {
-    if (value === 1) return "text-black bg-yellow-400";
-    if (value === 2) return "text-black bg-gray-300";
-    if (value === 3) return "text-white bg-amber-700";
-    return "text-black bg-white";
-  }
-
   // the dang component
   return (
     <>
@@ -88,82 +73,80 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
           className="w-full"
         >
           <TabsContent value={sortBy ?? "null"}>
-            {/* Change sorting to Tabs or Dropdown depending on mobile view or not. */}
-            {isMobile ? (
-              <div className="flex justify-center flex-wrap gap-2 mt-6">
-                <DropdownMenu>
-                  <span className="text-sm text-gray-400 mr-2 mt-2">
-                    Sort By:
-                  </span>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="border-neutral-300 dark:border-gray-700 bg-neutral-300 dark:bg-gray-900"
-                    >
-                      {sortBy ? SORT_LABELS[sortBy] : "Unsorted"}
-                      <ChevronDown className="ml-2 h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    side="bottom"
-                    align="end"
-                    className="z-50 bg-neutral-300 dark: bg-gray-900 border border-gray-700 mt-1 min-w-[180px]"
-                  >
-                    <DropdownMenuItem onClick={() => setSortBy("num_ran")}>
-                      Mythic Ran
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSortBy("team_score")}>
-                      Team Score
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSortBy("single_score")}>
-                      Best Single Score
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSortBy("under_par")}>
-                      Most Under Par
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setSortBy(null)}>
-                      Unsorted
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            ) : (
-              <TabsList className="flex justify-center flex-wrap gap-2 mb-4 mt-4">
-                <p className="text-sm text-black dark:text-gray-400 my-auto me-2">
+            {/* We use a dropdown for small screens */}
+            <div className="flex justify-center flex-wrap gap-2 mt-6 md:hidden">
+              <DropdownMenu>
+                <span className="text-sm text-gray-400 mr-2 mt-2">
                   Sort By:
-                </p>
-                <TabsTrigger
-                  value="num_ran"
-                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+                </span>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="border-neutral-300 dark:border-gray-700 bg-neutral-300 dark:bg-gray-900"
+                  >
+                    {sortBy ? SORT_LABELS[sortBy] : "Unsorted"}
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  side="bottom"
+                  align="end"
+                  className="z-50 bg-neutral-300 dark:bg-gray-900 border border-gray-700 mt-1 min-w-[180px]"
                 >
-                  Mythic Ran
-                </TabsTrigger>
-                <TabsTrigger
-                  value="team_score"
-                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-                >
-                  Team Score
-                </TabsTrigger>
-                <TabsTrigger
-                  value="single_score"
-                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-                >
-                  Best Single Score
-                </TabsTrigger>
-                <TabsTrigger
-                  value="under_par"
-                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-                >
-                  Most Under Par
-                </TabsTrigger>
-                <TabsTrigger
-                  value="null"
-                  className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
-                >
-                  Unsorted
-                </TabsTrigger>
-              </TabsList>
-            )}
+                  <DropdownMenuItem onClick={() => setSortBy("num_ran")}>
+                    Mythic Ran
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("team_score")}>
+                    Team Score
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("single_score")}>
+                    Best Single Score
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy("under_par")}>
+                    Most Under Par
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSortBy(null)}>
+                    Unsorted
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            {/* We use tabs for large screens */}
+            <TabsList className="hidden justify-center flex-wrap gap-2 mb-4 mt-4 md:flex">
+              <p className="text-sm text-black dark:text-gray-400 my-auto me-2">
+                Sort By:
+              </p>
+              <TabsTrigger
+                value="num_ran"
+                className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+              >
+                Mythic Ran
+              </TabsTrigger>
+              <TabsTrigger
+                value="team_score"
+                className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+              >
+                Team Score
+              </TabsTrigger>
+              <TabsTrigger
+                value="single_score"
+                className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+              >
+                Best Single Score
+              </TabsTrigger>
+              <TabsTrigger
+                value="under_par"
+                className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+              >
+                Most Under Par
+              </TabsTrigger>
+              <TabsTrigger
+                value="null"
+                className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-light-blue data-[state=active]:text-black data-[state=inactive]:bg-muted data-[state=inactive]:text-muted-foreground transition-colors"
+              >
+                Unsorted
+              </TabsTrigger>
+            </TabsList>
             <ol className="list-decimal list-outside space-y-4">
               {orderedZip.map(
                 (

@@ -1,22 +1,11 @@
-import { User } from "lucide-react";
 import { Suspense } from "react";
 import { Await } from "react-router";
-import { CharacterName } from "~/components/display/characterName";
-import { ClassDisplay } from "~/components/display/classDisplay";
-import { H3, H4 } from "~/components/display/headers";
-import { IlvlDisplay } from "~/components/display/ilvlDisplay";
-import { RoleDisplay } from "~/components/display/roleDisplay";
-import { ScoreDisplay } from "~/components/display/scoreDisplay";
-import { Button } from "~/components/ui/button";
-import { makeRaiderIOClassSpec } from "~/lib/classes";
-import { msToDuration } from "~/lib/time";
+import { MythicData } from "~/lib/mythics";
 import type { Route } from "../+types/route";
 import CharacterProfile from "./characterProfile";
 import EquipmentData from "./equipmentData";
 import PlayerMythicData from "./mythicData";
-import { MythicData } from "~/lib/mythics";
 import TeamData from "./teamData";
-// import MythicData from "./mythicData";
 
 type Player = Route.ComponentProps["loaderData"]["player"];
 
@@ -52,7 +41,7 @@ function CharacterDataInternal(
       <div className="space-y-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <PlayerMythicData props={props} msToDuration={msToDuration} />
+            <PlayerMythicData props={props} />
           </div>
           <div className="lg:col-span-1">
             <TeamData player={player} mythicData={mythicData} />
@@ -60,13 +49,9 @@ function CharacterDataInternal(
         </div>
         <EquipmentData objectKeys={objectKeys} gear={props.gear} />
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mx-auto"></div>
-      </div>
     </div>
   );
-};
+}
 
 function MissingCharacterData() {
   return (
@@ -75,7 +60,7 @@ function MissingCharacterData() {
       <p>No character data available.</p>
     </div>
   );
-};
+}
 
 export function CharacterData({
   playerData,
@@ -111,4 +96,4 @@ export function CharacterData({
       </Await>
     </Suspense>
   );
-};
+}
