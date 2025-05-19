@@ -1,11 +1,9 @@
 import { Link, redirect } from "react-router";
-import { H2 } from "~/components/display/headers";
 import { db } from "~/lib/db.server";
+import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { Route } from "./+types/route";
 import { CharacterData } from "./components/characterData";
-import { PlayerData } from "./components/playerData";
-import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
 
 export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
   const player = await db.player.findFirst({

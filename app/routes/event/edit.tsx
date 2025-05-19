@@ -394,6 +394,10 @@ function PlayerRow({
   );
 }
 
+export const handle = {
+  edit: true,
+};
+
 export default function EventEdit({
   loaderData: { event },
   params: { slug },
@@ -408,14 +412,7 @@ export default function EventEdit({
   return (
     <>
       <Outlet />
-      <main className="space-y-4">
-        <H2>
-          {event.name}{" "}
-          <Button asChild>
-            <Link to={`/event/${slug}`}>Done Editing</Link>
-          </Button>
-        </H2>
-
+      <article className="space-y-4">
         <section>
           <H3>Players</H3>
           <Table>
@@ -479,7 +476,7 @@ export default function EventEdit({
             </Button>
           </CForm>
         </section>
-      </main>
+      </article>
     </>
   );
 }

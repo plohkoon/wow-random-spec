@@ -5,7 +5,7 @@ import PlayerChip from "./playerChip";
 import { Card } from "~/components/ui/card";
 
 type TeamDungeonRunsProps = {
-  mythics: MythicData[];
+  mythics: MythicData[] | null;
   showBanner: boolean;
 };
 
@@ -15,7 +15,7 @@ function formatDate(str: string) {
     year: "numeric",
     month: "short",
     day: "numeric",
-  };
+  } as const;
 
   const runTime = new Date(str);
   const runDate = runTime.toLocaleDateString("en-US", options);
@@ -27,15 +27,15 @@ export default function TeamDungeonRuns({
   mythics,
   showBanner,
 }: TeamDungeonRunsProps) {
-  console.log(mythics);
   if (!mythics) {
     return <div>No Mythics Found pleb.</div>;
   }
+
   return (
     <div>
+      {/* TODO: Make a team banner */}
       {!showBanner && (
-        <div>
-        </div>
+        <div></div>
         // <div className="w-full h-60 relative rounded-md overflow-hidden mb-4 bg-neutral-400">
         //   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
         //   <div className="absolute bottom-4 left-4 flex items-center gap-4">
@@ -60,7 +60,10 @@ export default function TeamDungeonRuns({
       {mythics
         .filter((run) => run !== null)
         .map((run) => (
-          <Card className="bg-black-two border-[#333333] overflow-hidden mt-2 -py-6">
+          <Card
+            className="bg-black-two border-[#333333] overflow-hidden mt-2 -py-6"
+            key={run.keystone_run_id}
+          >
             <div
               key={run.keystone_run_id}
               className="flex flex-col md:flex-row"
@@ -97,14 +100,14 @@ export default function TeamDungeonRuns({
                     </div>
                   </div>
                 </div>
-                  {formatDate(run.completed_at).toString()}
-                  <div className="flex flex-row mt-2">
-                    {run.participants
-                      .filter((p) => p.playerName)
-                      .map((player) => (
-                        <PlayerChip key={player.id} player={player} />
-                      ))}
-                  </div>
+                {formatDate(run.completed_at).toString()}
+                <div className="flex flex-row mt-2">
+                  {run.participants
+                    .filter((p) => p.playerName)
+                    .map((player) => (
+                      <PlayerChip key={player.id} player={player} />
+                    ))}
+                </div>
               </div>
             </div>
           </Card>
@@ -112,43 +115,3 @@ export default function TeamDungeonRuns({
     </div>
   );
 }
-
-<Card className="bg-[#222222] border-[#333333] overflow-hidden">
-  <div className="flex flex-col md:flex-row">
-    <div className="relative h-32 md:w-48 md:h-auto">
-      <img src={"/placeholder.svg"} alt={"name"} className="object-cover" />
-    </div>
-
-    <div className="flex-1 p-4">
-      <div className="flex justify-between items-start">
-        <div>
-          <h3 className="text-lg font-bold">{"name"}</h3>
-          {/* <p className="text-sm text-gray-400">
-                Time: {time} / {timeLimit} ({percentage})
-              </p> */}
-        </div>
-        <div className="flex items-center">
-          <div className="text-right">
-            {/* <p className="text-2xl font-bold text-right mr-2 whitespace-nowrap">
-                  <span className={getScoreColor(score)}>{score}</span>
-                </p> */}
-          </div>
-
-          {/* {stars > 0 && (
-                <div className="flex">
-                  {[...Array(stars)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
-                  ))}
-                </div>
-              )} */}
-        </div>
-      </div>
-
-      <div className="mt-2">
-        <div className="flex flex-wrap gap-2">
-          {/* <PlayerChip player={} /> */}
-        </div>
-      </div>
-    </div>
-  </div>
-</Card>;

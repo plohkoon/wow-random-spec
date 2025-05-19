@@ -61,7 +61,7 @@ function PlayerDataInternal(player: PlayerData) {
         <div className="bg-[#2a2a2a] p-1 text-center border-t border-[#333333]">
           <Button
             asChild
-            className="text-xs text-gray-300 hover:text-white flex items-center justify-center w-full"
+            className="text-xs flex items-center justify-center w-full"
           >
             <a
               href={player.profile_url}

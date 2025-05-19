@@ -116,7 +116,7 @@ export default function RollSpecForPlayer({
   };
 
   return (
-    <div
+    <article
       className="fixed w-screen min-h-screen h-full place-content-center grid bg-blend-darken bg-black/50 z-50"
       onClick={handleClose}
     >
@@ -179,6 +179,6 @@ export default function RollSpecForPlayer({
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
