@@ -37,26 +37,31 @@ export default function EventLayout({
 
   return (
     <main>
-      <div className="flex items-center justify-between mb-2 mt-12">
-        <div>
+      <div className="flex items-center justify-between mb-2 mt-6 flex-col md:flex-row space-y-4">
+        <H2 className="text-6xl mx-4">{name}</H2>
+        <div className="flex-1 flex flex-row space-x-4 justify-end items-center px-4">
           <Button asChild>
             <Link to={`/event/${slug}/lists`} className="underline">
               View Lists {">"}
             </Link>
           </Button>
-        </div>
-        <div className="flex-1 text-center mb-4">
-          <H2>{name}</H2>
+          <Button asChild>
+            <Link to={`/event/${slug}/stats`} className="underline">
+              View Stats {">"}
+            </Link>
+          </Button>
           {isAdmin && (
-            <div className="text-center mb-6 mt-4">
-              <Button asChild>
-                {edit ? (
-                  <Link to={`/event/${slug}`}>Done Editing</Link>
-                ) : (
-                  <Link to={`/event/${slug}/edit`}>Edit Event</Link>
-                )}
-              </Button>
-            </div>
+            <Button asChild>
+              {edit ? (
+                <Link to={`/event/${slug}`} className="underline">
+                  Done Editing
+                </Link>
+              ) : (
+                <Link to={`/event/${slug}/edit`} className="underline">
+                  Edit Event
+                </Link>
+              )}
+            </Button>
           )}
         </div>
       </div>
