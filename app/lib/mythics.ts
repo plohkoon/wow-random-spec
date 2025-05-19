@@ -1,5 +1,5 @@
-import type { CharacterNS } from "~/lib/raiderIO/characters";
 import { RaiderIOClient } from "~/lib/raiderIO";
+import type { CharacterNS } from "~/lib/raiderIO/characters";
 
 export type DBPlayerInternalTeamType = {
   name: string;
@@ -96,7 +96,6 @@ export async function parseMythicDataPerTeam<
   const allPlayersPromise = Promise.allSettled(playersPromises);
   const promiseOfAllMythicData: Promise<MythicData[]> = allPlayersPromise.then(
     (res) => {
-      // console.log("Mythics Promise", res);
       if (!res) return res;
 
       const succeededRes = res
@@ -122,7 +121,6 @@ export async function parseMythicDataPerTeam<
             );
           }
         );
-        // console.log("DB Player", dbPlayer, player.name, player.realm);
         if (!dbPlayer) return;
 
         const allMythics = [
@@ -231,5 +229,4 @@ export function getGreenTextClass(value: number): string {
   if (value <= -10) return "text-green-300";
   if (value < 0) return "text-white";
   return "text-white";
-};
-  
+}

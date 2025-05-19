@@ -1,16 +1,12 @@
 import { useMemo } from "react";
-import { Route } from "../+types/route";
-import { H2, H3, H4, H5 } from "~/components/display/headers";
-import { msToDuration } from "~/lib/time";
+import { H2 } from "~/components/display/headers";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
+import { Card } from "~/components/ui/card";
 import {
-  calculateBestMythicsAndTotalScore,
   calculateBestScoreAndBestUnderTime,
   getGreenTextClass,
   MythicData,
 } from "~/lib/mythics";
-import { Card } from "~/components/ui/card";
-import MythicDisplay from "~/components/display/mythicdisplay";
 
 function MythicsInfoInternal({
   mythics,
