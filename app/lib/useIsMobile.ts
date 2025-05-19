@@ -10,7 +10,5 @@ export function useIsMobile(breakpoint = 768) {
     () => false
   );
 
-  console.log(isMobile);
-
   return isMobile;
 }
