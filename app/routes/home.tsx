@@ -1,8 +1,4 @@
-import { commitDarkmodeSession, getDarkmodeSession } from "~/lib/darkmode";
-import { Route } from "./+types/home";
 import { data, Link } from "react-router";
-import { db } from "~/lib/db.server";
-import { H2 } from "~/components/display/headers";
 import {
   Table,
   TableBody,
@@ -11,14 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import { Button } from "~/components/ui/button";
-import { LeaderBoard } from "./event/show/components/leaderboard";
+import { commitDarkmodeSession, getDarkmodeSession } from "~/lib/darkmode";
+import { db } from "~/lib/db.server";
+import { Route } from "./+types/home";
 
 export async function loader(_: Route.LoaderArgs) {
   const events = await db.event.findMany();

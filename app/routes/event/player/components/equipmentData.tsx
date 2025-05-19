@@ -1,9 +1,9 @@
-import { Sword, ChevronDown, ChevronUp, User } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
+import { ChevronDown, ChevronUp, Sword } from "lucide-react";
 import { useState } from "react";
 import { IlvlDisplay } from "~/components/display/ilvlDisplay";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 
 const SLOT_LABELS: Record<string, string> = {
   head: "Head",

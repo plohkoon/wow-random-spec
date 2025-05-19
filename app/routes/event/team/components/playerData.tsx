@@ -1,15 +1,14 @@
 import { Suspense } from "react";
-import { Route } from "../+types/route";
-import { Await, Link } from "react-router";
-import { Button } from "~/components/ui/button";
+import { Await } from "react-router";
 import { CharacterName } from "~/components/display/characterName";
-import { H3 } from "~/components/display/headers";
-import { IlvlDisplay } from "~/components/display/ilvlDisplay";
 import { ClassDisplay } from "~/components/display/classDisplay";
-import { makeRaiderIOClassSpec } from "~/lib/classes";
+import { H3 } from "~/components/display/headers";
 import { RoleDisplay } from "~/components/display/roleDisplay";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
+import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { makeRaiderIOClassSpec } from "~/lib/classes";
+import { Route } from "../+types/route";
 
 type PlayerData = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["playersPromises"][number]>

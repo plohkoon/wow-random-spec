@@ -1,37 +1,36 @@
-import { db } from "~/lib/db.server";
-import { Route } from "./lists/+types/route";
+import { useForm } from "@conform-to/react";
+import { parseWithZod } from "@conform-to/zod";
+import { Button } from "app/components/ui/button";
 import {
+  Table,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
-  Table,
-  TableCell,
 } from "app/components/ui/table";
-import { TableBody } from "~/components/ui/table";
-import { H2, H3 } from "~/components/display/headers";
-import { z } from "zod";
-import { CForm } from "~/components/inputs/form";
-import { useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
-import { CTextInput } from "~/components/inputs/textInput";
-import { Button } from "app/components/ui/button";
-import { ClassDisplay } from "~/components/display/classDisplay";
-import { Role } from "~/lib/prisma";
 import { useEffect, useState } from "react";
-import { CHiddenInput } from "~/components/inputs/hiddenInput";
 import {
   data,
   FetcherWithComponents,
   Link,
   Outlet,
-  redirect,
   useFetcher,
 } from "react-router";
-import { ClassInput } from "~/components/inputs/classInput";
+import { z } from "zod";
+import { ClassDisplay } from "~/components/display/classDisplay";
+import { H3 } from "~/components/display/headers";
 import { RoleDisplay } from "~/components/display/roleDisplay";
-import { AppSession } from "~/lib/session.server";
+import { ClassInput } from "~/components/inputs/classInput";
+import { CForm } from "~/components/inputs/form";
+import { CHiddenInput } from "~/components/inputs/hiddenInput";
 import { RoleInput } from "~/components/inputs/roleInput";
 import { SpecInput } from "~/components/inputs/specInput";
+import { CTextInput } from "~/components/inputs/textInput";
+import { TableBody } from "~/components/ui/table";
+import { db } from "~/lib/db.server";
+import { Role } from "~/lib/prisma";
+import { AppSession } from "~/lib/session.server";
+import { Route } from "./lists/+types/route";
 
 const addPlayerSchema = z.object({
   nickname: z.string().min(1, "Nickname is required"),

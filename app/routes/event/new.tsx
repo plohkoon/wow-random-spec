@@ -1,15 +1,13 @@
-import { Route } from "./+types/new";
-import { z } from "zod";
-import { getFormProps, useForm } from "@conform-to/react";
+import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
-import { Form, redirect } from "react-router";
-import { Label } from "~/components/ui/label";
-import { Input } from "~/components/ui/input";
+import { redirect } from "react-router";
+import { z } from "zod";
+import { CForm } from "~/components/inputs/form";
+import { CTextInput } from "~/components/inputs/textInput";
 import { Button } from "~/components/ui/button";
 import { db } from "~/lib/db.server";
-import { CTextInput } from "~/components/inputs/textInput";
-import { CForm } from "~/components/inputs/form";
 import { AppSession } from "~/lib/session.server";
+import { Route } from "./+types/new";
 
 const schema = z.object({
   slug: z
