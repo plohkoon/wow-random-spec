@@ -11,10 +11,10 @@ export interface Event {
   id: string;
   slug: string;
   name: string;
-  players?: Player[];
-  teams?: Team[];
   createdAt: Date;
   updatedAt: Date;
+  players?: Player[];
+  teams?: Team[];
 }
 
 export interface Player {
@@ -22,25 +22,25 @@ export interface Player {
   nickname: string;
   main: string | null;
   playerName: string | null;
-  playerServer: string | null;
   assignedRole: Role | null;
   spec: string | null;
   eventId: string;
-  event?: Event;
   teamId: string | null;
-  team?: Team | null;
   createdAt: Date;
   updatedAt: Date;
+  playerServer: string | null;
+  team?: Team | null;
+  event?: Event;
 }
 
 export interface Team {
   id: string;
   name: string;
-  players?: Player[];
   eventId: string;
-  event?: Event;
   createdAt: Date;
   updatedAt: Date;
+  players?: Player[];
+  event?: Event;
 }
 
 export interface User {

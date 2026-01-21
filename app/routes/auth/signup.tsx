@@ -30,7 +30,7 @@ const SignupSchema = z
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await AppSession.fromRequest(request);
   if (session.hasUser) {
-    return redirect("/dashboard");
+    return redirect("/");
   }
 
   return null;
@@ -61,7 +61,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await db.user.create({ data: signupData.value });
   session.setUser(user);
 
-  return redirect("/dashboard", {
+  return redirect("/", {
     headers: {
       "Set-Cookie": await session.commit(),
     },
