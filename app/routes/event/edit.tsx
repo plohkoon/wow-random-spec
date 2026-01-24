@@ -32,7 +32,7 @@ import { Role } from "~/lib/prisma";
 import { AppSession } from "~/lib/session.server";
 import { Route } from "./lists/+types/route";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { ChevronDown, ChevronUp, UserPlus, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, Dices, Pencil, Trash2, UserPlus, Users } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 
 const addPlayerSchema = z.object({
@@ -354,10 +354,10 @@ function PlayerRow({
   } = player;
 
   return (
-    <TableRow>
-      <TableCell>{nickname}</TableCell>
+    <TableRow className="border-border/50 hover:bg-muted/30 transition-colors">
+      <TableCell className="font-medium">{nickname}</TableCell>
       <TableCell>
-        <ClassDisplay classSpec={main} />
+        <ClassDisplay className="font-medium" classSpec={main} />
       </TableCell>
       <TableCell>
         <RoleDisplay playerRole={assignedRole} />
@@ -369,14 +369,20 @@ function PlayerRow({
       <TableCell>{playerServer}</TableCell>
       <TableCell>{team?.name ?? "unassigned"}</TableCell>
       <TableCell>
-        <Button asChild variant="default">
-          <Link to={`/event/${slug}/edit/${player.id}/roll`}>Roll</Link>
+
+        <Button asChild className="h-8 px-2 text-muted-foreground hover:text-[#77B1D4] bg-none border-0" size="sm" variant="ghost">
+          <Link to={`/event/${slug}/edit/${player.id}/roll`}>
+            <Dices className="h-4 w-4" />
+            <span className="sr-only">Roll</span></Link>
         </Button>
-        <Button variant="secondary" onClick={() => setEditing(true)}>
-          Edit
+        <Button variant="ghost" className="h-8 px-2 text-muted-foreground hover:text-[#FFFF00]" size="sm" onClick={() => setEditing(true)}>
+          <Pencil className="h-4 w-4" />
+          <span className="sr-only">Edit</span>
         </Button>
         <Button
-          variant="destructive"
+          className="h-8 px-2 text-muted-foreground hover:text-destructive"
+          size="sm"
+          variant="ghost"
           onClick={() =>
             fetcher.submit(
               {
@@ -389,7 +395,8 @@ function PlayerRow({
             )
           }
         >
-          Delete
+          <Trash2 className="h-4 w-4" />
+          <span className="sr-only">Delete</span>
         </Button>
       </TableCell>
     </TableRow>
@@ -566,6 +573,36 @@ export default function EventEdit({
           )}
         </Card>
       </main>
+
+            {/* <AlertDialog
+        open={deleteConfirm !== null}
+        onOpenChange={() => setDeleteConfirm(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Player</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove{" "}
+              <strong>{deleteConfirm?.nickname}</strong> from the roster? This
+              action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deleteConfirm) {
+                  onDelete(deleteConfirm.id)
+                  setDeleteConfirm(null)
+                }
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog> */}
     </>
   );
 }
