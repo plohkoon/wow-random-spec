@@ -32,7 +32,7 @@ import { Role } from "~/lib/prisma";
 import { AppSession } from "~/lib/session.server";
 import { Route } from "./lists/+types/route";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { ChevronDown, ChevronUp, UserPlus } from "lucide-react";
+import { ChevronDown, ChevronUp, UserPlus, Users } from "lucide-react";
 import { Label } from "@radix-ui/react-label";
 
 const addPlayerSchema = z.object({
@@ -410,16 +410,14 @@ export default function EventEdit({
       return parseWithZod(formData, { schema: addPlayerSchema });
     },
   });
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isPlayerExpanded, setIsPlayersExpanded] = useState(true);
+  const [isRosterExpanded, setIsRosterExpanded] = useState(true);
   return (
     <>
       <Outlet />
       <main className="container mx-auto px-8 py-8 max-w-32xl">
         <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
-          <CardHeader
-            className="cursor-pointer"
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
+          <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -432,8 +430,8 @@ export default function EventEdit({
                   </p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" className="shrink-0">
-                {isExpanded ? (
+              <Button variant="ghost" size="icon" className="shrink-0 cursor-pointer" onClick={() => setIsPlayersExpanded(!isPlayerExpanded)}>
+                {isPlayerExpanded ? (
                   <ChevronUp className="h-5 w-5" />
                 ) : (
                   <ChevronDown className="h-5 w-5" />
@@ -441,7 +439,7 @@ export default function EventEdit({
               </Button>
             </div>
           </CardHeader>
-          {isExpanded && (
+          {isPlayerExpanded && (
             <CardContent>
               <CForm method="post" config={addPlayerForm}>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -501,33 +499,73 @@ export default function EventEdit({
             </CardContent>
           )}
         </Card>
+        <Card className="border-border/50 bg-card/50 backdrop-blur">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <UserPlus className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Player Roster</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {event.players.length} players in the roster
+                  </p>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" className="shrink-0 cursor-pointer" onClick={() => setIsRosterExpanded(!isRosterExpanded)}
+              >
+                {isRosterExpanded ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          {isRosterExpanded && (
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-border/50 hover:bg-transparent">
+                      <TableHead className="text-muted-foreground font-medium">
+                        Name
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Main
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Role
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Spec
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Character
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Server
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Team
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium text-right">
+                        Actions
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {event.players.map((p) => {
+                      return <PlayerRow key={p.id} player={p} slug={slug} />;
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          )}
+        </Card>
       </main>
-      <article className="space-y-4">
-        <section>
-          <H3>Players</H3>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Normal Main</TableHead>
-                <TableHead>Assigned Role</TableHead>
-                <TableHead>Spec</TableHead>
-                <TableHead>Character Name</TableHead>
-                <TableHead>Character Server</TableHead>
-                <TableHead>Team</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {event.players.map((p) => {
-                return <PlayerRow key={p.id} player={p} slug={slug} />;
-              })}
-            </TableBody>
-          </Table>
-        </section>
-
-
-      </article>
     </>
   );
 }
