@@ -504,10 +504,6 @@ export default function EventEdit({
       </main>
       <article className="space-y-4">
         <section>
-          <H3>Add a Player</H3>
-
-        </section>
-        <section>
           <H3>Players</H3>
           <Table>
             <TableHeader>
