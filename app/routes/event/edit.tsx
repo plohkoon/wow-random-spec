@@ -31,6 +31,9 @@ import { db } from "~/lib/db.server";
 import { Role } from "~/lib/prisma";
 import { AppSession } from "~/lib/session.server";
 import { Route } from "./lists/+types/route";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { ChevronDown, ChevronUp, UserPlus } from "lucide-react";
+import { Label } from "@radix-ui/react-label";
 
 const addPlayerSchema = z.object({
   nickname: z.string().min(1, "Nickname is required"),
@@ -227,7 +230,7 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
     if (
       existingPlayer?.teamId &&
       (await db.player.count({ where: { teamId: existingPlayer.teamId } })) ===
-        0
+      0
     ) {
       await db.team.delete({ where: { id: existingPlayer.teamId } });
     }
@@ -407,11 +410,103 @@ export default function EventEdit({
       return parseWithZod(formData, { schema: addPlayerSchema });
     },
   });
-
+  const [isExpanded, setIsExpanded] = useState(true);
   return (
     <>
       <Outlet />
+      <main className="container mx-auto px-8 py-8 max-w-32xl">
+        <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
+          <CardHeader
+            className="cursor-pointer"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <UserPlus className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Add a Player</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Add a new player to the event roster
+                  </p>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" className="shrink-0">
+                {isExpanded ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          {isExpanded && (
+            <CardContent>
+              <CForm method="post" config={addPlayerForm}>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="space-y-2">
+                    <p className="text-sm">Nickname *</p>
+                    <CTextInput label="" config={addPlayerFields.nickname} className="bg-input" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Main Class *</p>
+                    <ClassInput config={addPlayerFields.main} label="" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Assigned Role *</p>
+                    <RoleInput
+                      config={addPlayerFields.assignedRole}
+                      label=""
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Spec (if Setting Manually)</p>
+                    <SpecInput
+                      config={addPlayerFields.spec}
+                      label=""
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Player Name (if known)</p>
+                    <CTextInput
+                      config={addPlayerFields.playerName}
+                      label=""
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Player Server (if known)</p>
+                    <CTextInput
+                      config={addPlayerFields.playerServer}
+                      label=""
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Team (if Known)</p>
+                    <CTextInput
+                      config={addPlayerFields.team}
+                      label=""
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-start">
+                  <div className="space-y-2">
+                    <Button type="submit" name="action" value="add">
+                      Add Player
+                    </Button>
+                  </div>
+                </div>
+              </CForm>
+
+            </CardContent>
+          )}
+        </Card>
+      </main>
       <article className="space-y-4">
+        <section>
+          <H3>Add a Player</H3>
+
+        </section>
         <section>
           <H3>Players</H3>
           <Table>
@@ -435,46 +530,7 @@ export default function EventEdit({
           </Table>
         </section>
 
-        <section>
-          <H3>Add a Player</H3>
 
-          <CForm
-            method="post"
-            config={addPlayerForm}
-            className="grid gap-4 grid-cols-1 sm:grid-cols-2"
-          >
-            <fieldset className="space-y-2">
-              <CTextInput config={addPlayerFields.nickname} label="Nickname" />
-              <ClassInput config={addPlayerFields.main} label="Main Class" />
-              <RoleInput
-                config={addPlayerFields.assignedRole}
-                label="Assigned Role"
-              />
-            </fieldset>
-            <fieldset className="space-y-2">
-              <CTextInput
-                config={addPlayerFields.playerName}
-                label="Player Name (if known)"
-              />
-              <CTextInput
-                config={addPlayerFields.playerServer}
-                label="Player Server (if known)"
-              />
-              <SpecInput
-                config={addPlayerFields.spec}
-                label="Spec (if Setting Manually)"
-              />
-              <CTextInput
-                config={addPlayerFields.team}
-                label="Team (if Known)"
-              />
-            </fieldset>
-
-            <Button type="submit" name="action" value="add">
-              Add Player
-            </Button>
-          </CForm>
-        </section>
       </article>
     </>
   );
