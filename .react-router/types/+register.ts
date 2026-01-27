@@ -13,8 +13,8 @@ type Params = {
   "/auth/signup": {};
   "/auth/signin": {};
   "/auth/signout": {};
-  "/event": {};
   "/event/new": {};
+  "/event": {};
   "/event/:slug": {
     "slug": string;
   };

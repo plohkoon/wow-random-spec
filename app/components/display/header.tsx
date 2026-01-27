@@ -41,6 +41,9 @@ export default function Header({
         <div className="hidden md:flex items-center space-x-4">
           {username ? (
             <>
+              <Button asChild>
+                  <Link to="/event/new">Create Event</Link>
+              </Button>
               <span>Hi {username}</span>
               <Form action="/auth/signout" method="post">
                 <Button type="submit">Sign Out</Button>
@@ -88,6 +91,9 @@ export default function Header({
             <DropdownMenuContent align="end">
               {username ? (
                 <>
+                  <DropdownMenuItem asChild>
+                      <Link to="/event/new">Create Event</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Hi {username}</DropdownMenuItem>
                   <Form action="/auth/signout" method="post">
                     <DropdownMenuItem asChild>
