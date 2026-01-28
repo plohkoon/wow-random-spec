@@ -33,7 +33,7 @@ export default function Header({
             <img src="/logo.png" alt="Logo" className="h-12 w-12" />
           </Link>
           <H1 className="text-sm md:text-lg lg:text-3xl">
-            Santhan's House of Events
+            Santhan's Grand Assembly
           </H1>
         </div>
 
