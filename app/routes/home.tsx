@@ -37,7 +37,7 @@ export default function App({ loaderData: { events } }: Route.ComponentProps) {
   return (
     <>
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <header className="mb-8">
           <h1 className="text-6xl font-bold text-foreground text-center">Events</h1>
           <p className="mt-2 text-muted-foreground text-center">
@@ -50,7 +50,7 @@ export default function App({ loaderData: { events } }: Route.ComponentProps) {
             <p className="text-muted-foreground">No events found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 ">
             {events.map((event) => (
               <EventCard key={event.id} event={event} />
             ))}
