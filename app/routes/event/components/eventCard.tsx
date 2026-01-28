@@ -12,7 +12,7 @@ console.log(event);
         <div className="flex flex-col items-center">
             <div className="mb-4">
                 <h1>{event.name}</h1>
-                {event.slug}
+                {event.createdAt.newDate().toDateString()}
                 
                 
                 
