@@ -19,6 +19,7 @@ export default function EventCard({ event }: { event: any }) {
             <Card className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50 hover:shadow-lg">
                 <div className="flex">
                     <div className="relative h-32 w-32 shrink-0 overflow-hidden">
+                        {/* optional for an image if provided */}
                         {event.imageUrl ? (
                             <img
                                 src={event.imageUrl || "/placeholder.svg"}
