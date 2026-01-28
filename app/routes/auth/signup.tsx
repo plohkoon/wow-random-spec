@@ -82,7 +82,7 @@ export default function Signup() {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center p-4">
-      <Card className="w-full max-w-md border-border bg-card">
+      <Card className="w-full max-w-xl border-border bg-card">
         <CardHeader className="space-y-1 text-center">
           <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
             <UserPlus2 className="h-6 w-6 text-primary" />
@@ -131,7 +131,7 @@ export default function Signup() {
             </div>
             <p className="text-xs text-muted-foreground">
               If you are not already an admin, this currently does nothing!!!!!! </p>
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit" className="h-11 w-full font-medium">Sign Up</Button>
           </Form>
         </CardContent>
       </Card>
