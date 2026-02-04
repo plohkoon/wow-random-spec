@@ -28,6 +28,7 @@ generated/prisma/libquery*
 build
 
 generated
+*/generated
 **/*.db
-.env
 .react-router
+.env

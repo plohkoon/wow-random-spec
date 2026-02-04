@@ -33,7 +33,17 @@ import { AppSession } from "~/lib/session.server";
 import { Route } from "./lists/+types/route";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { ChevronDown, ChevronUp, Dices, Pencil, Trash2, UserPlus, Users } from "lucide-react";
-import { Label } from "@radix-ui/react-label";
+import { sort } from "fast-sort";
+
+const ROLE_ORDER: Record<string, number> = {
+  tank: 0,
+  healer: 1,
+  rdps: 2,
+  mdps: 3,
+  dps: 4,
+};
+
+
 
 const addPlayerSchema = z.object({
   nickname: z.string().min(1, "Nickname is required"),
@@ -369,7 +379,6 @@ function PlayerRow({
       <TableCell>{playerServer}</TableCell>
       <TableCell>{team?.name ?? "unassigned"}</TableCell>
       <TableCell>
-
         <Button asChild className="h-8 px-2 text-muted-foreground hover:text-[#77B1D4] bg-none border-0" size="sm" variant="ghost">
           <Link to={`/event/${slug}/edit/${player.id}/roll`}>
             <Dices className="h-4 w-4" />
@@ -419,6 +428,32 @@ export default function EventEdit({
   });
   const [isPlayerExpanded, setIsPlayersExpanded] = useState(true);
   const [isRosterExpanded, setIsRosterExpanded] = useState(true);
+  const [sortBy, setSortBy] = useState<"team" | "role">("team");
+  const [dir, setDir] = useState<"asc" | "desc">("asc");
+
+  type Player = typeof event.players[number];
+
+  function sortPlayers(players: Player[], sortBy: "team" | "role", dir: "asc" | "desc") {
+    if (sortBy === "team") {
+      return sort(players).by([
+        dir === "asc"
+          ? { asc: p => p.team?.name ?? "zzz" }
+          : { desc: p => p.team?.name ?? "zzz" },
+        { asc: p => p.nickname ?? "" }
+      ]);
+    }
+
+    if (sortBy === "role") {
+      return sort(players).by([
+        dir === "asc"
+          ? { asc: p => ROLE_ORDER[p.assignedRole ?? ""] ?? 99 }
+          : { desc: p => ROLE_ORDER[p.assignedRole ?? ""] ?? 99 },
+        { asc: p => p.nickname ?? "" }
+      ]);
+    }
+
+    return players;
+  }
   return (
     <>
       <Outlet />
@@ -543,7 +578,26 @@ export default function EventEdit({
                         Main
                       </TableHead>
                       <TableHead className="text-muted-foreground font-medium">
-                        Role
+                        <div className="flex gap-2 items-center group">
+                          Role
+                          <button
+                            className="flex items-center gap-1 text-muted-foreground group-hover:text-white transition-colors"
+                            onClick={() => {
+                              if (sortBy === "role") {
+                                setDir(dir === "asc" ? "desc" : "asc");
+                              } else {
+                                setSortBy("role");
+                                setDir("asc");
+                              }
+                            }}
+                          >
+                            {sortBy === "role" ? (
+                              dir === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            ) : (
+                              <ChevronUp className="w-4 h-4 opacity-30 group-hover:opacity-100" />
+                            )}
+                          </button>
+                        </div>
                       </TableHead>
                       <TableHead className="text-muted-foreground font-medium">
                         Spec
@@ -555,7 +609,26 @@ export default function EventEdit({
                         Server
                       </TableHead>
                       <TableHead className="text-muted-foreground font-medium">
-                        Team
+                        <div className="flex gap-2">
+                          Team
+                          <button
+                            className="hover:text-white flex items-center gap-1"
+                            onClick={() => {
+                              if (sortBy === "team") {
+                                setDir(dir === "asc" ? "desc" : "asc");
+                              } else {
+                                setSortBy("team");
+                                setDir("asc");
+                              }
+                            }}
+                          >
+                            {sortBy === "team" ? (
+                              dir === "asc" ? <ChevronUp className="w-4 h-4 ml-1" /> : <ChevronDown className="w-4 h-4 ml-1" />
+                            ) : (
+                              <ChevronUp className="w-4 h-4 ml-1 opacity-30" />
+                            )}
+                          </button>
+                        </div>
                       </TableHead>
                       <TableHead className="text-muted-foreground font-medium text-right">
                         Actions
@@ -563,9 +636,9 @@ export default function EventEdit({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {event.players.map((p) => {
-                      return <PlayerRow key={p.id} player={p} slug={slug} />;
-                    })}
+                    {sortPlayers(event.players, sortBy, dir).map(p => (
+                      <PlayerRow key={p.id} player={p} slug={slug} />
+                    ))}
                   </TableBody>
                 </Table>
               </div>
@@ -574,7 +647,7 @@ export default function EventEdit({
         </Card>
       </main>
 
-            {/* <AlertDialog
+      {/* <AlertDialog
         open={deleteConfirm !== null}
         onOpenChange={() => setDeleteConfirm(null)}
       >
