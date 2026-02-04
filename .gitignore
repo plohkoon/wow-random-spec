@@ -26,3 +26,5 @@ dist-ssr
 prisma/prisma/sqlite.db
 generated/prisma/libquery*
 build
+*/generated
+.env
