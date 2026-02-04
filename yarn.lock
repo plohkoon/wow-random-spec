@@ -1390,7 +1390,7 @@
   resolved "https://registry.yarnpkg.com/@radix-ui/rect/-/rect-1.1.1.tgz#78244efe12930c56fd255d7923865857c41ac8cb"
   integrity sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==
 
-"@react-router/dev@^7.5.2":
+"@react-router/dev@7.5.2":
   version "7.5.2"
   resolved "https://registry.yarnpkg.com/@react-router/dev/-/dev-7.5.2.tgz#db956c424fcef6b9828fdffbf32808455db78957"
   integrity sha512-5gam2/IhcBUNoLa0k/Mlk/HZBmkYXn0uGycmz9vi0QCQROX8x3Wbq4W2D0/vnjF3ol6rlp4Sp1GQCWGgqgUwOQ==
@@ -2857,6 +2857,11 @@ fast-levenshtein@^2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
 
+fast-sort@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/fast-sort/-/fast-sort-3.4.1.tgz#837e1abaafdc6c6c077b632913a7ec2dda283cb6"
+  integrity sha512-76uvGPsF6So53sZAqenP9UVT3p5l7cyTHkLWVCMinh41Y8NDrK1IYXJgaBMfc1gk7nJiSRZp676kddFG2Aa5+A==
+
 fastq@^1.6.0:
   version "1.19.1"
   resolved "https://registry.yarnpkg.com/fastq/-/fastq-1.19.1.tgz#d50eaba803c8846a883c16492821ebcd2cda55f5"
@@ -4103,7 +4108,7 @@ react-router-devtools@^1.1.10:
     "@rollup/rollup-darwin-arm64" "^4.32.1"
     "@rollup/rollup-linux-x64-gnu" "^4.32.1"
 
-react-router@^7.5.2:
+react-router@7.5.2:
   version "7.5.2"
   resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.5.2.tgz#889137b9ce91dadc06eb40997f57f08199845973"
   integrity sha512-9Rw8r199klMnlGZ8VAsV/I8WrIF6IyJ90JQUdboupx1cdkgYqwnrYjH+I/nY/7cA1X5zia4mDJqH36npP7sxGQ==
