@@ -9,6 +9,9 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    env:
+      IMAGE: ${{ secrets.DOCKER_USERNAME }}/wow-random-event
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,10 +22,32 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Determine next version tag
+        id: version
+        run: |
+          LATEST_VERSION=$(
+            curl -s "https://hub.docker.com/v2/repositories/${IMAGE}/tags?page_size=100" \
+              | grep -oE '"name":"v[0-9]+"' \
+              | grep -oE '[0-9]+' \
+              | sort -n \
+              | tail -1
+          )
+
+          if [ -z "$LATEST_VERSION" ]; then
+            NEXT_VERSION=1
+          else
+            NEXT_VERSION=$((LATEST_VERSION + 1))
+          fi
+
+          echo "tag=v${NEXT_VERSION}" >> "$GITHUB_OUTPUT"
+
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/wow-random-event:latest .
+          docker build --platform linux/amd64 \
+            -t "${IMAGE}:${{ steps.version.outputs.tag }}" \
+            -t "${IMAGE}:latest" .
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/wow-random-event:latest
+          docker push "${IMAGE}:${{ steps.version.outputs.tag }}"
+          docker push "${IMAGE}:latest"

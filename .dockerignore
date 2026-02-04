@@ -8,3 +8,5 @@ components.json
 .vscode
 .dockerignore
 .gitignore
+generated
+.react-router
