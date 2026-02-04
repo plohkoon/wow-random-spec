@@ -66,8 +66,8 @@ export default function TeamShow({
   }, [mythicData]);
   return (
     <div className="space-y-6">
-      <Link to={`/event/${slug}/`} className="underline">
-        {"<"} Back to event.
+      <Link to={`/event/${slug}/`} className="bg-white p-2 rounded-md text-black">
+        {"<"} Back to event
       </Link>
       <div className="flex justify-center mx-auto text-white p-4">
         <Tabs defaultValue="team-roster" className="w-full">

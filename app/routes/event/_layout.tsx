@@ -37,9 +37,10 @@ export default function EventLayout({
 
   return (
     <main>
-      <div className="flex items-center justify-between mb-2 mt-6 flex-col md:flex-row space-y-4">
-        <H2 className="text-6xl mx-4">{name}</H2>
-        <div className="flex-1 flex flex-row space-x-4 justify-end items-center px-4">
+      <div>
+        <H2 className="text-6xl mx-4 text-center mt-10">{name}</H2>
+      </div>
+        <div className="flex-1 flex flex-row space-x-4 justify-center items-center px-4 my-4">
           <Button asChild>
             <Link to={`/event/${slug}/lists`} className="underline">
               View Lists {">"}
@@ -64,7 +65,6 @@ export default function EventLayout({
             </Button>
           )}
         </div>
-      </div>
       <Outlet />
     </main>
   );
