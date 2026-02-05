@@ -217,7 +217,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                               </div>
                               <div className="bg-stone-300 dark:bg-black-two rounded-lg p-4 flex flex-col items-center justify-center">
                                 <span className="text-black dark:text-gray-400 text-sm mb-1">
-                                  Team Score
+                                  Team Average
                                 </span>
                                 <span className="text-3xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
                                   <ScoreDisplay score={teamAverage} />
