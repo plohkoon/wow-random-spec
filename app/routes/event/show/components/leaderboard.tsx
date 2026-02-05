@@ -160,6 +160,9 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                   },
                   index
                 ) => {
+                  const teamAverage = team.players.length > 0
+                    ? bestMythicsScore / team.players.length
+                    : 0;
                   return (
                     <li key={team.id} className="px-6 lg:px-24 lg:mt-12 mt-4">
                       <div className="w-full mx-auto bg-white dark:bg-black text-white p-6 rounded-xl mb-12">
@@ -217,7 +220,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   Team Score
                                 </span>
                                 <span className="text-3xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-                                  <ScoreDisplay score={bestMythicsScore} />
+                                  <ScoreDisplay score={teamAverage} />
                                 </span>
                               </div>
                               <div className="bg-stone-300 dark:bg-black-two rounded-lg p-4 flex flex-col items-center justify-center">
