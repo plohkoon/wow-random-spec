@@ -64,6 +64,11 @@ export default function TeamShow({
   const [bestMythics, bestMythicsScore] = useMemo(() => {
     return calculateBestMythicsAndTotalScore(mythicData ?? []);
   }, [mythicData]);
+
+  const teamAverage = team.players.length > 0
+  ? bestMythicsScore / team.players.length
+  : 0;
+
   return (
     <div className="space-y-6">
       <Link to={`/event/${slug}/`} className="bg-white p-2 rounded-md text-black">
@@ -97,7 +102,7 @@ export default function TeamShow({
                 <div className="absolute bottom-4 left-4 flex items-center gap-4">
                   <h1 className="text-2xl font-bold">{team.name}</h1>
                   <span className="text-3xl font-bold text-green-500">
-                    <ScoreDisplay score={bestMythicsScore} />
+                    <ScoreDisplay score={teamAverage} />
                   </span>
                 </div>
               </div>
