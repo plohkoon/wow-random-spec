@@ -31,6 +31,19 @@ import { db } from "~/lib/db.server";
 import { Role } from "~/lib/prisma";
 import { AppSession } from "~/lib/session.server";
 import { Route } from "./lists/+types/route";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { ChevronDown, ChevronUp, Dices, Pencil, Trash2, UserPlus, Users } from "lucide-react";
+import { sort } from "fast-sort";
+
+const ROLE_ORDER: Record<string, number> = {
+  tank: 0,
+  healer: 1,
+  rdps: 2,
+  mdps: 3,
+  dps: 4,
+};
+
+
 
 const addPlayerSchema = z.object({
   nickname: z.string().min(1, "Nickname is required"),
@@ -227,7 +240,7 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
     if (
       existingPlayer?.teamId &&
       (await db.player.count({ where: { teamId: existingPlayer.teamId } })) ===
-        0
+      0
     ) {
       await db.team.delete({ where: { id: existingPlayer.teamId } });
     }
@@ -351,10 +364,10 @@ function PlayerRow({
   } = player;
 
   return (
-    <TableRow>
-      <TableCell>{nickname}</TableCell>
+    <TableRow className="border-border/50 hover:bg-muted/30 transition-colors">
+      <TableCell className="font-medium">{nickname}</TableCell>
       <TableCell>
-        <ClassDisplay classSpec={main} />
+        <ClassDisplay className="font-medium" classSpec={main} />
       </TableCell>
       <TableCell>
         <RoleDisplay playerRole={assignedRole} />
@@ -366,14 +379,19 @@ function PlayerRow({
       <TableCell>{playerServer}</TableCell>
       <TableCell>{team?.name ?? "unassigned"}</TableCell>
       <TableCell>
-        <Button asChild variant="default">
-          <Link to={`/event/${slug}/edit/${player.id}/roll`}>Roll</Link>
+        <Button asChild className="h-8 px-2 text-muted-foreground hover:text-[#77B1D4] bg-none border-0" size="sm" variant="ghost">
+          <Link to={`/event/${slug}/edit/${player.id}/roll`}>
+            <Dices className="h-4 w-4" />
+            <span className="sr-only">Roll</span></Link>
         </Button>
-        <Button variant="secondary" onClick={() => setEditing(true)}>
-          Edit
+        <Button variant="ghost" className="h-8 px-2 text-muted-foreground hover:text-[#FFFF00]" size="sm" onClick={() => setEditing(true)}>
+          <Pencil className="h-4 w-4" />
+          <span className="sr-only">Edit</span>
         </Button>
         <Button
-          variant="destructive"
+          className="h-8 px-2 text-muted-foreground hover:text-destructive"
+          size="sm"
+          variant="ghost"
           onClick={() =>
             fetcher.submit(
               {
@@ -386,7 +404,8 @@ function PlayerRow({
             )
           }
         >
-          Delete
+          <Trash2 className="h-4 w-4" />
+          <span className="sr-only">Delete</span>
         </Button>
       </TableCell>
     </TableRow>
@@ -407,75 +426,256 @@ export default function EventEdit({
       return parseWithZod(formData, { schema: addPlayerSchema });
     },
   });
+  const [isPlayerExpanded, setIsPlayersExpanded] = useState(true);
+  const [isRosterExpanded, setIsRosterExpanded] = useState(true);
+  const [sortBy, setSortBy] = useState<"team" | "role">("team");
+  const [dir, setDir] = useState<"asc" | "desc">("asc");
 
+  type Player = typeof event.players[number];
+
+  function sortPlayers(players: Player[], sortBy: "team" | "role", dir: "asc" | "desc") {
+    if (sortBy === "team") {
+      return sort(players).by([
+        dir === "asc"
+          ? { asc: p => p.team?.name ?? "zzz" }
+          : { desc: p => p.team?.name ?? "zzz" },
+        { asc: p => p.nickname ?? "" }
+      ]);
+    }
+
+    if (sortBy === "role") {
+      return sort(players).by([
+        dir === "asc"
+          ? { asc: p => ROLE_ORDER[p.assignedRole ?? ""] ?? 99 }
+          : { desc: p => ROLE_ORDER[p.assignedRole ?? ""] ?? 99 },
+        { asc: p => p.nickname ?? "" }
+      ]);
+    }
+
+    return players;
+  }
   return (
     <>
       <Outlet />
-      <article className="space-y-4">
-        <section>
-          <H3>Players</H3>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Normal Main</TableHead>
-                <TableHead>Assigned Role</TableHead>
-                <TableHead>Spec</TableHead>
-                <TableHead>Character Name</TableHead>
-                <TableHead>Character Server</TableHead>
-                <TableHead>Team</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {event.players.map((p) => {
-                return <PlayerRow key={p.id} player={p} slug={slug} />;
-              })}
-            </TableBody>
-          </Table>
-        </section>
+      <main className="container mx-auto px-8 py-8 max-w-32xl">
+        <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <UserPlus className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Add a Player</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Add a new player to the event roster
+                  </p>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" className="shrink-0 cursor-pointer" onClick={() => setIsPlayersExpanded(!isPlayerExpanded)}>
+                {isPlayerExpanded ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          {isPlayerExpanded && (
+            <CardContent>
+              <CForm method="post" config={addPlayerForm}>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="space-y-2">
+                    <p className="text-sm">Nickname *</p>
+                    <CTextInput label="" config={addPlayerFields.nickname} className="bg-input" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Main Class *</p>
+                    <ClassInput config={addPlayerFields.main} label="" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Assigned Role *</p>
+                    <RoleInput
+                      config={addPlayerFields.assignedRole}
+                      label=""
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Spec (if Setting Manually)</p>
+                    <SpecInput
+                      config={addPlayerFields.spec}
+                      label=""
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Player Name (if known)</p>
+                    <CTextInput
+                      config={addPlayerFields.playerName}
+                      label=""
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Player Server (if known)</p>
+                    <CTextInput
+                      config={addPlayerFields.playerServer}
+                      label=""
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm">Team (if Known)</p>
+                    <CTextInput
+                      config={addPlayerFields.team}
+                      label=""
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-start">
+                  <div className="space-y-2">
+                    <Button type="submit" name="action" value="add">
+                      Add Player
+                    </Button>
+                  </div>
+                </div>
+              </CForm>
 
-        <section>
-          <H3>Add a Player</H3>
+            </CardContent>
+          )}
+        </Card>
+        <Card className="border-border/50 bg-card/50 backdrop-blur">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <UserPlus className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Player Roster</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {event.players.length} players in the roster
+                  </p>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" className="shrink-0 cursor-pointer" onClick={() => setIsRosterExpanded(!isRosterExpanded)}
+              >
+                {isRosterExpanded ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          {isRosterExpanded && (
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-border/50 hover:bg-transparent">
+                      <TableHead className="text-muted-foreground font-medium">
+                        Name
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Main
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        <div className="flex gap-2 items-center group">
+                          Role
+                          <button
+                            className="flex items-center gap-1 text-muted-foreground group-hover:text-white transition-colors"
+                            onClick={() => {
+                              if (sortBy === "role") {
+                                setDir(dir === "asc" ? "desc" : "asc");
+                              } else {
+                                setSortBy("role");
+                                setDir("asc");
+                              }
+                            }}
+                          >
+                            {sortBy === "role" ? (
+                              dir === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                            ) : (
+                              <ChevronUp className="w-4 h-4 opacity-30 group-hover:opacity-100" />
+                            )}
+                          </button>
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Spec
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Character
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        Server
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium">
+                        <div className="flex gap-2">
+                          Team
+                          <button
+                            className="hover:text-white flex items-center gap-1"
+                            onClick={() => {
+                              if (sortBy === "team") {
+                                setDir(dir === "asc" ? "desc" : "asc");
+                              } else {
+                                setSortBy("team");
+                                setDir("asc");
+                              }
+                            }}
+                          >
+                            {sortBy === "team" ? (
+                              dir === "asc" ? <ChevronUp className="w-4 h-4 ml-1" /> : <ChevronDown className="w-4 h-4 ml-1" />
+                            ) : (
+                              <ChevronUp className="w-4 h-4 ml-1 opacity-30" />
+                            )}
+                          </button>
+                        </div>
+                      </TableHead>
+                      <TableHead className="text-muted-foreground font-medium text-right">
+                        Actions
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sortPlayers(event.players, sortBy, dir).map(p => (
+                      <PlayerRow key={p.id} player={p} slug={slug} />
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      </main>
 
-          <CForm
-            method="post"
-            config={addPlayerForm}
-            className="grid gap-4 grid-cols-1 sm:grid-cols-2"
-          >
-            <fieldset className="space-y-2">
-              <CTextInput config={addPlayerFields.nickname} label="Nickname" />
-              <ClassInput config={addPlayerFields.main} label="Main Class" />
-              <RoleInput
-                config={addPlayerFields.assignedRole}
-                label="Assigned Role"
-              />
-            </fieldset>
-            <fieldset className="space-y-2">
-              <CTextInput
-                config={addPlayerFields.playerName}
-                label="Player Name (if known)"
-              />
-              <CTextInput
-                config={addPlayerFields.playerServer}
-                label="Player Server (if known)"
-              />
-              <SpecInput
-                config={addPlayerFields.spec}
-                label="Spec (if Setting Manually)"
-              />
-              <CTextInput
-                config={addPlayerFields.team}
-                label="Team (if Known)"
-              />
-            </fieldset>
-
-            <Button type="submit" name="action" value="add">
-              Add Player
-            </Button>
-          </CForm>
-        </section>
-      </article>
+      {/* <AlertDialog
+        open={deleteConfirm !== null}
+        onOpenChange={() => setDeleteConfirm(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Player</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove{" "}
+              <strong>{deleteConfirm?.nickname}</strong> from the roster? This
+              action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deleteConfirm) {
+                  onDelete(deleteConfirm.id)
+                  setDeleteConfirm(null)
+                }
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog> */}
     </>
   );
 }

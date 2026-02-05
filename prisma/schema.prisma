@@ -1,12 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider      = "prisma-client"
+  output        = "../generated/prisma"
   binaryTargets = ["native", "windows"]
 }
 
@@ -25,17 +19,10 @@ model Event {
   id        String   @id @default(cuid())
   slug      String   @unique
   name      String
-  players   Player[]
-  teams     Team[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-enum Role {
-  rdps
-  mdps
-  tank
-  healer
+  players   Player[]
+  teams     Team[]
 }
 
 model Player {
@@ -43,25 +30,25 @@ model Player {
   nickname     String
   main         String?
   playerName   String?
-  playerServer String?
   assignedRole Role?
   spec         String?
   eventId      String
-  event        Event    @relation(fields: [eventId], references: [id])
   teamId       String?
-  team         Team?    @relation(fields: [teamId], references: [id])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  playerServer String?
+  team         Team?    @relation(fields: [teamId], references: [id])
+  event        Event    @relation(fields: [eventId], references: [id])
 }
 
 model Team {
   id        String   @id @default(cuid())
   name      String
-  players   Player[]
   eventId   String
-  event     Event    @relation(fields: [eventId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  players   Player[]
+  event     Event    @relation(fields: [eventId], references: [id])
 }
 
 model User {
@@ -69,9 +56,16 @@ model User {
   email              String   @unique
   name               String
   username           String   @unique
-  password           String // Stores the hashed password (includes salt)
-  twoFactorSecret    String? // Optional: Secret for 2FA
+  password           String
+  twoFactorSecret    String?
   isTwoFactorEnabled Boolean  @default(false)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+}
+
+enum Role {
+  rdps
+  mdps
+  tank
+  healer
 }

@@ -13,8 +13,8 @@ export default [
     route("signin", "./routes/auth/signin.tsx"),
     route("signout", "./routes/auth/signout.tsx"),
   ]),
+  route("/event/new", "./routes/event/new.tsx"),
   route("/event/", "./routes/event/_layout.tsx", [
-    route("new", "./routes/event/new.tsx"),
     ...prefix(":slug", [
       index("./routes/event/show/route.tsx"),
       route("stats", "./routes/event/stats/route.tsx"),

@@ -32,3 +32,10 @@ generated/
 prisma/*.db
 prisma/prisma/
 node_modules/
+
+generated
+*/generated
+**/*.db
+.react-router
+.env
+

@@ -45,12 +45,12 @@ export const links: LinksFunction = () => [
 ];
 
 export const meta: Route.MetaFunction = () => [
-  { title: "Tito and Dom's M+ Adventure" },
+  { title: "Santhan's Grand Assembly" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const rootLoaderData = useRouteLoaderData(
-    "root"
+    "root",
   ) as Route.ComponentProps["loaderData"];
   const defaultColorScheme = rootLoaderData?.requestInfo?.colorScheme;
   const username = rootLoaderData?.requestInfo?.user?.username;
