@@ -27,4 +27,4 @@ prisma/prisma/sqlite.db
 generated/prisma/libquery*
 build
 */generated
-.env
+.env.env 
