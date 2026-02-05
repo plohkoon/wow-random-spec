@@ -30,7 +30,7 @@ build
 .env
 
 # Prisma generated client
-generated/prisma/
+generated/*
 
 # SQLite DBs
 prisma/*.db
@@ -38,3 +38,4 @@ prisma/prisma/*.db
 
 # React Router types
 .react-router/types/
+
