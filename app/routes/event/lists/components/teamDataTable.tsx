@@ -23,6 +23,7 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import {
+  calculateAugmentedBestMythicsAndTotalScore,
   calculateBestMythicsAndTotalScore,
   calculateBestScoreAndBestUnderTime,
   MythicData,
@@ -107,13 +108,23 @@ const columns = [
   },
 ] satisfies ColumnDef<Team["players"][number]>[];
 
+function getParticipantBadgeClass(count: number): string {
+  if (count >= 5) return "bg-green-700/80";
+  if (count <= 3) return "bg-amber-700/80";
+  return "bg-black/60";
+}
+
 function MythicsInfoOverview({ mythics }: { mythics: MythicData[] | null }) {
   if (!mythics) {
     return <MissingMythicInfo></MissingMythicInfo>;
   }
 
-  const [bestMythics, bestMythicsScore] = useMemo(() => {
+  const [, bestMythicsScore] = useMemo(() => {
     return calculateBestMythicsAndTotalScore(mythics);
+  }, [mythics]);
+
+  const augmented = useMemo(() => {
+    return calculateAugmentedBestMythicsAndTotalScore(mythics);
   }, [mythics]);
 
   const [bestSingleScore, mostUnderTime] = useMemo(() => {
@@ -126,15 +137,20 @@ function MythicsInfoOverview({ mythics }: { mythics: MythicData[] | null }) {
         <H4>Dungeons</H4>
 
         <div className="grid md:grid-cols-1 lg:grid-cols-2 3xl:grid-cols-4 6xl:grid-cols-8 gap-2 w-full">
-          {bestMythics.map((run) => (
+          {augmented.bestMythics.map((run) => (
             <div
               key={run.keystone_run_id}
-              className="grow rounded-lg border-gray-100 border p-4 gap-2 bg-background/60 bg-(image:--bg-image) dark:bg-blend-darken bg-blend-lighten bg-linear-to-b bg-cover bg-no-repeat"
+              className="relative grow rounded-lg border-gray-100 border p-4 gap-2 bg-background/60 bg-(image:--bg-image) dark:bg-blend-darken bg-blend-lighten bg-linear-to-b bg-cover bg-no-repeat"
               style={{
                 // @ts-expect-error: Variables are not typed
                 "--bg-image": `url(${run.background_image_url})`,
               }}
             >
+              <span
+                className={`absolute top-1 right-1 text-[10px] font-semibold text-white px-1 py-0.5 rounded ${getParticipantBadgeClass(run.participants.length)}`}
+              >
+                {run.participants.length}/5
+              </span>
               <div className="flex flex-col items-center gap-y-2">
                 <div className="flex flex-col justify-start text-3xl">
                   <ScoreDisplay individual score={run.score} className="" />
@@ -168,10 +184,13 @@ function MythicsInfoOverview({ mythics }: { mythics: MythicData[] | null }) {
           <div className="rounded-lg border border-neutral-100 grow">
             <div className="flex flex-col items-center space-around pb-2 pt-2 ps-1 pe-1">
               <ScoreDisplay
-                score={bestMythicsScore}
+                score={augmented.augmentedTotal}
                 className="text-4xl font-semibold"
               />
               <span className="text-md font-bold">Team Score</span>
+              <span className="text-xs text-gray-500">
+                Raw: {bestMythicsScore.toFixed(1)}
+              </span>
             </div>
           </div>
 

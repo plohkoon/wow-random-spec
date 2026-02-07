@@ -206,6 +206,53 @@ export function calculateBestMythicsAndTotalScore(mythics: MythicData[]) {
   return [Object.values(bestMythicsMap), totalScore] as const;
 }
 
+export const PARTICIPATION_MULTIPLIERS: Record<number, number> = {
+  3: 0.90,
+  4: 1.00,
+  5: 1.10,
+};
+
+export function getAugmentedScore(run: MythicData): number {
+  const multiplier = PARTICIPATION_MULTIPLIERS[run.participants.length] ?? 1.0;
+  return run.score * multiplier;
+}
+
+export type AugmentedMythicResult = {
+  bestMythics: MythicData[];
+  augmentedTotal: number;
+  augmentedScores: Map<number, number>;
+};
+
+export function calculateAugmentedBestMythicsAndTotalScore(
+  mythics: MythicData[]
+): AugmentedMythicResult {
+  const bestMythicsMap = {} as Record<string, MythicData>;
+  const augmentedScores = new Map<number, number>();
+
+  mythics.forEach((m: MythicData) => {
+    const augScore = getAugmentedScore(m);
+    augmentedScores.set(m.keystone_run_id, augScore);
+
+    const existing = bestMythicsMap[m.dungeon];
+    if (!existing) {
+      bestMythicsMap[m.dungeon] = m;
+    } else {
+      const existingAug = getAugmentedScore(existing);
+      if (augScore > existingAug) {
+        bestMythicsMap[m.dungeon] = m;
+      }
+    }
+  });
+
+  const bestMythics = Object.values(bestMythicsMap);
+  const augmentedTotal = bestMythics.reduce(
+    (acc, m) => acc + getAugmentedScore(m),
+    0
+  );
+
+  return { bestMythics, augmentedTotal, augmentedScores };
+}
+
 export function calculateBestScoreAndBestUnderTime(mythics: MythicData[]) {
   const bestSingleScore = mythics.reduce(
     (score: number, m: MythicData) => (score > m.score ? score : m.score),

@@ -46,7 +46,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
       if (sortBy === "single_score") {
         return b.bestSingleScore - a.bestSingleScore;
       } else if (sortBy === "team_score") {
-        return b.bestMythicsScore - a.bestMythicsScore;
+        return b.augmentedTotal - a.augmentedTotal;
       } else if (sortBy === "num_ran") {
         const aMythics = a.mythics?.length ?? 0;
         const bMythics = b.mythics?.length ?? 0;
@@ -153,10 +153,11 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                   {
                     team,
                     mythics,
-                    bestMythics,
                     bestMythicsScore,
                     mostUnderTime,
                     bestSingleScore,
+                    augmentedBestMythics,
+                    augmentedTotal,
                   },
                   index
                 ) => {
@@ -217,7 +218,10 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                   Team Score
                                 </span>
                                 <span className="text-3xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-                                  <ScoreDisplay score={bestMythicsScore} />
+                                  <ScoreDisplay score={augmentedTotal} />
+                                </span>
+                                <span className="text-xs text-black/60 dark:text-gray-500 mt-1">
+                                  Raw: {bestMythicsScore.toFixed(1)}
                                 </span>
                               </div>
                               <div className="bg-stone-300 dark:bg-black-two rounded-lg p-4 flex flex-col items-center justify-center">
@@ -245,7 +249,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                               </div>
                             </div>
                             {/* Mythic Display list component */}
-                            <MythicDisplay bestMythics={bestMythics} />
+                            <MythicDisplay bestMythics={augmentedBestMythics} />
                           </div>
                         </div>
                       </div>

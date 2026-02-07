@@ -1,10 +1,16 @@
 import { Link } from "react-router";
 import { ScoreDisplay } from "../display/scoreDisplay";
-import { CharacterNS } from "~/lib/raiderIO/characters";
+import type { MythicData } from "~/lib/mythics";
 
 type MythicProps = {
-  bestMythics: CharacterNS.MythicPlusRun[];
+  bestMythics: MythicData[];
 };
+
+function getParticipantBadgeClass(count: number): string {
+  if (count >= 5) return "bg-green-700/80";
+  if (count <= 3) return "bg-amber-700/80";
+  return "bg-black/60";
+}
 
 export default function MythicDisplay({ bestMythics }: MythicProps) {
   return (
@@ -34,6 +40,11 @@ export default function MythicDisplay({ bestMythics }: MythicProps) {
                     +{mythic.mythic_level} {mythic.short_name}
                   </h5>
                 </div>
+                <span
+                  className={`absolute top-0.5 right-0.5 z-20 text-[10px] font-semibold text-white px-1 py-0.5 rounded ${getParticipantBadgeClass(mythic.participants.length)}`}
+                >
+                  {mythic.participants.length}/5
+                </span>
               </div>
             </div>
           </Link>
