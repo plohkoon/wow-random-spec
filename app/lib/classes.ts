@@ -1,4 +1,4 @@
-import { Player } from "generated/prisma";
+import type { Player } from "generated/prisma";
 
 export const classSpecs = {
   druid: {
@@ -146,11 +146,11 @@ export const specKeyToNameMapping = {
 export const allClassSpecs = Object.entries(classSpecs).flatMap(([c, specs]) =>
   Object.entries(specs).map(([s, r]) => {
     return makeClassSpec(c, s);
-  })
+  }),
 );
 
 export function availableSpecsForPlayer(
-  player: Pick<Player, "main" | "assignedRole">
+  player: Pick<Player, "main" | "assignedRole">,
 ) {
   return Object.keys(classSpecs).flatMap((c) => {
     const specs = classSpecs[c as keyof typeof classSpecs];
@@ -162,7 +162,7 @@ export function availableSpecsForPlayer(
 }
 
 export function getClassAndSpec(
-  classSpec?: string | undefined | null
+  classSpec?: string | undefined | null,
 ): [string, string | undefined] {
   if (!classSpec) return ["", undefined];
 
@@ -175,7 +175,7 @@ export function makeRaiderIOClassSpec(playerClass: string, spec?: string) {
   return makeClassSpec(
     raiderIOToInternal[playerClass as keyof typeof raiderIOToInternal] ??
       playerClass,
-    spec
+    spec,
   );
 }
 

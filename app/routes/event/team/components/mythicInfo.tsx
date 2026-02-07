@@ -3,9 +3,9 @@ import { H2 } from "~/components/display/headers";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Card } from "~/components/ui/card";
 import {
+  type MythicData,
   calculateBestScoreAndBestUnderTime,
   getGreenTextClass,
-  MythicData,
 } from "~/lib/mythics";
 
 function MythicsInfoInternal({
@@ -55,7 +55,7 @@ function MythicsInfoInternal({
             <p className="text-sm text-gray-400">Furthest Under Par</p>
             <span
               className={`text-3xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] ${getGreenTextClass(
-                mostUnderTime * 100
+                mostUnderTime * 100,
               )}`}
             >
               {(mostUnderTime * 100).toFixed(2)}

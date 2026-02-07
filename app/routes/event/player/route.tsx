@@ -2,7 +2,7 @@ import { Link, redirect } from "react-router";
 import { db } from "~/lib/db.server";
 import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
 import { RaiderIOClient } from "~/lib/raiderIO";
-import { Route } from "./+types/route";
+import type { Route } from "./+types/route";
 import { CharacterData } from "./components/characterData";
 
 export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
@@ -26,7 +26,7 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
 
   const client = RaiderIOClient.getInstance();
 
-  let playerData =
+  const playerData =
     player.playerServer && player.playerName
       ? client.character.getCharacterProfile({
           region: "us",
@@ -60,7 +60,7 @@ export const clientLoader = async ({
 
   const mythicData = await parseMythicDataPerTeam(
     serverRes.player.team,
-    serverRes.playersPromises
+    serverRes.playersPromises,
   );
 
   return {

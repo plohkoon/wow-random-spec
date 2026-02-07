@@ -1,9 +1,9 @@
 import {
-  ColumnDef,
+  type ColumnDef,
+  type SortingState,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Route } from "../+types/route";
+import type { Route } from "../+types/route";
 
 type Player = Route.ComponentProps["loaderData"]["event"]["players"][number];
 
@@ -217,7 +217,7 @@ export function PlayerDataTable({ players }: { players: Player[] }) {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHead>
               );

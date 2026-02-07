@@ -8,7 +8,7 @@ import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { makeRaiderIOClassSpec } from "~/lib/classes";
-import { Route } from "../+types/route";
+import type { Route } from "../+types/route";
 
 type PlayerData = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["playersPromises"][number]>
@@ -44,7 +44,7 @@ function PlayerDataInternal(player: PlayerData) {
                 <ClassDisplay
                   classSpec={makeRaiderIOClassSpec(
                     player.class,
-                    player.active_spec_name
+                    player.active_spec_name,
                   )}
                 />
                 <RoleDisplay

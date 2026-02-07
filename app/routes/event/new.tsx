@@ -1,15 +1,21 @@
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
+import { CalendarPlus } from "lucide-react";
 import { redirect } from "react-router";
 import { z } from "zod";
 import { CForm } from "~/components/inputs/form";
 import { CTextInput } from "~/components/inputs/textInput";
 import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import { db } from "~/lib/db.server";
 import { AppSession } from "~/lib/session.server";
-import { Route } from "./+types/new";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { CalendarPlus } from "lucide-react";
+import type { Route } from "./+types/new";
 
 const schema = z.object({
   slug: z
@@ -86,7 +92,11 @@ export default function EventNew({
                 <p className="text-sm font-medium text-card-foreground">
                   Event Name
                 </p>
-                <CTextInput config={fields.name} label="" className="h-11 border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-primary" />
+                <CTextInput
+                  config={fields.name}
+                  label=""
+                  className="h-11 border-input bg-background text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+                />
               </div>
               <div className="space-y-2">
                 <p className="text-sm font-medium text-card-foreground">
@@ -96,12 +106,18 @@ export default function EventNew({
                   This will be used in the event URL.
                 </p>
               </div>
-              <CTextInput config={fields.slug} label="" className="h-11 border-input bg-background font-mono text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-primary" />
-              <Button type="submit" className="h-11 w-full font-medium">Create Event</Button>
+              <CTextInput
+                config={fields.slug}
+                label=""
+                className="h-11 border-input bg-background font-mono text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-primary"
+              />
+              <Button type="submit" className="h-11 w-full font-medium">
+                Create Event
+              </Button>
             </CForm>
           </CardContent>
         </Card>
       </div>
     </>
   );
-};
+}

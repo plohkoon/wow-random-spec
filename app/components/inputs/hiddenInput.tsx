@@ -1,4 +1,4 @@
-import { FieldMetadata, getInputProps } from "@conform-to/react";
+import { type FieldMetadata, getInputProps } from "@conform-to/react";
 
 export function CHiddenInput({
   config,

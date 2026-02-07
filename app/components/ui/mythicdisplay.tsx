@@ -1,6 +1,6 @@
 import { Link } from "react-router";
+import type { CharacterNS } from "~/lib/raiderIO/characters";
 import { ScoreDisplay } from "../display/scoreDisplay";
-import { CharacterNS } from "~/lib/raiderIO/characters";
 
 type MythicProps = {
   bestMythics: CharacterNS.MythicPlusRun[];

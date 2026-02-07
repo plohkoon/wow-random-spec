@@ -19,7 +19,7 @@ export function IlvlDisplay<C extends React.ElementType = "span">({
       data-tier={tier}
       className={clsx(
         className,
-        "data-[tier=1]:text-common data-[tier=2]:text-rare data-[tier=3]:text-epic data-[tier=4]:text-legendary"
+        "data-[tier=1]:text-common data-[tier=2]:text-rare data-[tier=3]:text-epic data-[tier=4]:text-legendary",
       )}
       {...rest}
     >

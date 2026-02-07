@@ -1,4 +1,4 @@
-import { RaiderIOClient } from ".";
+import type { RaiderIOClient } from ".";
 
 export namespace MythicPlusNS {
   export type ScoreTiers = {

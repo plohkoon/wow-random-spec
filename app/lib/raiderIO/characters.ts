@@ -1,6 +1,6 @@
 import type { RaiderIOClient } from ".";
 import type { RootNS } from "./index";
-import { fieldsString, HasChildBool } from "./utils";
+import { type HasChildBool, fieldsString } from "./utils";
 
 export namespace CharacterNS {
   export type CharacterPayloadBase = {
@@ -333,7 +333,7 @@ export namespace CharacterNS {
 
   // Build up the output hash with only the keys that are requested.
   export type CharacterProfilePayload<
-    T extends OptionalCharacterProfilePayloadOptions
+    T extends OptionalCharacterProfilePayloadOptions,
   > = CharacterPayloadBase & {
     [key in keyof OptionalCharacterProfilePayloadFields as HasChildBool<
       T[key]
@@ -351,7 +351,7 @@ export class Character {
   }
 
   async getCharacterProfile<
-    T extends CharacterNS.OptionalCharacterProfilePayloadOptions
+    T extends CharacterNS.OptionalCharacterProfilePayloadOptions,
   >({
     region,
     realm,
@@ -374,7 +374,7 @@ export class Character {
   }
 
   async getCharacterProfiles<
-    T extends CharacterNS.OptionalCharacterProfilePayloadOptions
+    T extends CharacterNS.OptionalCharacterProfilePayloadOptions,
   >({
     characters,
   }: {
@@ -386,11 +386,11 @@ export class Character {
     }[];
   }): Promise<CharacterNS.CharacterProfilePayload<T>[]> {
     return Promise.allSettled(
-      characters.map((character) => this.getCharacterProfile(character))
+      characters.map((character) => this.getCharacterProfile(character)),
     ).then((results) =>
       results
         .filter((result) => result.status === "fulfilled")
-        .map((result) => result.value)
+        .map((result) => result.value),
     );
   }
 }

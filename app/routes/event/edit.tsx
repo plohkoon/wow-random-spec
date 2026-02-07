@@ -8,12 +8,22 @@ import {
   TableHeader,
   TableRow,
 } from "app/components/ui/table";
+import { sort } from "fast-sort";
+import {
+  ChevronDown,
+  ChevronUp,
+  Dices,
+  Pencil,
+  Trash2,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import {
-  data,
-  FetcherWithComponents,
+  type FetcherWithComponents,
   Link,
   Outlet,
+  data,
   useFetcher,
 } from "react-router";
 import { z } from "zod";
@@ -26,14 +36,12 @@ import { CHiddenInput } from "~/components/inputs/hiddenInput";
 import { RoleInput } from "~/components/inputs/roleInput";
 import { SpecInput } from "~/components/inputs/specInput";
 import { CTextInput } from "~/components/inputs/textInput";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { TableBody } from "~/components/ui/table";
 import { db } from "~/lib/db.server";
 import { Role } from "~/lib/prisma";
 import { AppSession } from "~/lib/session.server";
-import { Route } from "./lists/+types/route";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { ChevronDown, ChevronUp, Dices, Pencil, Trash2, UserPlus, Users } from "lucide-react";
-import { sort } from "fast-sort";
+import type { Route } from "./lists/+types/route";
 
 const ROLE_ORDER: Record<string, number> = {
   tank: 0,
@@ -42,8 +50,6 @@ const ROLE_ORDER: Record<string, number> = {
   mdps: 3,
   dps: 4,
 };
-
-
 
 const addPlayerSchema = z.object({
   nickname: z.string().min(1, "Nickname is required"),
@@ -141,7 +147,7 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
         res.reply({
           formErrors: [`Player with nickname ${value.nickname} already exists`],
         }),
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -182,7 +188,7 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
     if (!existingPlayer) {
       return data(
         res.reply({ formErrors: [`Player with id ${value.id} not found`] }),
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -201,7 +207,7 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
               `Player with nickname ${value.nickname} already exists`,
             ],
           }),
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -240,7 +246,7 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
     if (
       existingPlayer?.teamId &&
       (await db.player.count({ where: { teamId: existingPlayer.teamId } })) ===
-      0
+        0
     ) {
       await db.team.delete({ where: { id: existingPlayer.teamId } });
     }
@@ -379,12 +385,23 @@ function PlayerRow({
       <TableCell>{playerServer}</TableCell>
       <TableCell>{team?.name ?? "unassigned"}</TableCell>
       <TableCell>
-        <Button asChild className="h-8 px-2 text-muted-foreground hover:text-[#77B1D4] bg-none border-0" size="sm" variant="ghost">
+        <Button
+          asChild
+          className="h-8 px-2 text-muted-foreground hover:text-[#77B1D4] bg-none border-0"
+          size="sm"
+          variant="ghost"
+        >
           <Link to={`/event/${slug}/edit/${player.id}/roll`}>
             <Dices className="h-4 w-4" />
-            <span className="sr-only">Roll</span></Link>
+            <span className="sr-only">Roll</span>
+          </Link>
         </Button>
-        <Button variant="ghost" className="h-8 px-2 text-muted-foreground hover:text-[#FFFF00]" size="sm" onClick={() => setEditing(true)}>
+        <Button
+          variant="ghost"
+          className="h-8 px-2 text-muted-foreground hover:text-[#FFFF00]"
+          size="sm"
+          onClick={() => setEditing(true)}
+        >
           <Pencil className="h-4 w-4" />
           <span className="sr-only">Edit</span>
         </Button>
@@ -400,7 +417,7 @@ function PlayerRow({
               },
               {
                 method: "post",
-              }
+              },
             )
           }
         >
@@ -431,24 +448,28 @@ export default function EventEdit({
   const [sortBy, setSortBy] = useState<"team" | "role">("team");
   const [dir, setDir] = useState<"asc" | "desc">("asc");
 
-  type Player = typeof event.players[number];
+  type Player = (typeof event.players)[number];
 
-  function sortPlayers(players: Player[], sortBy: "team" | "role", dir: "asc" | "desc") {
+  function sortPlayers(
+    players: Player[],
+    sortBy: "team" | "role",
+    dir: "asc" | "desc",
+  ) {
     if (sortBy === "team") {
       return sort(players).by([
         dir === "asc"
-          ? { asc: p => p.team?.name ?? "zzz" }
-          : { desc: p => p.team?.name ?? "zzz" },
-        { asc: p => p.nickname ?? "" }
+          ? { asc: (p) => p.team?.name ?? "zzz" }
+          : { desc: (p) => p.team?.name ?? "zzz" },
+        { asc: (p) => p.nickname ?? "" },
       ]);
     }
 
     if (sortBy === "role") {
       return sort(players).by([
         dir === "asc"
-          ? { asc: p => ROLE_ORDER[p.assignedRole ?? ""] ?? 99 }
-          : { desc: p => ROLE_ORDER[p.assignedRole ?? ""] ?? 99 },
-        { asc: p => p.nickname ?? "" }
+          ? { asc: (p) => ROLE_ORDER[p.assignedRole ?? ""] ?? 99 }
+          : { desc: (p) => ROLE_ORDER[p.assignedRole ?? ""] ?? 99 },
+        { asc: (p) => p.nickname ?? "" },
       ]);
     }
 
@@ -472,7 +493,12 @@ export default function EventEdit({
                   </p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" className="shrink-0 cursor-pointer" onClick={() => setIsPlayersExpanded(!isPlayerExpanded)}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="shrink-0 cursor-pointer"
+                onClick={() => setIsPlayersExpanded(!isPlayerExpanded)}
+              >
                 {isPlayerExpanded ? (
                   <ChevronUp className="h-5 w-5" />
                 ) : (
@@ -487,7 +513,11 @@ export default function EventEdit({
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <p className="text-sm">Nickname *</p>
-                    <CTextInput label="" config={addPlayerFields.nickname} className="bg-input" />
+                    <CTextInput
+                      label=""
+                      config={addPlayerFields.nickname}
+                      className="bg-input"
+                    />
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm">Main Class *</p>
@@ -495,24 +525,15 @@ export default function EventEdit({
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm">Assigned Role *</p>
-                    <RoleInput
-                      config={addPlayerFields.assignedRole}
-                      label=""
-                    />
+                    <RoleInput config={addPlayerFields.assignedRole} label="" />
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm">Spec (if Setting Manually)</p>
-                    <SpecInput
-                      config={addPlayerFields.spec}
-                      label=""
-                    />
+                    <SpecInput config={addPlayerFields.spec} label="" />
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm">Player Name (if known)</p>
-                    <CTextInput
-                      config={addPlayerFields.playerName}
-                      label=""
-                    />
+                    <CTextInput config={addPlayerFields.playerName} label="" />
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm">Player Server (if known)</p>
@@ -523,10 +544,7 @@ export default function EventEdit({
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm">Team (if Known)</p>
-                    <CTextInput
-                      config={addPlayerFields.team}
-                      label=""
-                    />
+                    <CTextInput config={addPlayerFields.team} label="" />
                   </div>
                 </div>
                 <div className="mt-6 flex justify-start">
@@ -537,7 +555,6 @@ export default function EventEdit({
                   </div>
                 </div>
               </CForm>
-
             </CardContent>
           )}
         </Card>
@@ -555,7 +572,11 @@ export default function EventEdit({
                   </p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" className="shrink-0 cursor-pointer" onClick={() => setIsRosterExpanded(!isRosterExpanded)}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="shrink-0 cursor-pointer"
+                onClick={() => setIsRosterExpanded(!isRosterExpanded)}
               >
                 {isRosterExpanded ? (
                   <ChevronUp className="h-5 w-5" />
@@ -592,7 +613,11 @@ export default function EventEdit({
                             }}
                           >
                             {sortBy === "role" ? (
-                              dir === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                              dir === "asc" ? (
+                                <ChevronUp className="w-4 h-4" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4" />
+                              )
                             ) : (
                               <ChevronUp className="w-4 h-4 opacity-30 group-hover:opacity-100" />
                             )}
@@ -623,7 +648,11 @@ export default function EventEdit({
                             }}
                           >
                             {sortBy === "team" ? (
-                              dir === "asc" ? <ChevronUp className="w-4 h-4 ml-1" /> : <ChevronDown className="w-4 h-4 ml-1" />
+                              dir === "asc" ? (
+                                <ChevronUp className="w-4 h-4 ml-1" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4 ml-1" />
+                              )
                             ) : (
                               <ChevronUp className="w-4 h-4 ml-1 opacity-30" />
                             )}
@@ -636,7 +665,7 @@ export default function EventEdit({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sortPlayers(event.players, sortBy, dir).map(p => (
+                    {sortPlayers(event.players, sortBy, dir).map((p) => (
                       <PlayerRow key={p.id} player={p} slug={slug} />
                     ))}
                   </TableBody>

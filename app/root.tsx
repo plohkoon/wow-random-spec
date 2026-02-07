@@ -9,7 +9,7 @@ import {
   useRouteLoaderData,
   useSubmit,
 } from "react-router";
-import { Route } from "./+types/root";
+import type { Route } from "./+types/root";
 import Header from "./components/display/header";
 import { ClientHintCheck, getHints } from "./lib/clientHints";
 import { getDarkmodeSession } from "./lib/darkmode";

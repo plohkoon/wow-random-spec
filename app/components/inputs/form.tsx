@@ -1,6 +1,6 @@
-import { FormMetadata, getFormProps } from "@conform-to/react";
-import { ComponentProps } from "react";
-import { Form, useFetcher } from "react-router";
+import { type FormMetadata, getFormProps } from "@conform-to/react";
+import type { ComponentProps } from "react";
+import { Form, type useFetcher } from "react-router";
 
 type Props<T extends Record<string, unknown>> = ComponentProps<typeof Form> & {
   config: FormMetadata<T, string[]>;

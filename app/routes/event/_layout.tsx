@@ -4,7 +4,7 @@ import { H2 } from "~/components/display/headers";
 import { Button } from "~/components/ui/button";
 import { db } from "~/lib/db.server";
 import { AppSession } from "~/lib/session.server";
-import { Route } from "./+types/_layout";
+import type { Route } from "./+types/_layout";
 
 export const loader = async ({
   request,
@@ -32,7 +32,7 @@ export default function EventLayout({
 }: Route.ComponentProps) {
   const edit = useMatches().reduce(
     (acc, match) => acc || !!schema.safeParse(match.handle).data,
-    false
+    false,
   );
 
   return (
@@ -40,31 +40,31 @@ export default function EventLayout({
       <div>
         <H2 className="text-6xl mx-4 text-center mt-10">{name}</H2>
       </div>
-        <div className="flex-1 flex flex-row space-x-4 justify-center items-center px-4 my-4">
+      <div className="flex-1 flex flex-row space-x-4 justify-center items-center px-4 my-4">
+        <Button asChild>
+          <Link to={`/event/${slug}/lists`} className="underline">
+            View Lists {">"}
+          </Link>
+        </Button>
+        <Button asChild>
+          <Link to={`/event/${slug}/stats`} className="underline">
+            View Stats {">"}
+          </Link>
+        </Button>
+        {isAdmin && (
           <Button asChild>
-            <Link to={`/event/${slug}/lists`} className="underline">
-              View Lists {">"}
-            </Link>
+            {edit ? (
+              <Link to={`/event/${slug}`} className="underline">
+                Done Editing
+              </Link>
+            ) : (
+              <Link to={`/event/${slug}/edit`} className="underline">
+                Edit Event
+              </Link>
+            )}
           </Button>
-          <Button asChild>
-            <Link to={`/event/${slug}/stats`} className="underline">
-              View Stats {">"}
-            </Link>
-          </Button>
-          {isAdmin && (
-            <Button asChild>
-              {edit ? (
-                <Link to={`/event/${slug}`} className="underline">
-                  Done Editing
-                </Link>
-              ) : (
-                <Link to={`/event/${slug}/edit`} className="underline">
-                  Edit Event
-                </Link>
-              )}
-            </Button>
-          )}
-        </div>
+        )}
+      </div>
       <Outlet />
     </main>
   );

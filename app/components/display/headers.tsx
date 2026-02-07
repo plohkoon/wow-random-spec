@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 
 export function H1(props: ComponentProps<"h1">) {
   return (

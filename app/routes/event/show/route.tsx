@@ -8,7 +8,7 @@ import {
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { AppSession } from "~/lib/session.server";
 import { organizeTeams } from "~/lib/teams";
-import { Route } from "./+types/route";
+import type { Route } from "./+types/route";
 import { LeaderBoard } from "./components/leaderboard";
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
@@ -43,7 +43,7 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   const client = RaiderIOClient.getInstance();
 
   const eachTeamsPlayersPromises = teams.map((team) =>
-    getPlayersPromises(team, client)
+    getPlayersPromises(team, client),
   );
 
   return {
@@ -51,7 +51,7 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
       teams.map(async (team, i) => {
         const mythicData = await parseMythicDataPerTeam(
           team,
-          eachTeamsPlayersPromises[i]
+          eachTeamsPlayersPromises[i],
         );
 
         const [bestMythics, bestMythicsScore] =
@@ -67,7 +67,7 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
           bestSingleScore,
           mostUnderTime,
         };
-      })
+      }),
     ),
   };
 }

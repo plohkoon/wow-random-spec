@@ -9,7 +9,7 @@ import {
   parseMythicDataPerTeam,
 } from "~/lib/mythics";
 import { RaiderIOClient } from "~/lib/raiderIO";
-import { Route } from "./+types/route";
+import type { Route } from "./+types/route";
 import TeamDungeonRuns from "./components/dungeonRuns";
 import { MythicInfo } from "./components/mythicInfo";
 import { PlayerData } from "./components/playerData";
@@ -44,7 +44,7 @@ export const clientLoader = async ({
 
   const mythicData = await parseMythicDataPerTeam(
     serverRes.team,
-    serverRes.playersPromises
+    serverRes.playersPromises,
   );
 
   return {
@@ -66,7 +66,10 @@ export default function TeamShow({
   }, [mythicData]);
   return (
     <div className="space-y-6">
-      <Link to={`/event/${slug}/`} className="bg-white p-2 rounded-md text-black">
+      <Link
+        to={`/event/${slug}/`}
+        className="bg-white p-2 rounded-md text-black"
+      >
         {"<"} Back to event
       </Link>
       <div className="flex justify-center mx-auto text-white p-4">

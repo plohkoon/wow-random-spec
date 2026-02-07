@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 import { allClassSpecs, availableSpecsForPlayer } from "~/lib/classes";
 import { db } from "~/lib/db.server";
 import { AppSession } from "~/lib/session.server";
-import { Route } from "./+types/roll";
+import type { Route } from "./+types/roll";
 
 export const loader = async ({
   params: { slug, id },
@@ -65,7 +65,7 @@ export default function RollSpecForPlayer({
     // People don't like augmentation evoker so we hamfistedly reduce it's chance.
     if (items.indexOf("evoker-augmentation") !== -1) {
       const itemsWithoutAug = items.filter(
-        (item) => item !== "evoker-augmentation"
+        (item) => item !== "evoker-augmentation",
       );
       const tempArray = [
         ...itemsWithoutAug,
@@ -104,7 +104,7 @@ export default function RollSpecForPlayer({
           },
           {
             method: "post",
-          }
+          },
         );
         // Set it to the base angle so that subsequent spins actually do a full 5 spins
         controls.set({ rotate: baseAngle });

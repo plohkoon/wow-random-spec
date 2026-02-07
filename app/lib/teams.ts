@@ -1,5 +1,5 @@
 export function organizeTeams<
-  T extends { players: { assignedRole: string | null }[] }
+  T extends { players: { assignedRole: string | null }[] },
 >(teams: T[]): T[] {
   const newTeams = teams.map((team) => {
     return {

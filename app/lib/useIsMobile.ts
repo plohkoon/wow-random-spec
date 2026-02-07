@@ -7,7 +7,7 @@ export function useIsMobile(breakpoint = 768) {
       return () => window.removeEventListener("resize", callback);
     },
     () => window.innerWidth < breakpoint,
-    () => false
+    () => false,
   );
 
   return isMobile;

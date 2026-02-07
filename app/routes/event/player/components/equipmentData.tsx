@@ -65,6 +65,7 @@ export default function EquipmentData({ objectKeys, gear }: any) {
                     href={`https://www.wowhead.com/item=${item.item_id}`}
                     target="_blank"
                     key={key}
+                    rel="noreferrer"
                   >
                     <div className="flex items-center p-3 text-white dark:text-black rounded-md bg-neutral-400 dark:bg-[#555555] hover:bg-[#666666] transition-colors">
                       <div className="flex-shrink-0 mr-3 relative">

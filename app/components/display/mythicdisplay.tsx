@@ -1,4 +1,4 @@
-import { CharacterNS } from "~/lib/raiderIO/characters";
+import type { CharacterNS } from "~/lib/raiderIO/characters";
 import { ScoreDisplay } from "../display/scoreDisplay";
 
 type MythicProps = {

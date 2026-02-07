@@ -28,7 +28,7 @@ export function RoleDisplay<C extends React.ElementType = "span">({
 
   return (
     <Component {...rest} data-role={playerRole} className={className}>
-    {roleText}
+      {roleText}
     </Component>
   );
 }

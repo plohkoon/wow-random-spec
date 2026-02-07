@@ -1,7 +1,4 @@
-export function msToDuration(
-  inputMs: number,
-  includeHours: boolean = false
-): string {
+export function msToDuration(inputMs: number, includeHours = false): string {
   const ms = inputMs % 1000;
   const seconds = Math.floor((inputMs / 1000) % 60);
   const minutes = Math.floor((inputMs / (1000 * 60)) % 60);

@@ -1,4 +1,4 @@
-import { roles } from "~/lib/classes";
+import { type FieldMetadata, useInputControl } from "@conform-to/react";
 import { RoleDisplay } from "~/components/display/roleDisplay";
 import {
   Select,
@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { FieldMetadata, useInputControl } from "@conform-to/react";
+import { roles } from "~/lib/classes";
 import { Label } from "../ui/label";
 
 export function RoleInput({

@@ -1,6 +1,6 @@
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Card } from "~/components/ui/card";
-import { MythicData } from "~/lib/mythics";
+import type { MythicData } from "~/lib/mythics";
 import { msToDuration } from "~/lib/time";
 import PlayerChip from "./playerChip";
 

@@ -1,5 +1,5 @@
 import { RaiderIOClient } from "~/lib/raiderIO";
-import { Route } from "./+types/test";
+import type { Route } from "./+types/test";
 
 export const loader = async () => {
   const client = RaiderIOClient.getInstance();
