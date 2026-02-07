@@ -1,15 +1,15 @@
-import { Form, Link, useSubmit } from "react-router";
-import { H1 } from "./headers";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import { Switch } from "../ui/switch";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuTrigger,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu } from "lucide-react";
+import { Form, Link, useSubmit } from "react-router";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Switch } from "../ui/switch";
+import { H1 } from "./headers";
 
 interface HeaderProps {
   colorScheme: "light" | "dark";
@@ -42,7 +42,7 @@ export default function Header({
           {username ? (
             <>
               <Button asChild>
-                  <Link to="/event/new">Create Event</Link>
+                <Link to="/event/new">Create Event</Link>
               </Button>
               <span>Hi {username}</span>
               <Form action="/auth/signout" method="post">
@@ -73,7 +73,7 @@ export default function Header({
                     navigate: false,
                     action: "/",
                     encType: "application/json",
-                  }
+                  },
                 );
               }}
             />
@@ -92,7 +92,7 @@ export default function Header({
               {username ? (
                 <>
                   <DropdownMenuItem asChild>
-                      <Link to="/event/new">Create Event</Link>
+                    <Link to="/event/new">Create Event</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>Hi {username}</DropdownMenuItem>
                   <Form action="/auth/signout" method="post">
@@ -126,7 +126,7 @@ export default function Header({
                           navigate: false,
                           action: "/",
                           encType: "application/json",
-                        }
+                        },
                       );
                     }}
                   />

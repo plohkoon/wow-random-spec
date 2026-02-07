@@ -1,9 +1,9 @@
+import { parseWithZod as parse } from "@conform-to/zod";
 import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
-import { bcrypt } from "~/lib/bcrypt.server";
 import { z } from "zod";
-import { db, User } from "~/lib/db.server";
-import { parseWithZod as parse } from "@conform-to/zod";
+import { bcrypt } from "~/lib/bcrypt.server";
+import { type User, db } from "~/lib/db.server";
 
 export const authenticator = new Authenticator<User>();
 
@@ -32,7 +32,7 @@ authenticator.use(
 
     const passwordValid = await bcrypt.compare(
       data.value.password,
-      user.password
+      user.password,
     );
 
     if (!passwordValid) {
@@ -41,5 +41,5 @@ authenticator.use(
 
     return user;
   }),
-  "form"
+  "form",
 );

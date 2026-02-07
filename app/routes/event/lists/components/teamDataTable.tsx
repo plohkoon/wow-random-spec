@@ -1,9 +1,9 @@
 import {
-  ColumnDef,
+  type ColumnDef,
+  type SortingState,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
@@ -23,11 +23,11 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import {
+  type MythicData,
   calculateBestMythicsAndTotalScore,
   calculateBestScoreAndBestUnderTime,
-  MythicData,
 } from "~/lib/mythics";
-import { Route } from "../+types/route";
+import type { Route } from "../+types/route";
 
 type Team = Route.ComponentProps["loaderData"]["event"]["teams"][number];
 
@@ -109,7 +109,7 @@ const columns = [
 
 function MythicsInfoOverview({ mythics }: { mythics: MythicData[] | null }) {
   if (!mythics) {
-    return <MissingMythicInfo></MissingMythicInfo>;
+    return <MissingMythicInfo />;
   }
 
   const [bestMythics, bestMythicsScore] = useMemo(() => {
@@ -246,7 +246,7 @@ export function TeamDataTable({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 );

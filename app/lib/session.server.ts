@@ -1,10 +1,10 @@
 import {
+  type Session,
+  type SessionData,
   createCookieSessionStorage,
   redirect,
-  Session,
-  SessionData,
 } from "react-router";
-import { db, Prisma, User } from "./db.server";
+import { type Prisma, type User, db } from "./db.server";
 
 const ADMINS = ["plohkoon", "captainfrogs", "pointysalad", "sharkfacekilla"];
 
@@ -22,7 +22,7 @@ export const { getSession, commitSession, destroySession } =
 
 export class AppSession {
   session: Session<SessionData, SessionData>;
-  COOKIE_NAME: string = "Cookie";
+  COOKIE_NAME = "Cookie";
 
   constructor(session: Session<SessionData, SessionData>) {
     this.session = session;

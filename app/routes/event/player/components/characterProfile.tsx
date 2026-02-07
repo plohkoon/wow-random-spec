@@ -33,7 +33,7 @@ export default function CharacterProfile({ character, score }: any) {
               <ClassDisplay
                 classSpec={makeRaiderIOClassSpec(
                   character.class,
-                  character.active_spec_name
+                  character.active_spec_name,
                 )}
               />
             </Badge>

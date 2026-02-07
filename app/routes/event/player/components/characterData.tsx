@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Await } from "react-router";
-import { MythicData } from "~/lib/mythics";
+import type { MythicData } from "~/lib/mythics";
 import type { Route } from "../+types/route";
 import CharacterProfile from "./characterProfile";
 import EquipmentData from "./equipmentData";
@@ -23,17 +23,17 @@ function CharacterDataInternal(
     scoreTiers: ScoreTiers;
     player: Player;
     mythicData: MythicData[] | null;
-  }
+  },
 ) {
   const { player, mythicData } = props;
 
   const objectKeys = Object.keys(
-    props.gear.items
+    props.gear.items,
   ) as (keyof PlayerData["gear"]["items"])[];
 
   const playerScore = props.mythic_plus_best_runs.reduce(
     (acc, run) => acc + run.score,
-    0
+    0,
   );
   return (
     <div className="flex flex-col gap-4 px-4 mt-4">

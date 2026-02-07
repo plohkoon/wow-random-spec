@@ -1,5 +1,5 @@
 import type { RaiderIOClient, RootNS } from ".";
-import { fieldsString, HasChildBool } from "./utils";
+import { type HasChildBool, fieldsString } from "./utils";
 
 export namespace GuildNS {
   export interface Character {

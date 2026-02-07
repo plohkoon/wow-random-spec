@@ -29,17 +29,17 @@
 
   --breakpoint-3xl: 120rem;
   --breakpoint-6xl: 230rem;
-  
-  --color-light-brown: #A5783A;
-  --color-dark-brown: #4B311F;
-  --color-light-green: #4B311F;
-  --color-light-blue: #669BBC;
-  --color-light-red: #DB5461;
+
+  --color-light-brown: #a5783a;
+  --color-dark-brown: #4b311f;
+  --color-light-green: #4b311f;
+  --color-light-blue: #669bbc;
+  --color-light-red: #db5461;
   --color-black: #222222;
   --color-black-bg: #333333;
-  --color-black-light: #2A2A2A;
+  --color-black-light: #2a2a2a;
   --color-black-two: #252525;
-  --color-gold-yellow: #FFD166;
+  --color-gold-yellow: #ffd166;
 }
 
 @theme inline {

@@ -1,6 +1,6 @@
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Card } from "~/components/ui/card";
-import { MythicData } from "~/lib/mythics";
+import type { MythicData } from "~/lib/mythics";
 import { msToDuration } from "~/lib/time";
 import PlayerChip from "./playerChip";
 
@@ -20,7 +20,7 @@ function formatDate(str: string) {
   const runTime = new Date(str);
   const runDate = runTime.toLocaleDateString("en-US", options);
   const time = runTime.toLocaleTimeString();
-  return runDate + " " + time;
+  return `${runDate} ${time}`;
 }
 
 export default function TeamDungeonRuns({
@@ -35,7 +35,7 @@ export default function TeamDungeonRuns({
     <div>
       {/* TODO: Make a team banner */}
       {!showBanner && (
-        <div></div>
+        <div />
         // <div className="w-full h-60 relative rounded-md overflow-hidden mb-4 bg-neutral-400">
         //   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
         //   <div className="absolute bottom-4 left-4 flex items-center gap-4">
@@ -51,7 +51,7 @@ export default function TeamDungeonRuns({
             alt="Team Banner"
             className="object-cover w-full h-full"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent" />
           <div className="absolute bottom-4 left-4 flex items-center gap-4">
             <h1 className="text-2xl font-bold">Dungeon Runs</h1>
           </div>

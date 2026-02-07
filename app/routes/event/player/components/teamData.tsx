@@ -11,7 +11,7 @@ import { ClassDisplay } from "~/components/display/classDisplay";
 import { RoleDisplay } from "~/components/display/roleDisplay";
 import { Button } from "~/components/ui/button";
 import { Card, CardHeader, CardTitle } from "~/components/ui/card";
-import { MythicData } from "~/lib/mythics";
+import type { MythicData } from "~/lib/mythics";
 import type { Route } from "../+types/route";
 
 //func to get icon for team list depending on spec
@@ -104,7 +104,7 @@ export default function TeamData({
             </div>
 
             <div className="flex-shrink-0">
-              <ClassDisplay classSpec={member.spec}></ClassDisplay>
+              <ClassDisplay classSpec={member.spec} />
             </div>
           </div>
         ))}

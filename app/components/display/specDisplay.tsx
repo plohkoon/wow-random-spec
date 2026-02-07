@@ -1,7 +1,7 @@
 function formatLabel(input: string) {
   return input
     .replace(/([a-z])([A-Z])/g, "$1 $2")
-    .replace(/^\w/, c => c.toUpperCase()); 
+    .replace(/^\w/, (c) => c.toUpperCase());
 }
 
 export function SpecDisplay<C extends React.ElementType = "span">({

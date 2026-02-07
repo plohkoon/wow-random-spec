@@ -9,7 +9,7 @@ import {
   parseMythicDataPerTeam,
 } from "~/lib/mythics";
 import { RaiderIOClient } from "~/lib/raiderIO";
-import { Route } from "./+types/route";
+import type { Route } from "./+types/route";
 import TeamDungeonRuns from "./components/dungeonRuns";
 import { MythicInfo } from "./components/mythicInfo";
 import { PlayerData } from "./components/playerData";
@@ -44,7 +44,7 @@ export const clientLoader = async ({
 
   const mythicData = await parseMythicDataPerTeam(
     serverRes.team,
-    serverRes.playersPromises
+    serverRes.playersPromises,
   );
 
   return {
@@ -66,7 +66,10 @@ export default function TeamShow({
   }, [mythicData]);
   return (
     <div className="space-y-6">
-      <Link to={`/event/${slug}/`} className="bg-white p-2 rounded-md text-black">
+      <Link
+        to={`/event/${slug}/`}
+        className="bg-white p-2 rounded-md text-black"
+      >
         {"<"} Back to event
       </Link>
       <div className="flex justify-center mx-auto text-white p-4">
@@ -93,7 +96,7 @@ export default function TeamShow({
                   alt="Team Banner"
                   className="object-cover w-full h-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent" />
                 <div className="absolute bottom-4 left-4 flex items-center gap-4">
                   <h1 className="text-2xl font-bold">{team.name}</h1>
                   <span className="text-3xl font-bold text-green-500">
@@ -103,7 +106,7 @@ export default function TeamShow({
               </div>
             )}
             {!showBanner && (
-              <div></div>
+              <div />
               // <div className="w-full h-60 relative rounded-md overflow-hidden mb-4 bg-neutral-400">
               //   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
               //   <div className="absolute bottom-4 left-4 flex items-center gap-4">

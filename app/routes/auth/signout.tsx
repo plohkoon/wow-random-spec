@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, redirect } from "react-router";
+import { type LoaderFunctionArgs, redirect } from "react-router";
 import { AppSession } from "~/lib/session.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

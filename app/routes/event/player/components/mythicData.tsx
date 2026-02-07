@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { CharacterNS } from "~/lib/raiderIO/characters";
+import type { CharacterNS } from "~/lib/raiderIO/characters";
 import { msToDuration } from "~/lib/time";
 
 //Function to return an amount of stars based on the upgrade of the key ran.
@@ -68,7 +68,7 @@ export default function PlayerMythicData({
                       <h3 className="text-lg font-bold text-white drop-shadow-md">
                         {run.dungeon}
                       </h3>
-                      <div className={`text-3xl font-bold mt-2 text-white`}>
+                      <div className={"text-3xl font-bold mt-2 text-white"}>
                         Score: <ScoreDisplay individual score={run.score} />
                       </div>
                       <div className="text-sm text-gray-200 mt-1">

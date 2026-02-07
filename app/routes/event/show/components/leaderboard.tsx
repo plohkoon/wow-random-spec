@@ -13,7 +13,7 @@ import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Button } from "~/components/ui/button";
 import MythicDisplay from "~/components/ui/mythicdisplay";
 import { getGreenTextClass } from "~/lib/mythics";
-import { Route } from "../+types/route";
+import type { Route } from "../+types/route";
 
 type MythicZip = NonNullable<
   Awaited<Route.ComponentProps["loaderData"]["mythicTeamZip"]>
@@ -158,18 +158,18 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                     mostUnderTime,
                     bestSingleScore,
                   },
-                  index
+                  index,
                 ) => {
                   return (
                     <li key={team.id} className="px-6 lg:px-24 lg:mt-12 mt-4">
                       <div className="w-full mx-auto bg-white dark:bg-black text-white p-6 rounded-xl mb-12">
-                        <div className="flex items-center justify-between mb-6"></div>
+                        <div className="flex items-center justify-between mb-6" />
                         <div className="space-y-4">
                           <div className="relative bg-gradient-to-r from-stone-300 to-stone-400 dark:from-[#2A2A2A] dark:to-[#333333] dark:bg-gradient-to-r rounded-xl p-6 border border-neutral-200 dark:border-black-light shadow-xl">
                             {/* "Place" of team (1st, 2nd, 3rd etc) */}
                             <div
                               className={`absolute -top-3 -left-3 text-black font-bold rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-lg ${getMedalColourClass(
-                                index + 1
+                                index + 1,
                               )}`}
                             >
                               {index + 1}
@@ -237,7 +237,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                                 </span>
                                 <span
                                   className={`text-3xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] ${getGreenTextClass(
-                                    mostUnderTime * 100
+                                    mostUnderTime * 100,
                                   )}`}
                                 >
                                   {(mostUnderTime * 100).toFixed(2)}
@@ -251,7 +251,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                       </div>
                     </li>
                   );
-                }
+                },
               )}
             </ol>
           </TabsContent>

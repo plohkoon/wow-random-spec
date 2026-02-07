@@ -18,7 +18,7 @@ export function ScoreDisplay<C extends React.ElementType = "span">({
   const scoreToCompute = individual ? score * 8 : score;
 
   const color = scoreTiersDesc.find(
-    (tier) => tier.score <= scoreToCompute
+    (tier) => tier.score <= scoreToCompute,
   )?.rgbHex;
 
   return (

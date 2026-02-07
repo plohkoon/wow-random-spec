@@ -1,10 +1,5 @@
 import { Link } from "react-router";
-import { Route } from "./+types/route";
 import { H2 } from "~/components/display/headers";
-import { db } from "~/lib/db.server";
-import { RaiderIOClient } from "~/lib/raiderIO";
-import { CharacterNS } from "~/lib/raiderIO/characters";
-import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
 import {
   Table,
   TableBody,
@@ -12,7 +7,12 @@ import {
   TableHead,
   TableRow,
 } from "~/components/ui/table";
+import { db } from "~/lib/db.server";
+import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
+import { RaiderIOClient } from "~/lib/raiderIO";
+import type { CharacterNS } from "~/lib/raiderIO/characters";
 import { msToDuration } from "~/lib/time";
+import type { Route } from "./+types/route";
 
 export async function loader({ params: { slug } }: Route.LoaderArgs) {
   const event = await db.event.findUnique({
@@ -33,8 +33,8 @@ export async function loader({ params: { slug } }: Route.LoaderArgs) {
   const client = RaiderIOClient.getInstance();
   const teamPromises = await Promise.all(
     event.teams.map((team) =>
-      parseMythicDataPerTeam(team, getPlayersPromises(team, client))
-    )
+      parseMythicDataPerTeam(team, getPlayersPromises(team, client)),
+    ),
   );
 
   const allDungeons = teamPromises.flatMap((team) => (team ? team : []));
@@ -55,7 +55,7 @@ export async function loader({ params: { slug } }: Route.LoaderArgs) {
         return [dungeon, runs];
       }
       return acc;
-    }
+    },
   );
   const mostRunDungeon = [...allDungeonsByDungeon.entries()].reduce(
     (acc, [dungeon, runs]) => {
@@ -63,17 +63,17 @@ export async function loader({ params: { slug } }: Route.LoaderArgs) {
         return [dungeon, runs];
       }
       return acc;
-    }
+    },
   );
   const avgKeyLevel =
     allDungeons.reduce((acc, dungeon) => acc + dungeon.mythic_level, 0) /
     numberOfRuns;
 
   const timedDungeons = allDungeons.filter(
-    (dungeon) => dungeon.clear_time_ms <= dungeon.par_time_ms
+    (dungeon) => dungeon.clear_time_ms <= dungeon.par_time_ms,
   );
   const untimeDungeons = allDungeons.filter(
-    (dungeon) => dungeon.clear_time_ms > dungeon.par_time_ms
+    (dungeon) => dungeon.clear_time_ms > dungeon.par_time_ms,
   );
 
   const numberOfTimedDungeons = timedDungeons.length;
@@ -81,12 +81,12 @@ export async function loader({ params: { slug } }: Route.LoaderArgs) {
 
   const totalTimeInDungeons = allDungeons.reduce(
     (acc, dungeon) => acc + dungeon.clear_time_ms,
-    0
+    0,
   );
   const totalOverTime = allDungeons.reduce(
     (acc, dungeon) =>
       acc + Math.max(0, dungeon.clear_time_ms - dungeon.par_time_ms),
-    0
+    0,
   );
 
   return {

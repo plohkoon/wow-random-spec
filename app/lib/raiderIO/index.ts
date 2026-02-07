@@ -1,9 +1,9 @@
-import axios, { AxiosRequestConfig, type AxiosInstance } from "axios";
+import { cachified } from "@epic-web/cachified";
+import axios, { type AxiosRequestConfig, type AxiosInstance } from "axios";
+import { LRUCache } from "lru-cache";
+import { MAX_CACHE_SIZE, RAIDERIO_API_KEY, TTL } from "../env.server";
 import { Character } from "./characters";
 import { Guild } from "./guild";
-import { LRUCache } from "lru-cache";
-import { cachified } from "@epic-web/cachified";
-import { MAX_CACHE_SIZE, RAIDERIO_API_KEY, TTL } from "../env.server";
 import { MythicPlus } from "./mythicPlus";
 
 export namespace RootNS {
@@ -95,7 +95,7 @@ export class RaiderIOClient {
       // so we replace the adapter with a cachified one.
       if (config.method === "get") {
         const cacheKey = `${config.url}?${new URLSearchParams(
-          config.params
+          config.params,
         ).toString()}`;
 
         config.adapter = async () => {
@@ -142,7 +142,7 @@ export class RaiderIOClient {
         }
 
         return Promise.reject(error);
-      }
+      },
     );
 
     this.subClients = {

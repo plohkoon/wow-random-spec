@@ -3,14 +3,14 @@ import { H2, H3 } from "~/components/display/headers";
 import { Button } from "~/components/ui/button";
 import { db } from "~/lib/db.server";
 import {
+  type MythicData,
   getPlayersPromises,
-  MythicData,
   parseMythicDataPerTeam,
 } from "~/lib/mythics";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { AppSession } from "~/lib/session.server";
 import { organizeTeams } from "~/lib/teams";
-import { Route } from "./+types/route";
+import type { Route } from "./+types/route";
 import { PlayerDataTable } from "./components/playerDataTable";
 import { TeamDataTable } from "./components/teamDataTable";
 
@@ -45,7 +45,7 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   const teams = organizeTeams(event.teams);
   const client = RaiderIOClient.getInstance();
   const eachTeamsPlayersPromises = teams.map((team) =>
-    getPlayersPromises(team, client)
+    getPlayersPromises(team, client),
   );
 
   return {
@@ -63,12 +63,12 @@ export const clientLoader = async ({
   const serverRes = await serverLoader();
 
   const parsedMythicDataArray: (MythicData[] | null)[] = [];
-  let counter: number = 0;
+  let counter = 0;
 
   for (const team of serverRes.teams) {
     const mythicData = await parseMythicDataPerTeam(
       team,
-      serverRes.eachTeamsPlayersPromises[counter]
+      serverRes.eachTeamsPlayersPromises[counter],
     );
     parsedMythicDataArray.push(mythicData);
     ++counter;

@@ -4,7 +4,7 @@ export type FieldSelector = {
 
 function flattenFieldSelectorString(
   fieldSelector: FieldSelector,
-  prefix: string = ""
+  prefix = "",
 ): string[] {
   return Object.entries(fieldSelector).flatMap(([k, v]) => {
     if (v === true) {
@@ -52,17 +52,17 @@ export function fieldsString(fields: FieldSelector | null | undefined) {
 export type HasChildBool<T> = T extends true
   ? true
   : T extends object
-  ? keyof T extends never
-    ? false
-    : T[keyof T] extends true
-    ? true
-    : T[keyof T] extends object
-    ? T[keyof T][keyof T[keyof T]] extends true
-      ? true
-      : T[keyof T][keyof T[keyof T]] extends object
-      ? T[keyof T][keyof T[keyof T]][keyof T[keyof T][keyof T[keyof T]]] extends true
+    ? keyof T extends never
+      ? false
+      : T[keyof T] extends true
         ? true
-        : false
-      : false
-    : false
-  : false;
+        : T[keyof T] extends object
+          ? T[keyof T][keyof T[keyof T]] extends true
+            ? true
+            : T[keyof T][keyof T[keyof T]] extends object
+              ? T[keyof T][keyof T[keyof T]][keyof T[keyof T][keyof T[keyof T]]] extends true
+                ? true
+                : false
+              : false
+          : false
+    : false;

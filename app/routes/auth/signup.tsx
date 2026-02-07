@@ -2,16 +2,22 @@ import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { UserPlus, UserPlus2 } from "lucide-react";
 import {
-  ActionFunctionArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   data,
-  LoaderFunctionArgs,
   redirect,
 } from "react-router";
 import { Form, useLoaderData } from "react-router";
 import { z } from "zod";
 import { CTextInput } from "~/components/inputs/textInput";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import { bcrypt } from "~/lib/bcrypt.server";
 import { db } from "~/lib/db.server";
 import { AppSession } from "~/lib/session.server";
@@ -56,7 +62,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (signupData.status !== "success") {
     return data(
       signupData.reply({ hideFields: ["password", "confirmPassword"] }),
-      { status: 422 }
+      { status: 422 },
     );
   }
 
@@ -88,17 +94,22 @@ export default function Signup() {
             <UserPlus2 className="h-6 w-6 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold text-card-foreground">
-            Register </CardTitle>
+            Register{" "}
+          </CardTitle>
           <CardDescription className="text-muted-foreground">
-            Register a new account.          </CardDescription>
+            Register a new account.{" "}
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form method="post" id={form.id} onSubmit={form.onSubmit} className="space-y-5">
+          <Form
+            method="post"
+            id={form.id}
+            onSubmit={form.onSubmit}
+            className="space-y-5"
+          >
             <div>{form.errors}</div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-card-foreground">
-                Email
-              </p>
+              <p className="text-sm font-medium text-card-foreground">Email</p>
               <CTextInput config={fields.name} label="" />
             </div>
             <div className="space-y-2">
@@ -108,9 +119,7 @@ export default function Signup() {
               <CTextInput config={fields.username} label="" />
             </div>
             <div className="space-y-2">
-              <p className="text-sm font-medium text-card-foreground">
-                Email
-              </p>
+              <p className="text-sm font-medium text-card-foreground">Email</p>
               <CTextInput config={fields.email} label="" />
             </div>
             <div className="space-y-2">
@@ -130,11 +139,14 @@ export default function Signup() {
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              If you are not already an admin, this currently does nothing!!!!!! </p>
-            <Button type="submit" className="h-11 w-full font-medium">Sign Up</Button>
+              If you are not already an admin, this currently does nothing!!!!!!{" "}
+            </p>
+            <Button type="submit" className="h-11 w-full font-medium">
+              Sign Up
+            </Button>
           </Form>
         </CardContent>
       </Card>
     </div>
   );
-};
+}

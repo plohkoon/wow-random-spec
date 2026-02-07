@@ -1,6 +1,7 @@
-import { FieldMetadata, useInputControl } from "@conform-to/react";
+import { type FieldMetadata, useInputControl } from "@conform-to/react";
 import { classes } from "../../lib/classes";
 import { ClassDisplay } from "../display/classDisplay";
+import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
@@ -10,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Label } from "../ui/label";
 
 export function ClassInput({
   config,

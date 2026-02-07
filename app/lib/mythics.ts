@@ -1,4 +1,4 @@
-import { RaiderIOClient } from "~/lib/raiderIO";
+import type { RaiderIOClient } from "~/lib/raiderIO";
 import type { CharacterNS } from "~/lib/raiderIO/characters";
 
 export type DBPlayerInternalTeamType = {
@@ -48,7 +48,7 @@ type AllMythicsCharacterProfilePayload = CharacterNS.CharacterProfilePayload<{
 
 export function getPlayersPromises(
   team: DBTeamType | null,
-  client: RaiderIOClient
+  client: RaiderIOClient,
 ) {
   if (!team) {
     const playersPromises: Promise<null>[] = [Promise.resolve(null)];
@@ -76,14 +76,14 @@ export function getPlayersPromises(
             mythic_plus_weekly_highest_level_runs: true,
           },
         })
-      : Promise.resolve(null)
+      : Promise.resolve(null),
   );
 
   return playersPromises;
 }
 
 export async function parseMythicDataPerTeam<
-  MythicsPromise extends Promise<AllMythicsCharacterProfilePayload | null>
+  MythicsPromise extends Promise<AllMythicsCharacterProfilePayload | null>,
 >(team: DBTeamType | null, playersPromises: MythicsPromise[]) {
   if (!team) {
     const promiseOfAllMythicData: Promise<null> = Promise.resolve(null);
@@ -123,7 +123,7 @@ export async function parseMythicDataPerTeam<
               strip(playerName) === strip(player.name) &&
               strip(playerServer) === strip(player.realm)
             );
-          }
+          },
         );
         if (!dbPlayer) return;
 
@@ -178,11 +178,11 @@ export async function parseMythicDataPerTeam<
             // Next descending by score.
             mythicB.score - mythicA.score ||
             // Finally sort ascending within the score and mythic level category by string.
-            mythicA.short_name.localeCompare(mythicB.short_name)
+            mythicA.short_name.localeCompare(mythicB.short_name),
         );
 
       return mythics;
-    }
+    },
   );
 
   return promiseOfAllMythicData;
@@ -209,7 +209,7 @@ export function calculateBestMythicsAndTotalScore(mythics: MythicData[]) {
 export function calculateBestScoreAndBestUnderTime(mythics: MythicData[]) {
   const bestSingleScore = mythics.reduce(
     (score: number, m: MythicData) => (score > m.score ? score : m.score),
-    0
+    0,
   );
 
   const mostUnderTime = mythics.reduce((curr: number, m: MythicData) => {
@@ -220,7 +220,7 @@ export function calculateBestScoreAndBestUnderTime(mythics: MythicData[]) {
     } else {
       return curr;
     }
-  }, Infinity);
+  }, Number.POSITIVE_INFINITY);
 
   return [bestSingleScore, mostUnderTime] as const;
 }
