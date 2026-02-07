@@ -18,7 +18,7 @@ function MythicsInfoInternal({
   bestMythics: MythicData[];
 }) {
   if (!mythics) {
-    return <MissingMythicInfo></MissingMythicInfo>;
+    return <MissingMythicInfo />;
   }
 
   const [bestSingleScore, mostUnderTime] = useMemo(() => {

@@ -163,7 +163,7 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
                   return (
                     <li key={team.id} className="px-6 lg:px-24 lg:mt-12 mt-4">
                       <div className="w-full mx-auto bg-white dark:bg-black text-white p-6 rounded-xl mb-12">
-                        <div className="flex items-center justify-between mb-6"></div>
+                        <div className="flex items-center justify-between mb-6" />
                         <div className="space-y-4">
                           <div className="relative bg-gradient-to-r from-stone-300 to-stone-400 dark:from-[#2A2A2A] dark:to-[#333333] dark:bg-gradient-to-r rounded-xl p-6 border border-neutral-200 dark:border-black-light shadow-xl">
                             {/* "Place" of team (1st, 2nd, 3rd etc) */}

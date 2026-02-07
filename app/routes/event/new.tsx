@@ -27,14 +27,14 @@ const schema = z.object({
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await AppSession.fromRequest(request);
-  await session.requireAdmin(`/`);
+  await session.requireAdmin("/");
 
   return null;
 }
 
 export async function action({ request }: Route.ActionArgs) {
   const session = await AppSession.fromRequest(request);
-  await session.requireAdmin(`/`);
+  await session.requireAdmin("/");
 
   const fData = await request.formData();
 

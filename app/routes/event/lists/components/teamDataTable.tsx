@@ -109,7 +109,7 @@ const columns = [
 
 function MythicsInfoOverview({ mythics }: { mythics: MythicData[] | null }) {
   if (!mythics) {
-    return <MissingMythicInfo></MissingMythicInfo>;
+    return <MissingMythicInfo />;
   }
 
   const [bestMythics, bestMythicsScore] = useMemo(() => {

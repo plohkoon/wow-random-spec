@@ -96,7 +96,7 @@ export default function TeamShow({
                   alt="Team Banner"
                   className="object-cover w-full h-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent" />
                 <div className="absolute bottom-4 left-4 flex items-center gap-4">
                   <h1 className="text-2xl font-bold">{team.name}</h1>
                   <span className="text-3xl font-bold text-green-500">
@@ -106,7 +106,7 @@ export default function TeamShow({
               </div>
             )}
             {!showBanner && (
-              <div></div>
+              <div />
               // <div className="w-full h-60 relative rounded-md overflow-hidden mb-4 bg-neutral-400">
               //   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
               //   <div className="absolute bottom-4 left-4 flex items-center gap-4">

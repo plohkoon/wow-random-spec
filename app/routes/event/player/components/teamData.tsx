@@ -104,7 +104,7 @@ export default function TeamData({
             </div>
 
             <div className="flex-shrink-0">
-              <ClassDisplay classSpec={member.spec}></ClassDisplay>
+              <ClassDisplay classSpec={member.spec} />
             </div>
           </div>
         ))}

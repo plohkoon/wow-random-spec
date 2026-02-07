@@ -4,5 +4,5 @@ export function msToDuration(inputMs: number, includeHours = false): string {
   const minutes = Math.floor((inputMs / (1000 * 60)) % 60);
   const hours = Math.floor(inputMs / (1000 * 60 * 60));
 
-  return `${hours ? hours + ":" : ""}${minutes}:${seconds}.${ms}`;
+  return `${hours ? `${hours}:` : ""}${minutes}:${seconds}.${ms}`;
 }

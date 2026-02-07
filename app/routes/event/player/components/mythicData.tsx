@@ -68,7 +68,7 @@ export default function PlayerMythicData({
                       <h3 className="text-lg font-bold text-white drop-shadow-md">
                         {run.dungeon}
                       </h3>
-                      <div className={`text-3xl font-bold mt-2 text-white`}>
+                      <div className={"text-3xl font-bold mt-2 text-white"}>
                         Score: <ScoreDisplay individual score={run.score} />
                       </div>
                       <div className="text-sm text-gray-200 mt-1">
