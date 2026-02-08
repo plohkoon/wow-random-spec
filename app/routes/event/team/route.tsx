@@ -4,6 +4,7 @@ import { Link, redirect } from "react-router";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { db } from "~/lib/db.server";
 import {
+  calculateAugmentedBestMythicsAndTotalScore,
   calculateBestMythicsAndTotalScore,
   getPlayersPromises,
   parseMythicDataPerTeam,
@@ -64,6 +65,10 @@ export default function TeamShow({
   const [bestMythics, bestMythicsScore] = useMemo(() => {
     return calculateBestMythicsAndTotalScore(mythicData ?? []);
   }, [mythicData]);
+
+  const augmented = useMemo(() => {
+    return calculateAugmentedBestMythicsAndTotalScore(mythicData ?? []);
+  }, [mythicData]);
   return (
     <div className="space-y-6">
       <Link to={`/event/${slug}/`} className="bg-white p-2 rounded-md text-black">
@@ -122,11 +127,12 @@ export default function TeamShow({
             <MythicInfo
               mythics={mythicData}
               bestMythicsScore={bestMythicsScore}
-              bestMythics={bestMythics}
+              augmentedTotal={augmented.augmentedTotal}
+              bestMythics={augmented.bestMythics}
             />
             <div className="bg-black-two rounded-lg p-4 mt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <TeamBestMythicDisplay bestMythics={bestMythics} />
+                <TeamBestMythicDisplay bestMythics={augmented.bestMythics} />
               </div>
             </div>
           </TabsContent>

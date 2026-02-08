@@ -1,24 +1,17 @@
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
+import type { MythicData } from "~/lib/mythics";
 import { msToDuration } from "~/lib/time";
 import { getKeystoneUpgrade } from "../../player/components/mythicData";
 
-//gotta be a better way to do this?
-type Mythic = {
-  keystone_run_id: string | number;
-  icon_url: string;
-  short_name: string;
-  score: number;
-  dungeon: string;
-  background_image_url: string;
-  mythic_level: number;
-  clear_time_ms: number;
-  par_time_ms: number;
-  num_keystone_upgrades: number;
+type MythicProps = {
+  bestMythics: MythicData[];
 };
 
-type MythicProps = {
-  bestMythics: Mythic[];
-};
+function getParticipantBadgeClass(count: number): string {
+  if (count >= 5) return "bg-green-700/80";
+  if (count <= 3) return "bg-amber-700/80";
+  return "bg-black/60";
+}
 
 export default function TeamBestMythicDisplay({ bestMythics }: MythicProps) {
   return (
@@ -43,6 +36,12 @@ export default function TeamBestMythicDisplay({ bestMythics }: MythicProps) {
                 </span>
               </h3>
             </div>
+
+            <span
+              className={`absolute top-2 right-3 text-xs font-semibold text-white px-1.5 py-0.5 rounded ${getParticipantBadgeClass(run.participants.length)}`}
+            >
+              {run.participants.length}/5
+            </span>
 
             <div className="absolute bottom-2 left-3 right-3">
               <div className="flex justify-between items-center">

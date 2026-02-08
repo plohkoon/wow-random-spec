@@ -1,5 +1,6 @@
 import { db } from "~/lib/db.server";
 import {
+  calculateAugmentedBestMythicsAndTotalScore,
   calculateBestMythicsAndTotalScore,
   calculateBestScoreAndBestUnderTime,
   getPlayersPromises,
@@ -58,6 +59,9 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
           calculateBestMythicsAndTotalScore(mythicData ?? []);
         const [bestSingleScore, mostUnderTime] =
           calculateBestScoreAndBestUnderTime(mythicData ?? []);
+        const augmented = calculateAugmentedBestMythicsAndTotalScore(
+          mythicData ?? []
+        );
 
         return {
           team,
@@ -66,6 +70,9 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
           bestMythicsScore,
           bestSingleScore,
           mostUnderTime,
+          augmentedBestMythics: augmented.bestMythics,
+          augmentedTotal: augmented.augmentedTotal,
+          augmentedScores: Object.fromEntries(augmented.augmentedScores),
         };
       })
     ),

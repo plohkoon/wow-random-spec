@@ -11,10 +11,12 @@ import {
 function MythicsInfoInternal({
   mythics,
   bestMythicsScore,
+  augmentedTotal,
   bestMythics,
 }: {
   mythics: MythicData[];
   bestMythicsScore: number;
+  augmentedTotal: number;
   bestMythics: MythicData[];
 }) {
   if (!mythics) {
@@ -37,7 +39,10 @@ function MythicsInfoInternal({
         <Card className="bg-[#222222] border-[#333333] p-4 text-center">
           <p className="text-2xl font-bold text-green-500">
             <p className="text-sm text-gray-400">Team Score</p>
-            <ScoreDisplay score={bestMythicsScore} className="font-semibold" />
+            <ScoreDisplay score={augmentedTotal} className="font-semibold" />
+            <p className="text-xs text-gray-500 mt-1">
+              Raw: {bestMythicsScore.toFixed(1)}
+            </p>
           </p>
         </Card>
         <Card className="bg-[#222222] border-[#333333] p-4 text-center">
@@ -79,10 +84,12 @@ function MissingMythicInfo() {
 export function MythicInfo({
   mythics,
   bestMythicsScore,
+  augmentedTotal,
   bestMythics,
 }: {
   mythics: MythicData[] | null;
   bestMythicsScore: number;
+  augmentedTotal: number;
   bestMythics: MythicData[];
 }) {
   return (
@@ -91,6 +98,7 @@ export function MythicInfo({
         <MythicsInfoInternal
           mythics={mythics}
           bestMythicsScore={bestMythicsScore}
+          augmentedTotal={augmentedTotal}
           bestMythics={bestMythics}
         />
       ) : (
