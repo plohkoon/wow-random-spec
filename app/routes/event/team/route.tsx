@@ -7,8 +7,8 @@ import {
   calculateAugmentedBestMythicsAndTotalScore,
   calculateBestMythicsAndTotalScore,
   getPlayersPromises,
-  parseMythicDataPerTeam,
 } from "~/lib/mythics";
+import { getMythicDataForTeam } from "~/lib/runData.server";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { Route } from "./+types/route";
 import TeamDungeonRuns from "./components/dungeonRuns";
@@ -26,34 +26,25 @@ export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
     return redirect(`/event/${slug}`);
   }
 
+  const event = await db.event.findFirst({ where: { slug } });
+
   const client = RaiderIOClient.getInstance();
 
+  // Keep playersPromises for player profile cards (gear/spec display)
   const playersPromises = getPlayersPromises(team, client);
+
+  const mythicData = await getMythicDataForTeam(team, {
+    after: event?.startDate,
+    before: event?.endDate,
+  });
 
   return {
     team,
     playersPromises,
-    mythicData: null,
-  };
-};
-export const action = async ({}: Route.ActionArgs) => ({});
-
-export const clientLoader = async ({
-  serverLoader,
-}: Route.ClientLoaderArgs) => {
-  const serverRes = await serverLoader();
-
-  const mythicData = await parseMythicDataPerTeam(
-    serverRes.team,
-    serverRes.playersPromises
-  );
-
-  return {
-    ...serverRes,
     mythicData,
   };
 };
-clientLoader.hydrate = true;
+export const action = async ({}: Route.ActionArgs) => ({});
 
 export default function TeamShow({
   loaderData: { team, playersPromises, mythicData },

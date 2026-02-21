@@ -2,9 +2,8 @@ import { Link } from "react-router";
 import { Route } from "./+types/route";
 import { H2 } from "~/components/display/headers";
 import { db } from "~/lib/db.server";
-import { RaiderIOClient } from "~/lib/raiderIO";
 import { CharacterNS } from "~/lib/raiderIO/characters";
-import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
+import { getMythicDataForTeam } from "~/lib/runData.server";
 import {
   Table,
   TableBody,
@@ -20,7 +19,9 @@ export async function loader({ params: { slug } }: Route.LoaderArgs) {
     include: {
       teams: {
         include: {
-          players: true,
+          players: {
+            include: { team: true },
+          },
         },
       },
     },
@@ -30,14 +31,16 @@ export async function loader({ params: { slug } }: Route.LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const client = RaiderIOClient.getInstance();
-  const teamPromises = await Promise.all(
+  const teamResults = await Promise.all(
     event.teams.map((team) =>
-      parseMythicDataPerTeam(team, getPlayersPromises(team, client))
+      getMythicDataForTeam(team, {
+        after: event.startDate,
+        before: event.endDate,
+      })
     )
   );
 
-  const allDungeons = teamPromises.flatMap((team) => (team ? team : []));
+  const allDungeons = teamResults.flatMap((team) => (team ? team : []));
 
   const allDungeonsByDungeon = allDungeons.reduce((acc, dungeon) => {
     if (!acc.has(dungeon.dungeon)) {

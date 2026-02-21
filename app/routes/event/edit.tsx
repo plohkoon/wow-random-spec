@@ -28,11 +28,11 @@ import { SpecInput } from "~/components/inputs/specInput";
 import { CTextInput } from "~/components/inputs/textInput";
 import { TableBody } from "~/components/ui/table";
 import { db } from "~/lib/db.server";
-import { Role } from "~/lib/prisma";
+import { EventStatus, Role } from "~/lib/prisma";
 import { AppSession } from "~/lib/session.server";
 import { Route } from "./lists/+types/route";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { ChevronDown, ChevronUp, Dices, Pencil, Trash2, UserPlus, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, Dices, Pencil, Settings, Trash2, UserPlus, Users } from "lucide-react";
 import { sort } from "fast-sort";
 
 const ROLE_ORDER: Record<string, number> = {
@@ -73,10 +73,18 @@ const deletePlayerSchema = z.object({
   action: z.literal("delete"),
 });
 
+const updateEventSchema = z.object({
+  startDate: z.string().optional().transform((v) => (v ? new Date(v) : undefined)),
+  endDate: z.string().optional().transform((v) => (v ? new Date(v) : undefined)),
+  status: z.nativeEnum(EventStatus).optional(),
+  action: z.literal("updateEvent"),
+});
+
 const schema = z.union([
   addPlayerSchema,
   updatePlayerSchema,
   deletePlayerSchema,
+  updateEventSchema,
 ]);
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
@@ -257,6 +265,16 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
     ) {
       await db.team.delete({ where: { id: player.teamId } });
     }
+  } else if (value.action === "updateEvent") {
+    const updateData: Record<string, unknown> = {};
+    if (value.startDate !== undefined) updateData.startDate = value.startDate;
+    if (value.endDate !== undefined) updateData.endDate = value.endDate;
+    if (value.status !== undefined) updateData.status = value.status;
+
+    await db.event.update({
+      where: { id: event.id },
+      data: updateData,
+    });
   }
 
   return res.reply();
@@ -426,6 +444,7 @@ export default function EventEdit({
       return parseWithZod(formData, { schema: addPlayerSchema });
     },
   });
+  const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
   const [isPlayerExpanded, setIsPlayersExpanded] = useState(true);
   const [isRosterExpanded, setIsRosterExpanded] = useState(true);
   const [sortBy, setSortBy] = useState<"team" | "role">("team");
@@ -454,10 +473,89 @@ export default function EventEdit({
 
     return players;
   }
+  const eventFetcher = useFetcher();
+
+  const formatDateForInput = (date: Date | string | null | undefined) => {
+    if (!date) return "";
+    const d = typeof date === "string" ? new Date(date) : date;
+    return d.toISOString().slice(0, 16);
+  };
+
   return (
     <>
       <Outlet />
       <main className="container mx-auto px-8 py-8 max-w-32xl">
+        <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Settings className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Event Settings</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {event.name} &mdash; Status: {event.status ?? "ACTIVE"}
+                  </p>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" className="shrink-0 cursor-pointer" onClick={() => setIsSettingsExpanded(!isSettingsExpanded)}>
+                {isSettingsExpanded ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          {isSettingsExpanded && (
+            <CardContent>
+              <eventFetcher.Form method="post">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="space-y-2">
+                    <label htmlFor="startDate" className="text-sm font-medium">Start Date</label>
+                    <input
+                      type="datetime-local"
+                      id="startDate"
+                      name="startDate"
+                      defaultValue={formatDateForInput(event.startDate)}
+                      className="flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="endDate" className="text-sm font-medium">End Date</label>
+                    <input
+                      type="datetime-local"
+                      id="endDate"
+                      name="endDate"
+                      defaultValue={formatDateForInput(event.endDate)}
+                      className="flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="status" className="text-sm font-medium">Status</label>
+                    <select
+                      id="status"
+                      name="status"
+                      defaultValue={event.status ?? "ACTIVE"}
+                      className="flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm"
+                    >
+                      <option value="ACTIVE">Active</option>
+                      <option value="ENDED">Ended</option>
+                      <option value="ARCHIVED">Archived</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-start">
+                  <Button type="submit" name="action" value="updateEvent">
+                    Save Event Settings
+                  </Button>
+                </div>
+              </eventFetcher.Form>
+            </CardContent>
+          )}
+        </Card>
+
         <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
           <CardHeader>
             <div className="flex items-center justify-between">

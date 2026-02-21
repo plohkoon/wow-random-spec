@@ -2,13 +2,8 @@ import { Link } from "react-router";
 import { H2, H3 } from "~/components/display/headers";
 import { Button } from "~/components/ui/button";
 import { db } from "~/lib/db.server";
-import {
-  getPlayersPromises,
-  MythicData,
-  parseMythicDataPerTeam,
-} from "~/lib/mythics";
-import { RaiderIOClient } from "~/lib/raiderIO";
 import { AppSession } from "~/lib/session.server";
+import { getMythicDataForTeam } from "~/lib/runData.server";
 import { organizeTeams } from "~/lib/teams";
 import { Route } from "./+types/route";
 import { PlayerDataTable } from "./components/playerDataTable";
@@ -21,7 +16,9 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
       include: {
         teams: {
           include: {
-            players: true,
+            players: {
+              include: { team: true },
+            },
           },
         },
         players: {
@@ -43,43 +40,23 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   }
 
   const teams = organizeTeams(event.teams);
-  const client = RaiderIOClient.getInstance();
-  const eachTeamsPlayersPromises = teams.map((team) =>
-    getPlayersPromises(team, client)
+
+  const parsedMythicDataArray = await Promise.all(
+    teams.map((team) =>
+      getMythicDataForTeam(team, {
+        after: event.startDate,
+        before: event.endDate,
+      })
+    )
   );
 
   return {
     event,
     teams,
     isAdmin,
-    eachTeamsPlayersPromises,
-    parsedMythicDataArray: null,
-  };
-}
-
-export const clientLoader = async ({
-  serverLoader,
-}: Route.ClientLoaderArgs) => {
-  const serverRes = await serverLoader();
-
-  const parsedMythicDataArray: (MythicData[] | null)[] = [];
-  let counter: number = 0;
-
-  for (const team of serverRes.teams) {
-    const mythicData = await parseMythicDataPerTeam(
-      team,
-      serverRes.eachTeamsPlayersPromises[counter]
-    );
-    parsedMythicDataArray.push(mythicData);
-    ++counter;
-  }
-
-  return {
-    ...serverRes,
     parsedMythicDataArray,
   };
-};
-clientLoader.hydrate = true;
+}
 
 export default function Event({
   loaderData: { event, teams, isAdmin, parsedMythicDataArray },

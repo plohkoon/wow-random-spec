@@ -1,6 +1,6 @@
 import { Link, redirect } from "react-router";
 import { db } from "~/lib/db.server";
-import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
+import { getMythicDataForTeam } from "~/lib/runData.server";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { Route } from "./+types/route";
 import { CharacterData } from "./components/characterData";
@@ -14,7 +14,9 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
       event: true,
       team: {
         include: {
-          players: true,
+          players: {
+            include: { team: true },
+          },
         },
       },
     },
@@ -41,34 +43,19 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
 
   const scoreTiers = client.mythicPlus.scoreTiers();
 
-  const playersPromises = getPlayersPromises(player.team, client);
+  const mythicData = await getMythicDataForTeam(player.team, {
+    after: player.event?.startDate,
+    before: player.event?.endDate,
+  });
 
   return {
     player,
     playerData,
     scoreTiers,
-    playersPromises,
-    mythicData: null,
-  };
-};
-export const action = async ({}: Route.ActionArgs) => {};
-
-export const clientLoader = async ({
-  serverLoader,
-}: Route.ClientLoaderArgs) => {
-  const serverRes = await serverLoader();
-
-  const mythicData = await parseMythicDataPerTeam(
-    serverRes.player.team,
-    serverRes.playersPromises
-  );
-
-  return {
-    ...serverRes,
     mythicData,
   };
 };
-clientLoader.hydrate = true;
+export const action = async ({}: Route.ActionArgs) => {};
 
 export default function PlayerShow({
   loaderData: { player, playerData, scoreTiers, mythicData },
