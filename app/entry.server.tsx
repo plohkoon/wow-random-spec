@@ -1,7 +1,7 @@
 import "~/lib/init.server";
 
 import { isbot } from "isbot";
-import { renderToReadableStream } from "react-dom/server";
+import { renderToReadableStream } from "react-dom/server.browser";
 import { type HandleDataRequestFunction, ServerRouter } from "react-router";
 import type { AppLoadContext, EntryContext } from "react-router";
 
