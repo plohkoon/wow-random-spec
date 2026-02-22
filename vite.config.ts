@@ -6,6 +6,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vite.dev/config/
 export default defineConfig({
+  build: {
+    target: "esnext",
+  },
   plugins: [
     reactRouterDevTools(),
     reactRouter(),

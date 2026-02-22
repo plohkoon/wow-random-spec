@@ -23,19 +23,16 @@ dist-ssr
 *.sln
 *.sw?
 
-prisma/prisma/sqlite.db
 generated/prisma/libquery*
 build
 
 # Prisma
 generated/
-prisma/*.db
-prisma/prisma/
+*/generated
 node_modules/
 
-generated
-*/generated
-**/*.db
+# SQLite database files
+prisma/sqlite/*.db
+
 .react-router
 .env
-

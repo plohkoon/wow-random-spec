@@ -1,4 +1,4 @@
-import { Player } from "generated/prisma";
+import type { Player } from "../../generated/prisma/client";
 
 export const classSpecs = {
   druid: {
