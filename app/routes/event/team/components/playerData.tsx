@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-import { Await } from "react-router";
 import { CharacterName } from "~/components/display/characterName";
 import { ClassDisplay } from "~/components/display/classDisplay";
 import { H3 } from "~/components/display/headers";
@@ -10,12 +8,9 @@ import { Card } from "~/components/ui/card";
 import { makeRaiderIOClassSpec } from "~/lib/classes";
 import { Route } from "../+types/route";
 
-type PlayerData = NonNullable<
-  Awaited<Route.ComponentProps["loaderData"]["playersPromises"][number]>
->;
-type PlayerDataPromise = Promise<PlayerData | null>;
+type PlayerDataType = Route.ComponentProps["loaderData"]["playersData"][number];
 
-function PlayerDataInternal(player: PlayerData) {
+function PlayerDataInternal(player: NonNullable<PlayerDataType>) {
   const playerScore =
     player.mythic_plus_best_runs?.reduce((acc, run) => acc + run.score, 0) || 0;
   return (
@@ -121,14 +116,7 @@ function MissingPlayerData() {
   );
 }
 
-export function PlayerData({ player }: { player: PlayerDataPromise }) {
-  return (
-    <Suspense fallback={<div>loading...</div>}>
-      <Await resolve={player} errorElement={<MissingPlayerData />}>
-        {(player) =>
-          player ? <PlayerDataInternal {...player} /> : <MissingPlayerData />
-        }
-      </Await>
-    </Suspense>
-  );
+export function PlayerData({ player }: { player: PlayerDataType }) {
+  if (!player) return <MissingPlayerData />;
+  return <PlayerDataInternal {...player} />;
 }

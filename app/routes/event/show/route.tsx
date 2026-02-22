@@ -42,9 +42,8 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
 
   const teams = organizeTeams(event.teams);
 
-  return {
-    mythicTeamZip: Promise.all(
-      teams.map(async (team) => {
+  const mythicTeamZip = await Promise.all(
+    teams.map(async (team) => {
         const mythicData = await getMythicDataForTeam(team, {
           after: event.startDate,
           before: event.endDate,
@@ -69,9 +68,10 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
           augmentedTotal: augmented.augmentedTotal,
           augmentedScores: Object.fromEntries(augmented.augmentedScores),
         };
-      })
-    ),
-  };
+    })
+  );
+
+  return { mythicTeamZip };
 }
 
 export default function Event({

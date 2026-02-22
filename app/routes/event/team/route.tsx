@@ -30,8 +30,7 @@ export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
 
   const client = RaiderIOClient.getInstance();
 
-  // Keep playersPromises for player profile cards (gear/spec display)
-  const playersPromises = getPlayersPromises(team, client);
+  const playersData = await Promise.all(getPlayersPromises(team, client));
 
   const mythicData = await getMythicDataForTeam(team, {
     after: event?.startDate,
@@ -40,14 +39,14 @@ export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
 
   return {
     team,
-    playersPromises,
+    playersData,
     mythicData,
   };
 };
 export const action = async ({}: Route.ActionArgs) => ({});
 
 export default function TeamShow({
-  loaderData: { team, playersPromises, mythicData },
+  loaderData: { team, playersData, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
   //need to make a func to detect if a team has provided a banner photo or not
@@ -111,8 +110,8 @@ export default function TeamShow({
               // </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {playersPromises.map((playerPromise, index) => (
-                <PlayerData player={playerPromise} key={index} />
+              {playersData.map((player, index) => (
+                <PlayerData player={player} key={index} />
               ))}
             </div>
             <MythicInfo

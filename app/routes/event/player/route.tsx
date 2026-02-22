@@ -28,20 +28,19 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
 
   const client = RaiderIOClient.getInstance();
 
-  let playerData =
-    player.playerServer && player.playerName
-      ? client.character.getCharacterProfile({
-          region: "us",
-          realm: player.playerServer,
-          name: player.playerName,
-          fields: {
-            gear: true,
-            mythic_plus_best_runs: true,
-          },
-        })
-      : Promise.resolve(null);
+  const playerData = player.playerServer && player.playerName
+    ? await client.character.getCharacterProfile({
+        region: "us",
+        realm: player.playerServer,
+        name: player.playerName,
+        fields: {
+          gear: true,
+          mythic_plus_best_runs: true,
+        },
+      })
+    : null;
 
-  const scoreTiers = client.mythicPlus.scoreTiers();
+  const scoreTiers = await client.mythicPlus.scoreTiers();
 
   const mythicData = await getMythicDataForTeam(player.team, {
     after: player.event?.startDate,
