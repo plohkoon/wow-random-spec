@@ -8,7 +8,7 @@
     "prebuild": "npx prisma generate",
     "build": "react-router build",
     "lint": "eslint .",
-    "prestart": "npx prisma db push --skip-generate",
+    "prestart": "npx prisma migrate deploy",
     "start": "react-router-serve ./build/server/index.js",
     "shadd": "npx shadcn@latest add",
     "prisma:migrate": "npx prisma migrate dev"

@@ -5,7 +5,7 @@ import {
   parseMythicDataPerTeam,
 } from "~/lib/mythics";
 import { RaiderIOClient } from "~/lib/raiderIO";
-import { db } from "~/lib/db.server";
+import { db, Prisma } from "~/lib/db.server";
 
 /**
  * Upserts MythicPlusRun rows and creates PlayerRun links for a given player.
@@ -44,7 +44,7 @@ export async function upsertRunsForPlayer(
         backgroundImageUrl: run.background_image_url,
         score: run.score,
         url: run.url,
-        affixes: JSON.stringify(run.affixes),
+        affixes: run.affixes as unknown as Prisma.InputJsonValue,
       },
       update: {
         dungeon: run.dungeon,
@@ -61,7 +61,7 @@ export async function upsertRunsForPlayer(
         backgroundImageUrl: run.background_image_url,
         score: run.score,
         url: run.url,
-        affixes: JSON.stringify(run.affixes),
+        affixes: run.affixes as unknown as Prisma.InputJsonValue,
       },
     });
 
@@ -102,8 +102,8 @@ export async function upsertPlayerProfile(
     thumbnailUrl: profile.thumbnail_url,
     profileUrl: profile.profile_url,
     itemLevelEquipped: profile.gear.item_level_equipped,
-    gearItems: JSON.stringify(profile.gear.items),
-    bestRuns: JSON.stringify(profile.mythic_plus_best_runs),
+    gearItems: profile.gear.items as unknown as Prisma.InputJsonValue,
+    bestRuns: profile.mythic_plus_best_runs as unknown as Prisma.InputJsonValue,
   };
 
   await db.cachedPlayerProfile.upsert({
@@ -141,9 +141,9 @@ export async function getCachedPlayerProfile(playerId: string) {
     profile_banner: "",
     gear: {
       item_level_equipped: cached.itemLevelEquipped,
-      items: JSON.parse(cached.gearItems),
+      items: cached.gearItems as Record<string, unknown>,
     },
-    mythic_plus_best_runs: JSON.parse(cached.bestRuns) as CharacterNS.MythicPlusRun[],
+    mythic_plus_best_runs: cached.bestRuns as unknown as CharacterNS.MythicPlusRun[],
   };
 }
 
@@ -225,7 +225,7 @@ export async function getCachedRunsForTeam(
       background_image_url: run.backgroundImageUrl,
       score: run.score,
       url: run.url,
-      affixes: JSON.parse(run.affixes),
+      affixes: run.affixes as unknown as CharacterNS.MythicPlusRun["affixes"],
       participants,
     });
   }
