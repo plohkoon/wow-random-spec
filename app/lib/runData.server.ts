@@ -9,15 +9,23 @@ import { db } from "~/lib/db.server";
 
 /**
  * Upserts MythicPlusRun rows and creates PlayerRun links for a given player.
- * Used by the sync job.
+ * When dateRange is provided, only runs within the range are upserted.
  */
 export async function upsertRunsForPlayer(
   playerId: string,
-  runs: CharacterNS.MythicPlusRun[]
+  runs: CharacterNS.MythicPlusRun[],
+  dateRange?: { after?: Date | null; before?: Date | null }
 ): Promise<number> {
   let upserted = 0;
 
   for (const run of runs) {
+    // Skip runs outside the event date range
+    if (dateRange) {
+      const completedAt = new Date(run.completed_at);
+      if (dateRange.after && completedAt < dateRange.after) continue;
+      if (dateRange.before && completedAt > dateRange.before) continue;
+    }
+
     const dbRun = await db.mythicPlusRun.upsert({
       where: { keystoneRunId: run.keystone_run_id },
       create: {

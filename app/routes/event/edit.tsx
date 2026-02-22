@@ -28,11 +28,12 @@ import { SpecInput } from "~/components/inputs/specInput";
 import { CTextInput } from "~/components/inputs/textInput";
 import { TableBody } from "~/components/ui/table";
 import { db } from "~/lib/db.server";
-import { EventStatus, Role } from "~/lib/prisma";
+import { EventStatus, Role, SyncLog } from "~/lib/prisma";
 import { AppSession } from "~/lib/session.server";
+import { syncEvent, syncPlayer } from "~/lib/sync.server";
 import { Route } from "./lists/+types/route";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { ChevronDown, ChevronUp, Dices, Pencil, Settings, Trash2, UserPlus, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, Dices, Loader2, Pencil, RefreshCw, Settings, Trash2, UserPlus, Users } from "lucide-react";
 import { sort } from "fast-sort";
 
 const ROLE_ORDER: Record<string, number> = {
@@ -80,11 +81,16 @@ const updateEventSchema = z.object({
   action: z.literal("updateEvent"),
 });
 
+const forceSyncSchema = z.object({
+  action: z.literal("forceSync"),
+});
+
 const schema = z.union([
   addPlayerSchema,
   updatePlayerSchema,
   deletePlayerSchema,
   updateEventSchema,
+  forceSyncSchema,
 ]);
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
@@ -110,7 +116,12 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return { event };
+  const lastSync = await db.syncLog.findFirst({
+    where: { eventId: event.id },
+    orderBy: { startedAt: "desc" },
+  });
+
+  return { event, lastSync };
 }
 
 export async function action({ request, params: { slug } }: Route.ActionArgs) {
@@ -170,16 +181,30 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
       teamId = team.id;
     }
 
-    await db.player.create({
+    const newPlayer = await db.player.create({
       data: {
         nickname: value.nickname,
         main: value.main,
         assignedRole: value.assignedRole,
         spec: value.spec,
+        playerName: value.playerName,
+        playerServer: value.playerServer,
         teamId,
         eventId: event.id,
       },
     });
+
+    // Immediately sync the new player in the background
+    if (value.playerName && value.playerServer) {
+      syncPlayer(
+        { id: newPlayer.id, playerName: value.playerName, playerServer: value.playerServer },
+        { after: event.startDate, before: event.endDate }
+      ).then(({ runsUpserted }) => {
+        console.log(`[EditSync] Synced new player ${value.playerName}: ${runsUpserted} runs`);
+      }).catch((err) => {
+        console.error(`[EditSync] Failed to sync ${value.playerName}:`, err);
+      });
+    }
   } else if (value.action === "update") {
     const existingPlayer = await db.player.findUnique({
       where: {
@@ -244,6 +269,20 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
       },
     });
 
+    // Sync if playerName/playerServer was added or changed
+    const nameChanged = value.playerName !== existingPlayer.playerName
+      || value.playerServer !== existingPlayer.playerServer;
+    if (nameChanged && value.playerName && value.playerServer) {
+      syncPlayer(
+        { id: existingPlayer.id, playerName: value.playerName, playerServer: value.playerServer },
+        { after: event.startDate, before: event.endDate }
+      ).then(({ runsUpserted }) => {
+        console.log(`[EditSync] Synced updated player ${value.playerName}: ${runsUpserted} runs`);
+      }).catch((err) => {
+        console.error(`[EditSync] Failed to sync ${value.playerName}:`, err);
+      });
+    }
+
     // Cleanup leftover teams if all players are removed.
     if (
       existingPlayer?.teamId &&
@@ -275,9 +314,103 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
       where: { id: event.id },
       data: updateData,
     });
+  } else if (value.action === "forceSync") {
+    await syncEvent(event.id, { force: true });
   }
 
   return res.reply();
+}
+
+function SyncCard({ lastSync }: { lastSync: SyncLog | null }) {
+  const fetcher = useFetcher();
+  const isSyncing = fetcher.state !== "idle";
+
+  const statusColors: Record<string, string> = {
+    COMPLETED: "text-green-400",
+    RUNNING: "text-yellow-400",
+    PARTIAL: "text-yellow-400",
+    FAILED: "text-red-400",
+  };
+
+  return (
+    <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <RefreshCw className="h-5 w-5" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">Data Sync</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Sync player profiles and M+ runs from RaiderIO
+              </p>
+            </div>
+          </div>
+          <fetcher.Form method="post">
+            <Button
+              type="submit"
+              name="action"
+              value="forceSync"
+              disabled={isSyncing}
+            >
+              {isSyncing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Syncing...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Force Sync
+                </>
+              )}
+            </Button>
+          </fetcher.Form>
+        </div>
+      </CardHeader>
+      {lastSync && (
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-sm">
+            <div>
+              <p className="text-muted-foreground">Status</p>
+              <p className={`font-medium ${statusColors[lastSync.status] ?? ""}`}>
+                {lastSync.status}
+              </p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Last Synced</p>
+              <p className="font-medium">
+                {lastSync.completedAt
+                  ? new Date(lastSync.completedAt).toLocaleString()
+                  : lastSync.startedAt
+                    ? new Date(lastSync.startedAt).toLocaleString()
+                    : "N/A"}
+              </p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Players Synced</p>
+              <p className="font-medium">{lastSync.playersSynced}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Runs Upserted</p>
+              <p className="font-medium">{lastSync.runsUpserted}</p>
+            </div>
+          </div>
+          {lastSync.durationMs != null && (
+            <p className="text-xs text-muted-foreground mt-3">
+              Completed in {(lastSync.durationMs / 1000).toFixed(1)}s
+            </p>
+          )}
+          {lastSync.errorMessage && (
+            <p className="text-xs text-red-400 mt-2 truncate" title={lastSync.errorMessage}>
+              Errors: {lastSync.errorMessage}
+            </p>
+          )}
+        </CardContent>
+      )}
+    </Card>
+  );
 }
 
 function EditPlayerRow({
@@ -435,9 +568,11 @@ export const handle = {
 };
 
 export default function EventEdit({
-  loaderData: { event },
+  loaderData,
   params: { slug },
 }: Route.ComponentProps) {
+  const { event } = loaderData;
+  const lastSync = (loaderData as any).lastSync as SyncLog | null;
   const [addPlayerForm, addPlayerFields] = useForm({
     id: "add-player",
     onValidate({ formData }) {
@@ -555,6 +690,8 @@ export default function EventEdit({
             </CardContent>
           )}
         </Card>
+
+        <SyncCard lastSync={lastSync} />
 
         <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
           <CardHeader>
