@@ -1,7 +1,7 @@
 import { db } from "~/lib/db.server";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import type { CharacterNS } from "~/lib/raiderIO/characters";
-import { upsertRunsForPlayer } from "~/lib/runData.server";
+import { upsertRunsForPlayer, upsertPlayerProfile } from "~/lib/runData.server";
 import { SYNC_PLAYER_DELAY_MS } from "~/lib/env.server";
 
 function delay(ms: number): Promise<void> {
@@ -58,6 +58,7 @@ export async function syncActiveEvents(): Promise<void> {
           realm: player.playerServer,
           name: player.playerName,
           fields: {
+            gear: true,
             mythic_plus_best_runs: { all: true },
             mythic_plus_alternate_runs: { all: true },
             mythic_plus_highest_level_runs: true,
@@ -89,8 +90,11 @@ export async function syncActiveEvents(): Promise<void> {
         runsUpserted += count;
         playersSynced++;
 
+        // Cache player profile data
+        await upsertPlayerProfile(player.id, profile);
+
         console.log(
-          `[Sync]   ${player.playerName}-${player.playerServer}: ${count} runs upserted`
+          `[Sync]   ${player.playerName}-${player.playerServer}: ${count} runs upserted, profile cached`
         );
       } catch (err) {
         hasErrors = true;

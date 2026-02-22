@@ -49,7 +49,8 @@ model Player {
   playerServer String?
   team         Team?       @relation(fields: [teamId], references: [id])
   event        Event       @relation(fields: [eventId], references: [id])
-  playerRuns   PlayerRun[]
+  playerRuns     PlayerRun[]
+  cachedProfile  CachedPlayerProfile?
 }
 
 model Team {
@@ -128,6 +129,27 @@ model SyncLog {
   startedAt     DateTime   @default(now())
   completedAt   DateTime?
   durationMs    Int?
+}
+
+model CachedPlayerProfile {
+  id                String   @id @default(cuid())
+  playerId          String   @unique
+  player            Player   @relation(fields: [playerId], references: [id])
+  name              String
+  race              String
+  class             String
+  activeSpecName    String
+  activeSpecRole    String
+  faction           String
+  region            String
+  realm             String
+  thumbnailUrl      String
+  profileUrl        String
+  itemLevelEquipped Int
+  gearItems         String // JSON blob of gear.items
+  bestRuns          String // JSON blob of mythic_plus_best_runs
+  cachedAt          DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 enum SyncStatus {

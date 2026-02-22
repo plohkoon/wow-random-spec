@@ -6,9 +6,8 @@ import { db } from "~/lib/db.server";
 import {
   calculateAugmentedBestMythicsAndTotalScore,
   calculateBestMythicsAndTotalScore,
-  getPlayersPromises,
 } from "~/lib/mythics";
-import { getMythicDataForTeam } from "~/lib/runData.server";
+import { getCachedPlayerProfile, getMythicDataForTeam } from "~/lib/runData.server";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { Route } from "./+types/route";
 import TeamDungeonRuns from "./components/dungeonRuns";
@@ -28,9 +27,34 @@ export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
 
   const event = await db.event.findFirst({ where: { slug } });
 
-  const client = RaiderIOClient.getInstance();
+  // Try cached profiles first, fall back to live API for any missing
+  const playersData = await Promise.all(
+    team.players.map(async (player) => {
+      if (!player.playerServer || !player.playerName) return null;
 
-  const playersData = await Promise.all(getPlayersPromises(team, client));
+      const cached = await getCachedPlayerProfile(player.id);
+      if (cached) return cached;
+
+      console.log(
+        `[TeamLoader] Cache empty for "${player.playerName}", fetching from RaiderIO API`
+      );
+      const client = RaiderIOClient.getInstance();
+      return client.character.getCharacterProfile({
+        region: "us",
+        realm: player.playerServer,
+        name: player.playerName,
+        fields: {
+          gear: true,
+          mythic_plus_best_runs: { all: true },
+          mythic_plus_alternate_runs: { all: true },
+          mythic_plus_highest_level_runs: true,
+          mythic_plus_recent_runs: true,
+          mythic_plus_previous_weekly_highest_level_runs: true,
+          mythic_plus_weekly_highest_level_runs: true,
+        },
+      });
+    })
+  );
 
   const mythicData = await getMythicDataForTeam(team, {
     after: event?.startDate,

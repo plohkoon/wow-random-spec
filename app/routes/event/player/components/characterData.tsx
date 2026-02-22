@@ -7,11 +7,9 @@ import TeamData from "./teamData";
 
 type Player = Route.ComponentProps["loaderData"]["player"];
 type PlayerData = NonNullable<Route.ComponentProps["loaderData"]["playerData"]>;
-type ScoreTiers = NonNullable<Route.ComponentProps["loaderData"]["scoreTiers"]>;
 
 function CharacterDataInternal(
   props: PlayerData & {
-    scoreTiers: ScoreTiers;
     player: Player;
     mythicData: MythicData[] | null;
   }
@@ -55,13 +53,11 @@ function MissingCharacterData() {
 
 export function CharacterData({
   playerData,
-  scoreTiers,
   player,
   eventSlug,
   mythicData,
 }: {
   playerData: PlayerData | null;
-  scoreTiers: ScoreTiers | null;
   player: Player;
   eventSlug: string;
   mythicData: MythicData[] | null;
@@ -71,7 +67,6 @@ export function CharacterData({
   return (
     <CharacterDataInternal
       {...playerData}
-      scoreTiers={scoreTiers ?? []}
       player={player}
       mythicData={mythicData}
     />

@@ -73,6 +73,73 @@ export async function upsertRunsForPlayer(
 }
 
 /**
+ * Upserts a cached player profile from RaiderIO API data.
+ */
+export async function upsertPlayerProfile(
+  playerId: string,
+  profile: CharacterNS.CharacterPayloadBase & {
+    gear: { item_level_equipped: number; items: Record<string, unknown> };
+    mythic_plus_best_runs: CharacterNS.MythicPlusRun[];
+  }
+): Promise<void> {
+  const data = {
+    name: profile.name,
+    race: profile.race,
+    class: profile.class,
+    activeSpecName: profile.active_spec_name,
+    activeSpecRole: profile.active_spec_role,
+    faction: profile.faction,
+    region: profile.region,
+    realm: profile.realm,
+    thumbnailUrl: profile.thumbnail_url,
+    profileUrl: profile.profile_url,
+    itemLevelEquipped: profile.gear.item_level_equipped,
+    gearItems: JSON.stringify(profile.gear.items),
+    bestRuns: JSON.stringify(profile.mythic_plus_best_runs),
+  };
+
+  await db.cachedPlayerProfile.upsert({
+    where: { playerId },
+    create: { playerId, ...data },
+    update: data,
+  });
+}
+
+/**
+ * Gets a cached player profile from the database.
+ * Returns data in the same shape as a CharacterProfilePayload with gear + best runs.
+ */
+export async function getCachedPlayerProfile(playerId: string) {
+  const cached = await db.cachedPlayerProfile.findUnique({
+    where: { playerId },
+  });
+
+  if (!cached) return null;
+
+  return {
+    name: cached.name,
+    race: cached.race,
+    class: cached.class,
+    active_spec_name: cached.activeSpecName,
+    active_spec_role: cached.activeSpecRole,
+    gender: "",
+    faction: cached.faction,
+    achievement_points: 0,
+    thumbnail_url: cached.thumbnailUrl,
+    region: cached.region,
+    realm: cached.realm,
+    last_crawled_at: cached.updatedAt.toISOString(),
+    profile_url: cached.profileUrl,
+    profile_banner: "",
+    gear: {
+      item_level_equipped: cached.itemLevelEquipped,
+      items: JSON.parse(cached.gearItems),
+    },
+    mythic_plus_best_runs: JSON.parse(cached.bestRuns) as CharacterNS.MythicPlusRun[],
+  };
+}
+
+/**
  * Queries cached runs for all players on a team.
  * Groups by keystoneRunId, builds participant lists,
  * filters to runs with >= 3 team members, and sorts by level/score/name.
