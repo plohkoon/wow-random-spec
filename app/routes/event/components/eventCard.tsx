@@ -2,18 +2,24 @@ import { Calendar, Image } from "lucide-react";
 import { Link } from "react-router";
 import { Card, CardContent } from "~/components/ui/card";
 
-// simple function to format date for card
 function formatDate(date: string | Date) {
-    return new Date(date).toLocaleDateString("en-CA", {
+    return new Date(date).toLocaleDateString("en-US", {
         year: "numeric",
-        month: "long",
+        month: "short",
         day: "numeric",
     });
+}
 
-};
+function formatDateRange(event: any) {
+    if (event.startDate && event.endDate) {
+        return `${formatDate(event.startDate)} – ${formatDate(event.endDate)}`;
+    }
+    if (event.startDate) return formatDate(event.startDate);
+    if (event.endDate) return formatDate(event.endDate);
+    return formatDate(event.createdAt);
+}
 
 export default function EventCard({ event }: { event: any }) {
-    console.log(event);
     return (
         <Link to={`/event/${event.slug}`}>
             <Card className="group overflow-hidden border-border bg-card transition-all hover:border-primary/50 hover:shadow-lg">
@@ -43,7 +49,7 @@ export default function EventCard({ event }: { event: any }) {
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                                     <div className="flex items-center gap-1.5">
                                         <Calendar className="h-4 w-4" />
-                                        <span>{formatDate(event.createdAt)}</span>
+                                        <span>{formatDateRange(event)}</span>
                                     </div>
                                 </div>
                             </div>

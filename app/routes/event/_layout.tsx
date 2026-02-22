@@ -17,7 +17,12 @@ export const loader = async ({
     where: { slug },
   });
 
-  return { isAdmin, name: event?.name ?? "unknown event" };
+  return {
+    isAdmin,
+    name: event?.name ?? "unknown event",
+    startDate: event?.startDate ?? null,
+    endDate: event?.endDate ?? null,
+  };
 };
 
 const schema = z
@@ -26,8 +31,25 @@ const schema = z
   })
   .transform((v) => v.edit);
 
+function formatDate(date: string | Date) {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function formatDateRange(startDate: string | Date | null, endDate: string | Date | null) {
+  if (startDate && endDate) {
+    return `${formatDate(startDate)} – ${formatDate(endDate)}`;
+  }
+  if (startDate) return formatDate(startDate);
+  if (endDate) return formatDate(endDate);
+  return null;
+}
+
 export default function EventLayout({
-  loaderData: { isAdmin, name },
+  loaderData: { isAdmin, name, startDate, endDate },
   params: { slug },
 }: Route.ComponentProps) {
   const edit = useMatches().reduce(
@@ -39,6 +61,11 @@ export default function EventLayout({
     <main>
       <div>
         <H2 className="text-6xl mx-4 text-center mt-10">{name}</H2>
+        {formatDateRange(startDate, endDate) && (
+          <p className="text-center text-muted-foreground mt-2">
+            {formatDateRange(startDate, endDate)}
+          </p>
+        )}
       </div>
         <div className="flex-1 flex flex-row space-x-4 justify-center items-center px-4 my-4">
           <Button asChild>
