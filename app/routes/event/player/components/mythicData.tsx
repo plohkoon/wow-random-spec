@@ -50,7 +50,7 @@ export default function PlayerMythicData({
 
         {/* Always show content on desktop, respect isExpanded on mobile */}
         <div
-          className="transition-all duration-300 ease-in-out lg:block data-[expanded=true]:block data-[expanded=false]:hidden"
+          className="transition-all duration-300 ease-in-out hidden data-[expanded=true]:block lg:block"
           data-expanded={isExpanded}
         >
           <CardContent className="pt-6 transition-all duration-300 ease-in-out">

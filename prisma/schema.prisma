@@ -16,17 +16,27 @@ datasource db {
 }
 
 model Event {
-  id        String   @id @default(cuid())
-  slug      String   @unique
+  id        String      @id @default(cuid())
+  slug      String      @unique
   name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  startDate DateTime?
+  endDate   DateTime?
+  status    EventStatus @default(ACTIVE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   players   Player[]
   teams     Team[]
+  syncLogs  SyncLog[]
+}
+
+enum EventStatus {
+  ACTIVE
+  ENDED
+  ARCHIVED
 }
 
 model Player {
-  id           String   @id @default(cuid())
+  id           String      @id @default(cuid())
   nickname     String
   main         String?
   playerName   String?
@@ -34,11 +44,13 @@ model Player {
   spec         String?
   eventId      String
   teamId       String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   playerServer String?
-  team         Team?    @relation(fields: [teamId], references: [id])
-  event        Event    @relation(fields: [eventId], references: [id])
+  team         Team?       @relation(fields: [teamId], references: [id])
+  event        Event       @relation(fields: [eventId], references: [id])
+  playerRuns     PlayerRun[]
+  cachedProfile  CachedPlayerProfile?
 }
 
 model Team {
@@ -68,4 +80,81 @@ enum Role {
   mdps
   tank
   healer
+}
+
+model MythicPlusRun {
+  id                   String      @id @default(cuid())
+  keystoneRunId        Int         @unique
+  dungeon              String
+  shortName            String
+  mythicLevel          Int
+  completedAt          DateTime
+  clearTimeMs          Int
+  parTimeMs            Int
+  numKeystoneUpgrades  Int
+  mapChallengeModeId   Int
+  zoneId               Int
+  zoneExpansionId      Int
+  iconUrl              String
+  backgroundImageUrl   String
+  score                Float
+  url                  String
+  affixes              String // JSON string of Affix[]
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  playerRuns           PlayerRun[]
+
+  @@index([dungeon])
+  @@index([completedAt])
+}
+
+model PlayerRun {
+  id       String        @id @default(cuid())
+  playerId String
+  runId    String
+  player   Player        @relation(fields: [playerId], references: [id])
+  run      MythicPlusRun @relation(fields: [runId], references: [id])
+
+  @@unique([playerId, runId])
+}
+
+model SyncLog {
+  id            String     @id @default(cuid())
+  eventId       String
+  event         Event      @relation(fields: [eventId], references: [id])
+  status        SyncStatus
+  playersSynced Int        @default(0)
+  runsUpserted  Int        @default(0)
+  errorMessage  String?
+  startedAt     DateTime   @default(now())
+  completedAt   DateTime?
+  durationMs    Int?
+}
+
+model CachedPlayerProfile {
+  id                String   @id @default(cuid())
+  playerId          String   @unique
+  player            Player   @relation(fields: [playerId], references: [id])
+  name              String
+  race              String
+  class             String
+  activeSpecName    String
+  activeSpecRole    String
+  faction           String
+  region            String
+  realm             String
+  thumbnailUrl      String
+  profileUrl        String
+  itemLevelEquipped Int
+  gearItems         String // JSON blob of gear.items
+  bestRuns          String // JSON blob of mythic_plus_best_runs
+  cachedAt          DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+enum SyncStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+  PARTIAL
 }

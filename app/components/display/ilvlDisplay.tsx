@@ -12,7 +12,7 @@ export function IlvlDisplay<C extends React.ElementType = "span">({
 } & Omit<React.ComponentPropsWithoutRef<C>, "children">) {
   const Component = as || "span";
 
-  const tier = Math.max(Math.floor((ilvl - 619) / 12), 0);
+  const tier = Math.min(Math.max(Math.floor((ilvl - 100) / 14), 0), 4);
 
   return (
     <Component

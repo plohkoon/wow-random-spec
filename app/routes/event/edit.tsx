@@ -28,11 +28,12 @@ import { SpecInput } from "~/components/inputs/specInput";
 import { CTextInput } from "~/components/inputs/textInput";
 import { TableBody } from "~/components/ui/table";
 import { db } from "~/lib/db.server";
-import { Role } from "~/lib/prisma";
+import { EventStatus, Role, SyncLog } from "~/lib/prisma";
 import { AppSession } from "~/lib/session.server";
+import { syncEvent, syncPlayer } from "~/lib/sync.server";
 import { Route } from "./lists/+types/route";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { ChevronDown, ChevronUp, Dices, Pencil, Trash2, UserPlus, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, Dices, Loader2, Pencil, RefreshCw, Settings, Trash2, UserPlus, Users } from "lucide-react";
 import { sort } from "fast-sort";
 
 const ROLE_ORDER: Record<string, number> = {
@@ -73,10 +74,23 @@ const deletePlayerSchema = z.object({
   action: z.literal("delete"),
 });
 
+const updateEventSchema = z.object({
+  startDate: z.string().optional().transform((v) => (v ? new Date(v) : undefined)),
+  endDate: z.string().optional().transform((v) => (v ? new Date(v) : undefined)),
+  status: z.nativeEnum(EventStatus).optional(),
+  action: z.literal("updateEvent"),
+});
+
+const forceSyncSchema = z.object({
+  action: z.literal("forceSync"),
+});
+
 const schema = z.union([
   addPlayerSchema,
   updatePlayerSchema,
   deletePlayerSchema,
+  updateEventSchema,
+  forceSyncSchema,
 ]);
 
 export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
@@ -102,7 +116,12 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
     throw new Response("Not Found", { status: 404 });
   }
 
-  return { event };
+  const lastSync = await db.syncLog.findFirst({
+    where: { eventId: event.id },
+    orderBy: { startedAt: "desc" },
+  });
+
+  return { event, lastSync };
 }
 
 export async function action({ request, params: { slug } }: Route.ActionArgs) {
@@ -162,16 +181,30 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
       teamId = team.id;
     }
 
-    await db.player.create({
+    const newPlayer = await db.player.create({
       data: {
         nickname: value.nickname,
         main: value.main,
         assignedRole: value.assignedRole,
         spec: value.spec,
+        playerName: value.playerName,
+        playerServer: value.playerServer,
         teamId,
         eventId: event.id,
       },
     });
+
+    // Immediately sync the new player in the background
+    if (value.playerName && value.playerServer) {
+      syncPlayer(
+        { id: newPlayer.id, playerName: value.playerName, playerServer: value.playerServer },
+        { after: event.startDate, before: event.endDate }
+      ).then(({ runsUpserted }) => {
+        console.log(`[EditSync] Synced new player ${value.playerName}: ${runsUpserted} runs`);
+      }).catch((err) => {
+        console.error(`[EditSync] Failed to sync ${value.playerName}:`, err);
+      });
+    }
   } else if (value.action === "update") {
     const existingPlayer = await db.player.findUnique({
       where: {
@@ -236,6 +269,20 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
       },
     });
 
+    // Sync if playerName/playerServer was added or changed
+    const nameChanged = value.playerName !== existingPlayer.playerName
+      || value.playerServer !== existingPlayer.playerServer;
+    if (nameChanged && value.playerName && value.playerServer) {
+      syncPlayer(
+        { id: existingPlayer.id, playerName: value.playerName, playerServer: value.playerServer },
+        { after: event.startDate, before: event.endDate }
+      ).then(({ runsUpserted }) => {
+        console.log(`[EditSync] Synced updated player ${value.playerName}: ${runsUpserted} runs`);
+      }).catch((err) => {
+        console.error(`[EditSync] Failed to sync ${value.playerName}:`, err);
+      });
+    }
+
     // Cleanup leftover teams if all players are removed.
     if (
       existingPlayer?.teamId &&
@@ -257,9 +304,113 @@ export async function action({ request, params: { slug } }: Route.ActionArgs) {
     ) {
       await db.team.delete({ where: { id: player.teamId } });
     }
+  } else if (value.action === "updateEvent") {
+    const updateData: Record<string, unknown> = {};
+    if (value.startDate !== undefined) updateData.startDate = value.startDate;
+    if (value.endDate !== undefined) updateData.endDate = value.endDate;
+    if (value.status !== undefined) updateData.status = value.status;
+
+    await db.event.update({
+      where: { id: event.id },
+      data: updateData,
+    });
+  } else if (value.action === "forceSync") {
+    await syncEvent(event.id, { force: true });
   }
 
   return res.reply();
+}
+
+function SyncCard({ lastSync }: { lastSync: SyncLog | null }) {
+  const fetcher = useFetcher();
+  const isSyncing = fetcher.state !== "idle";
+
+  const statusColors: Record<string, string> = {
+    COMPLETED: "text-green-400",
+    RUNNING: "text-yellow-400",
+    PARTIAL: "text-yellow-400",
+    FAILED: "text-red-400",
+  };
+
+  return (
+    <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <RefreshCw className="h-5 w-5" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">Data Sync</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Sync player profiles and M+ runs from RaiderIO
+              </p>
+            </div>
+          </div>
+          <fetcher.Form method="post">
+            <Button
+              type="submit"
+              name="action"
+              value="forceSync"
+              disabled={isSyncing}
+            >
+              {isSyncing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Syncing...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Force Sync
+                </>
+              )}
+            </Button>
+          </fetcher.Form>
+        </div>
+      </CardHeader>
+      {lastSync && (
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-sm">
+            <div>
+              <p className="text-muted-foreground">Status</p>
+              <p className={`font-medium ${statusColors[lastSync.status] ?? ""}`}>
+                {lastSync.status}
+              </p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Last Synced</p>
+              <p className="font-medium">
+                {lastSync.completedAt
+                  ? new Date(lastSync.completedAt).toLocaleString()
+                  : lastSync.startedAt
+                    ? new Date(lastSync.startedAt).toLocaleString()
+                    : "N/A"}
+              </p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Players Synced</p>
+              <p className="font-medium">{lastSync.playersSynced}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Runs Upserted</p>
+              <p className="font-medium">{lastSync.runsUpserted}</p>
+            </div>
+          </div>
+          {lastSync.durationMs != null && (
+            <p className="text-xs text-muted-foreground mt-3">
+              Completed in {(lastSync.durationMs / 1000).toFixed(1)}s
+            </p>
+          )}
+          {lastSync.errorMessage && (
+            <p className="text-xs text-red-400 mt-2 truncate" title={lastSync.errorMessage}>
+              Errors: {lastSync.errorMessage}
+            </p>
+          )}
+        </CardContent>
+      )}
+    </Card>
+  );
 }
 
 function EditPlayerRow({
@@ -417,15 +568,18 @@ export const handle = {
 };
 
 export default function EventEdit({
-  loaderData: { event },
+  loaderData,
   params: { slug },
 }: Route.ComponentProps) {
+  const { event } = loaderData;
+  const lastSync = (loaderData as any).lastSync as SyncLog | null;
   const [addPlayerForm, addPlayerFields] = useForm({
     id: "add-player",
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: addPlayerSchema });
     },
   });
+  const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
   const [isPlayerExpanded, setIsPlayersExpanded] = useState(true);
   const [isRosterExpanded, setIsRosterExpanded] = useState(true);
   const [sortBy, setSortBy] = useState<"team" | "role">("team");
@@ -454,10 +608,91 @@ export default function EventEdit({
 
     return players;
   }
+  const eventFetcher = useFetcher();
+
+  const formatDateForInput = (date: Date | string | null | undefined) => {
+    if (!date) return "";
+    const d = typeof date === "string" ? new Date(date) : date;
+    return d.toISOString().slice(0, 16);
+  };
+
   return (
     <>
       <Outlet />
       <main className="container mx-auto px-8 py-8 max-w-32xl">
+        <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Settings className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Event Settings</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {event.name} &mdash; Status: {event.status ?? "ACTIVE"}
+                  </p>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" className="shrink-0 cursor-pointer" onClick={() => setIsSettingsExpanded(!isSettingsExpanded)}>
+                {isSettingsExpanded ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          {isSettingsExpanded && (
+            <CardContent>
+              <eventFetcher.Form method="post">
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="space-y-2">
+                    <label htmlFor="startDate" className="text-sm font-medium">Start Date</label>
+                    <input
+                      type="datetime-local"
+                      id="startDate"
+                      name="startDate"
+                      defaultValue={formatDateForInput(event.startDate)}
+                      className="flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="endDate" className="text-sm font-medium">End Date</label>
+                    <input
+                      type="datetime-local"
+                      id="endDate"
+                      name="endDate"
+                      defaultValue={formatDateForInput(event.endDate)}
+                      className="flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="status" className="text-sm font-medium">Status</label>
+                    <select
+                      id="status"
+                      name="status"
+                      defaultValue={event.status ?? "ACTIVE"}
+                      className="flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm"
+                    >
+                      <option value="ACTIVE">Active</option>
+                      <option value="ENDED">Ended</option>
+                      <option value="ARCHIVED">Archived</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-start">
+                  <Button type="submit" name="action" value="updateEvent">
+                    Save Event Settings
+                  </Button>
+                </div>
+              </eventFetcher.Form>
+            </CardContent>
+          )}
+        </Card>
+
+        <SyncCard lastSync={lastSync} />
+
         <Card className="mb-8 border-border/50 bg-card/50 backdrop-blur">
           <CardHeader>
             <div className="flex items-center justify-between">

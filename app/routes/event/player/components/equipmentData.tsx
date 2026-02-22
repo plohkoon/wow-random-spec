@@ -52,7 +52,7 @@ export default function EquipmentData({ objectKeys, gear }: any) {
 
         {/* Always show content on desktop, respect isExpanded on mobile */}
         <div
-          className="transition-all duration-300 ease-in-out lg:block data-[expanded=true]:block data-[expanded=false]:hidden"
+          className="transition-all duration-300 ease-in-out hidden data-[expanded=true]:block lg:block"
           data-expanded={isExpanded}
         >
           <CardContent className="pt-6">
@@ -69,17 +69,17 @@ export default function EquipmentData({ objectKeys, gear }: any) {
                     <div className="flex items-center p-3 text-white dark:text-black rounded-md bg-neutral-400 dark:bg-[#555555] hover:bg-[#666666] transition-colors">
                       <div className="flex-shrink-0 mr-3 relative">
                         <div className="w-10 h-10 rounded border border-[#A0E7A0] overflow-hidden bg-black">
-                          {/* This works but we don't wanna get in trouble lmao */}
-                          {/* <img src={`https://cdn.raiderio.net/images/wow/icons/large/${item.icon}.jpg`} /> */}
-
-                          {/* <img
-                          src={item.icon || "/placeholder.svg"}
-                          alt={item.name}
-                          width={40}
-                          height={40}
-                          className="object-cover"
-                        /> */}
-                          <Sword className="mx-auto text-white" height={36} />
+                          {item.icon ? (
+                            <img
+                              src={`https://wow.zamimg.com/images/wow/icons/large/${item.icon}.jpg`}
+                              alt={item.name}
+                              width={40}
+                              height={40}
+                              className="object-cover"
+                            />
+                          ) : (
+                            <Sword className="mx-auto text-white" height={36} />
+                          )}
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">

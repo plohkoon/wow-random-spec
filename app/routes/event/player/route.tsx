@@ -1,6 +1,6 @@
 import { Link, redirect } from "react-router";
 import { db } from "~/lib/db.server";
-import { getPlayersPromises, parseMythicDataPerTeam } from "~/lib/mythics";
+import { getCachedPlayerProfile, getMythicDataForTeam } from "~/lib/runData.server";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { Route } from "./+types/route";
 import { CharacterData } from "./components/characterData";
@@ -14,7 +14,9 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
       event: true,
       team: {
         include: {
-          players: true,
+          players: {
+            include: { team: true, cachedProfile: true },
+          },
         },
       },
     },
@@ -24,54 +26,40 @@ export const loader = async ({ params: { id, slug } }: Route.LoaderArgs) => {
     throw redirect(`/event/${slug}`);
   }
 
-  const client = RaiderIOClient.getInstance();
+  // Try cached profile first, fall back to live API
+  let playerData = await getCachedPlayerProfile(player.id);
 
-  let playerData =
-    player.playerServer && player.playerName
-      ? client.character.getCharacterProfile({
-          region: "us",
-          realm: player.playerServer,
-          name: player.playerName,
-          fields: {
-            gear: true,
-            mythic_plus_best_runs: true,
-          },
-        })
-      : Promise.resolve(null);
+  if (!playerData && player.playerServer && player.playerName) {
+    console.log(
+      `[PlayerLoader] Cache empty for "${player.playerName}", fetching from RaiderIO API`
+    );
+    const client = RaiderIOClient.getInstance();
+    playerData = await client.character.getCharacterProfile({
+      region: "us",
+      realm: player.playerServer,
+      name: player.playerName,
+      fields: {
+        gear: true,
+        mythic_plus_best_runs: true,
+      },
+    });
+  }
 
-  const scoreTiers = client.mythicPlus.scoreTiers();
-
-  const playersPromises = getPlayersPromises(player.team, client);
+  const mythicData = await getMythicDataForTeam(player.team, {
+    after: player.event?.startDate,
+    before: player.event?.endDate,
+  });
 
   return {
     player,
     playerData,
-    scoreTiers,
-    playersPromises,
-    mythicData: null,
+    mythicData,
   };
 };
 export const action = async ({}: Route.ActionArgs) => {};
 
-export const clientLoader = async ({
-  serverLoader,
-}: Route.ClientLoaderArgs) => {
-  const serverRes = await serverLoader();
-
-  const mythicData = await parseMythicDataPerTeam(
-    serverRes.player.team,
-    serverRes.playersPromises
-  );
-
-  return {
-    ...serverRes,
-    mythicData,
-  };
-};
-clientLoader.hydrate = true;
-
 export default function PlayerShow({
-  loaderData: { player, playerData, scoreTiers, mythicData },
+  loaderData: { player, playerData, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
   return (
@@ -83,7 +71,6 @@ export default function PlayerShow({
       <div className="">
         <CharacterData
           playerData={playerData}
-          scoreTiers={scoreTiers}
           player={player}
           eventSlug={slug}
           mythicData={mythicData}

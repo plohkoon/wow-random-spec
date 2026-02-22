@@ -63,7 +63,7 @@ export default function TeamData({
 
       {/* Always show content on desktop, respect isExpanded on mobile */}
       <div
-        className="transition-all duration-300 ease-in-out lg:block data-[expanded=true]:block data-[expanded=false]:hidden"
+        className="transition-all duration-300 ease-in-out hidden data-[expanded=true]:block lg:block"
         data-expanded={isExpanded}
       >
         <div className="flex">
@@ -78,14 +78,17 @@ export default function TeamData({
           >
             <div className="flex-shrink-0 mr-4 relative">
               <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#FF6B6B] bg-[#444444]">
-                <User width={45} height={50} className="object-cover" />
-                {/* <img
-                  src={""}
-                  alt={member.name}
-                  width={50}
-                  height={50}
-                  className="object-cover"
-                /> */}
+                {member.cachedProfile?.thumbnailUrl ? (
+                  <img
+                    src={member.cachedProfile.thumbnailUrl}
+                    alt={member.playerName ?? ""}
+                    width={50}
+                    height={50}
+                    className="object-cover"
+                  />
+                ) : (
+                  <User width={45} height={50} className="object-cover" />
+                )}
               </div>
               <div className="absolute -bottom-1 -right-1 p-1 rounded-full bg-[#444444]">
                 {getRoleIcon(member.assignedRole ?? "")}

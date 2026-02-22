@@ -1,5 +1,3 @@
-import { Suspense } from "react";
-import { Await } from "react-router";
 import { MythicData } from "~/lib/mythics";
 import type { Route } from "../+types/route";
 import CharacterProfile from "./characterProfile";
@@ -8,19 +6,10 @@ import PlayerMythicData from "./mythicData";
 import TeamData from "./teamData";
 
 type Player = Route.ComponentProps["loaderData"]["player"];
-
-type PlayerData = NonNullable<
-  Awaited<Route.ComponentProps["loaderData"]["playerData"]>
->;
-type ScoreTiers = NonNullable<
-  Awaited<Route.ComponentProps["loaderData"]["scoreTiers"]>
->;
-type PlayerDataPromise = Promise<PlayerData | null>;
-type ScoreTiersPromise = Promise<ScoreTiers | null>;
+type PlayerData = NonNullable<Route.ComponentProps["loaderData"]["playerData"]>;
 
 function CharacterDataInternal(
   props: PlayerData & {
-    scoreTiers: ScoreTiers;
     player: Player;
     mythicData: MythicData[] | null;
   }
@@ -64,36 +53,22 @@ function MissingCharacterData() {
 
 export function CharacterData({
   playerData,
-  scoreTiers,
   player,
   eventSlug,
   mythicData,
 }: {
-  playerData: PlayerDataPromise;
-  scoreTiers: ScoreTiersPromise;
+  playerData: PlayerData | null;
   player: Player;
   eventSlug: string;
   mythicData: MythicData[] | null;
 }) {
+  if (!playerData) return <MissingCharacterData />;
+
   return (
-    <Suspense fallback={<div>Loading..</div>}>
-      <Await
-        resolve={Promise.all([playerData, scoreTiers])}
-        errorElement={<MissingCharacterData />}
-      >
-        {([data, tiers]) =>
-          data ? (
-            <CharacterDataInternal
-              {...data}
-              scoreTiers={tiers ?? []}
-              player={player}
-              mythicData={mythicData}
-            />
-          ) : (
-            <MissingCharacterData />
-          )
-        }
-      </Await>
-    </Suspense>
+    <CharacterDataInternal
+      {...playerData}
+      player={player}
+      mythicData={mythicData}
+    />
   );
 }

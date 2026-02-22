@@ -6,8 +6,8 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import { ChevronDown, Users } from "lucide-react";
-import { Suspense, useMemo, useState } from "react";
-import { Await, Link, useParams } from "react-router";
+import { useMemo, useState } from "react";
+import { Link, useParams } from "react-router";
 import { PlayerShortDisplay } from "~/components/display/playerShortDisplay";
 import { ScoreDisplay } from "~/components/display/scoreDisplay";
 import { Button } from "~/components/ui/button";
@@ -15,10 +15,7 @@ import MythicDisplay from "~/components/ui/mythicdisplay";
 import { getGreenTextClass } from "~/lib/mythics";
 import { Route } from "../+types/route";
 
-type MythicZip = NonNullable<
-  Awaited<Route.ComponentProps["loaderData"]["mythicTeamZip"]>
->;
-type MythicZipPromise = Promise<MythicZip | null>;
+type MythicZip = Route.ComponentProps["loaderData"]["mythicTeamZip"];
 
 type Sort = "single_score" | "team_score" | "num_ran" | "under_par" | null;
 
@@ -265,26 +262,12 @@ function LeaderBoardInternal({ zip }: { zip: MythicZip }) {
   );
 }
 
-function LeaderBoardLoading() {
-  return <div className="text-center">Loading...</div>;
-}
+export function LeaderBoard({ zip }: { zip: MythicZip }) {
+  if (!zip || zip.length === 0) {
+    return <div className="text-center">No Mythic Data Found</div>;
+  }
 
-function LeaderBoardMissing() {
-  return <div className="text-center">No Mythic Data Found</div>;
-}
-
-export function LeaderBoard({ zip }: { zip: MythicZipPromise | null }) {
-  return (
-    <Suspense fallback={<LeaderBoardLoading />}>
-      <Await resolve={zip}>
-        {(mythicZip) => {
-          if (!mythicZip) return <LeaderBoardMissing />;
-
-          return <LeaderBoardInternal zip={mythicZip} />;
-        }}
-      </Await>
-    </Suspense>
-  );
+  return <LeaderBoardInternal zip={zip} />;
 }
 
 // old code for reference rn

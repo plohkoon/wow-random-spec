@@ -3,10 +3,8 @@ import {
   calculateAugmentedBestMythicsAndTotalScore,
   calculateBestMythicsAndTotalScore,
   calculateBestScoreAndBestUnderTime,
-  getPlayersPromises,
-  parseMythicDataPerTeam,
 } from "~/lib/mythics";
-import { RaiderIOClient } from "~/lib/raiderIO";
+import { getMythicDataForTeam } from "~/lib/runData.server";
 import { AppSession } from "~/lib/session.server";
 import { organizeTeams } from "~/lib/teams";
 import { Route } from "./+types/route";
@@ -19,7 +17,9 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
       include: {
         teams: {
           include: {
-            players: true,
+            players: {
+              include: { team: true },
+            },
           },
         },
         players: {
@@ -41,19 +41,13 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
   }
 
   const teams = organizeTeams(event.teams);
-  const client = RaiderIOClient.getInstance();
 
-  const eachTeamsPlayersPromises = teams.map((team) =>
-    getPlayersPromises(team, client)
-  );
-
-  return {
-    mythicTeamZip: Promise.all(
-      teams.map(async (team, i) => {
-        const mythicData = await parseMythicDataPerTeam(
-          team,
-          eachTeamsPlayersPromises[i]
-        );
+  const mythicTeamZip = await Promise.all(
+    teams.map(async (team) => {
+        const mythicData = await getMythicDataForTeam(team, {
+          after: event.startDate,
+          before: event.endDate,
+        });
 
         const [bestMythics, bestMythicsScore] =
           calculateBestMythicsAndTotalScore(mythicData ?? []);
@@ -74,9 +68,10 @@ export async function loader({ request, params: { slug } }: Route.LoaderArgs) {
           augmentedTotal: augmented.augmentedTotal,
           augmentedScores: Object.fromEntries(augmented.augmentedScores),
         };
-      })
-    ),
-  };
+    })
+  );
+
+  return { mythicTeamZip };
 }
 
 export default function Event({

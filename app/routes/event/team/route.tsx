@@ -6,9 +6,8 @@ import { db } from "~/lib/db.server";
 import {
   calculateAugmentedBestMythicsAndTotalScore,
   calculateBestMythicsAndTotalScore,
-  getPlayersPromises,
-  parseMythicDataPerTeam,
 } from "~/lib/mythics";
+import { getCachedPlayerProfile, getMythicDataForTeam } from "~/lib/runData.server";
 import { RaiderIOClient } from "~/lib/raiderIO";
 import { Route } from "./+types/route";
 import TeamDungeonRuns from "./components/dungeonRuns";
@@ -26,37 +25,52 @@ export const loader = async ({ params: { slug, id } }: Route.LoaderArgs) => {
     return redirect(`/event/${slug}`);
   }
 
-  const client = RaiderIOClient.getInstance();
+  const event = await db.event.findFirst({ where: { slug } });
 
-  const playersPromises = getPlayersPromises(team, client);
+  // Try cached profiles first, fall back to live API for any missing
+  const playersData = await Promise.all(
+    team.players.map(async (player) => {
+      if (!player.playerServer || !player.playerName) return null;
+
+      const cached = await getCachedPlayerProfile(player.id);
+      if (cached) return cached;
+
+      console.log(
+        `[TeamLoader] Cache empty for "${player.playerName}", fetching from RaiderIO API`
+      );
+      const client = RaiderIOClient.getInstance();
+      return client.character.getCharacterProfile({
+        region: "us",
+        realm: player.playerServer,
+        name: player.playerName,
+        fields: {
+          gear: true,
+          mythic_plus_best_runs: { all: true },
+          mythic_plus_alternate_runs: { all: true },
+          mythic_plus_highest_level_runs: true,
+          mythic_plus_recent_runs: true,
+          mythic_plus_previous_weekly_highest_level_runs: true,
+          mythic_plus_weekly_highest_level_runs: true,
+        },
+      });
+    })
+  );
+
+  const mythicData = await getMythicDataForTeam(team, {
+    after: event?.startDate,
+    before: event?.endDate,
+  });
 
   return {
     team,
-    playersPromises,
-    mythicData: null,
+    playersData,
+    mythicData,
   };
 };
 export const action = async ({}: Route.ActionArgs) => ({});
 
-export const clientLoader = async ({
-  serverLoader,
-}: Route.ClientLoaderArgs) => {
-  const serverRes = await serverLoader();
-
-  const mythicData = await parseMythicDataPerTeam(
-    serverRes.team,
-    serverRes.playersPromises
-  );
-
-  return {
-    ...serverRes,
-    mythicData,
-  };
-};
-clientLoader.hydrate = true;
-
 export default function TeamShow({
-  loaderData: { team, playersPromises, mythicData },
+  loaderData: { team, playersData, mythicData },
   params: { slug },
 }: Route.ComponentProps) {
   //need to make a func to detect if a team has provided a banner photo or not
@@ -120,8 +134,8 @@ export default function TeamShow({
               // </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {playersPromises.map((playerPromise, index) => (
-                <PlayerData player={playerPromise} key={index} />
+              {playersData.map((player, index) => (
+                <PlayerData player={player} key={index} />
               ))}
             </div>
             <MythicInfo
